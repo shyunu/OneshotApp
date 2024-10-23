@@ -10,6 +10,7 @@ function SalesWriteHeader() {
       navigation.pop();
     }
   };
+
   return (
     <View style={styles.block}>
       <View style={styles.iconButtonWrapper}>
