@@ -2083,6 +2083,7 @@ __metadata:
     metro-react-native-babel-preset: 0.72.4
     react: 18.1.0
     react-native: 0.70.15
+    react-native-dropdown-picker: ^5.4.6
     react-native-safe-area-context: ^4.11.1
     react-native-screens: 3.25.0
     react-native-vector-icons: ^10.2.0
@@ -8115,6 +8116,16 @@ __metadata:
     jscodeshift: ^0.14.0
     nullthrows: ^1.1.1
   checksum: dfbf05ea6c5bcdff09ed2288919d8270bdb8ab78a7a973f2dbd970e63357bdf9fee05d95a2c9bee3795a609332e5ca37f667384ebe1cca61e4cb8f81e5aeabba
+  languageName: node
+  linkType: hard
+
+"react-native-dropdown-picker@npm:^5.4.6":
+  version: 5.4.6
+  resolution: "react-native-dropdown-picker@npm:5.4.6"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: d81ee3d68c17107a4d21dbdf9c2fe2ffe4bf4398973d10113139aadc0674221ce5038b945299fba2abc796930ec5e6d5f84291945bf903344493a15b8e2fca43
   languageName: node
   linkType: hard
 
