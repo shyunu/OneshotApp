@@ -3,7 +3,7 @@ import React from 'react';
 import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-function FloatingWriteButton() {
+function ContractFloatingWriteButton() {
   const navigation = useNavigation();
   const onPress = () => {
     navigation.navigate('ContractWrite');
@@ -56,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FloatingWriteButton;
+export default ContractFloatingWriteButton;
