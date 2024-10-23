@@ -1,11 +1,11 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import FloatingWriteButton from './ContractFloatingWriteButton';
+import ContractFloatingWriteButton from './ContractFloatingWriteButton';
 
 function ContractScreen() {
   return (
     <View style={styles.block}>
-      <FloatingWriteButton />
+      <ContractFloatingWriteButton />
     </View>
   );
 }
