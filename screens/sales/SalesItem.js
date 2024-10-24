@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   TextInput,
@@ -6,44 +6,66 @@ import {
   Button,
   StyleSheet,
   Modal,
+  Alert,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-function SalesItem({isVisible, onClose, onAddItem}) {
+function SalesItem({isVisible, onClose, onAddItem, clientNo}) {
   const [disable, setDisabled] = useState(false); //textinput disabled처리
   const [modalIsVisible, setModalIsVisible] = useState(false); //modal창
 
   // 상품
-  const [valueProduct, setValueProduct] = useState(null); //상품
   const [contractPrice, setContractPrice] = useState('');
   const [inventoryQuantity, setInventoryQuantity] = useState('');
   const [quantity, setQuantity] = useState('');
   const [amount, setAmount] = useState('');
 
+  const [product, setProduct] = useState(null);
   const [openProduct, setOpenProduct] = useState(false);
-  const [products, setProducts] = useState([
-    {label: '상품1', value: 'product1'},
-    {label: '상품2', value: 'product2'},
-    {label: '상품3', value: 'product3'},
-    {label: '상품4', value: 'product4'},
-  ]);
+  const [productLists, setProductLists] = useState([]);
 
   const onSave = () => {
     onAddItem({
-      valueProduct,
+      product,
       contractPrice,
       inventoryQuantity,
       quantity,
       amount,
     });
-    setValueProduct('');
+    setProduct(null);
     setContractPrice('');
     setInventoryQuantity('');
     setQuantity('');
     setAmount('');
     onClose();
+  };
+
+  // clientNo가 변경될 때마다 상품 목록을 가져옴
+  useEffect(() => {
+    if (clientNo) {
+      fetchProductList();
+    }
+  }, [clientNo]);
+
+  // 상품 목록을 서버로부터 가져오는 함수
+  const fetchProductList = async () => {
+    try {
+      const response = await fetch(
+        `http://172.30.1.63:8181/salesApp/getProductList/${clientNo}`,
+      );
+
+      const data = await response.json();
+
+      const productOptions = data.map(product => ({
+        label: product.productName,
+        value: product.productNo,
+      }));
+      setProductLists(productOptions);
+    } catch (error) {
+      Alert.alert('Error', '상품 목록 조회 실패!');
+    }
   };
 
   return (
@@ -56,25 +78,25 @@ function SalesItem({isVisible, onClose, onAddItem}) {
             <Text style={styles.text}>상품명</Text>
             <DropDownPicker
               open={openProduct}
-              value={valueProduct}
-              items={products}
+              value={product}
+              items={productLists}
               setOpen={setOpenProduct}
-              setValue={setValueProduct}
-              setItems={setProducts}
+              setValue={setProduct}
+              setItems={setProductLists}
               placeholder="상품을 선택하세요"
               style={styles.dropdown}
               dropDownContainerStyle={styles.dropdownContainer}
             />
             <Text style={styles.text}>책정거래가</Text>
             <TextInput
-              // editable={disable}
+              editable={disable}
               value={contractPrice}
               onChangeText={setContractPrice}
               style={[styles.input, styles.inputDisabled]}
             />
             <Text style={styles.text}>재고</Text>
             <TextInput
-              // editable={disable}
+              editable={disable}
               value={inventoryQuantity}
               onChangeText={setInventoryQuantity}
               style={[styles.input, styles.inputDisabled]}
@@ -89,7 +111,7 @@ function SalesItem({isVisible, onClose, onAddItem}) {
             />
             <Text style={styles.text}>금액</Text>
             <TextInput
-              // editable={disable}
+              editable={disable}
               value={amount}
               onChangeText={setAmount}
               style={[styles.input, styles.inputDisabled]}

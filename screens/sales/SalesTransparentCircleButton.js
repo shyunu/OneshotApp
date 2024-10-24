@@ -2,12 +2,7 @@ import React from 'react';
 import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-function SalesTransparentCircleButton({
-  name,
-  color,
-  hasMarginRight,
-  onPress,
-}) {
+function SalesTransparentCircleButton({name, color, hasMarginRight, onPress}) {
   return (
     <View
       style={[styles.iconButtonWrapper, hasMarginRight && styles.rightMargin]}>

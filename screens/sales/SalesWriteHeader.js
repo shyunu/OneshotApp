@@ -2,11 +2,14 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import SalesTransparentCircleButton from './SalesTransparentCircleButton';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 function SalesWriteHeader() {
   const navigation = useNavigation();
   const onGoBack = () => {
+    console.log('Hi1');
     if (navigation.canGoBack()) {
+      console.log(navigation.canGoBack());
       navigation.pop();
     }
   };
