@@ -6,7 +6,9 @@ import ContractTransparentCircleButton from './ContractTransparentCircleButton';
 function ContractWriteHeader() {
   const navigation = useNavigation();
   const onGoBack = () => {
+    console.log('Hi1');
     if (navigation.canGoBack()) {
+      console.log('Hi2');
       navigation.pop();
     }
   };
