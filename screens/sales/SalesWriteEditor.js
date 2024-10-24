@@ -192,12 +192,6 @@ function SalesWriteEditor() {
         <Text style={{fontSize: 16, marginTop: 6, marginLeft: 5}}>
           판매 상품
         </Text>
-        <TouchableOpacity activeOpacity={0.5}>
-          <View
-            style={styles.buttonStyle}
-            onInsert={onInsert}
-            onPress={onPressAddBtn}></View>
-        </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.5} onPress={startAddItem}>
           <View style={styles.buttonStyle}>
             <Image source={require('../../assets/add_white.png')} />
