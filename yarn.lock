@@ -1650,12 +1650,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/datetimepicker@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@react-native-community/datetimepicker@npm:6.0.0"
+"@react-native-community/datetimepicker@npm:5.0.0":
+  version: 5.0.0
+  resolution: "@react-native-community/datetimepicker@npm:5.0.0"
   dependencies:
     invariant: ^2.2.4
-  checksum: 3b14d845e1743f190686745ef6a07485c6cabaf231f337282c1154c6efc6a1cc59f7a13e6cd786f2c0a6b15d3b5a201f3880a530c09b657eac94115d103b43bb
+  checksum: 59b1300f7a54a70756439067de892dcb99611efee3a1ecfd6e22128ccb28ea7fb4a38f600b9521fa59b185c28a2b4816a36b56d8fcde76dd5aa88d2dafd902e1
   languageName: node
   linkType: hard
 
@@ -2081,7 +2081,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.12.9
     "@babel/runtime": ^7.12.5
-    "@react-native-community/datetimepicker": 6.0.0
+    "@react-native-community/datetimepicker": 5.0.0
     "@react-native-community/eslint-config": ^2.0.0
     "@react-navigation/bottom-tabs": ^6.6.1
     "@react-navigation/native": ^6.1.18

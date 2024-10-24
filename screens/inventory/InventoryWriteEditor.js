@@ -11,6 +11,7 @@ import {
   Image,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import axios from 'axios';
 
 function InventoryWriteEditor() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -52,7 +53,7 @@ function InventoryWriteEditor() {
       };
       setItems([...items, newItem]);
 
-      // Reset form
+      // 리셋
       setValueCategory(null);
       setValueProduct(null);
       setQuantity('');
@@ -60,6 +61,8 @@ function InventoryWriteEditor() {
       setModalVisible(false);
     }
   };
+
+  const [data, setData] = useState('');
 
   return (
     <View style={styles.block}>
@@ -101,6 +104,7 @@ function InventoryWriteEditor() {
       <View style={styles.purchaseProduct}>
         <Text style={styles.purchaseTitle}>상품구매</Text>
         <TouchableOpacity
+          activeOpacity={0.8}
           style={styles.addButton}
           onPress={() => setModalVisible(true)}>
           <Image source={require('../../assets/add_white.png')} />
@@ -144,7 +148,7 @@ function InventoryWriteEditor() {
               setItems={setCategory}
               style={styles.dropdown}
               placeholder="카테고리를 선택하세요"
-              zIndex={3000}
+              zIndex={300}
               dropdownContainerStyle={styles.dropdownContainer}
             />
 
@@ -158,7 +162,7 @@ function InventoryWriteEditor() {
               setItems={setProduct}
               style={styles.dropdown}
               placeholder="상품을 선택하세요"
-              zIndex={2000}
+              zIndex={200}
               dropdownContainerStyle={styles.dropdownContainer}
             />
 
@@ -190,11 +194,13 @@ function InventoryWriteEditor() {
 
             <View style={styles.modalButtons}>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={() => setModalVisible(false)}>
                 <Text style={styles.modalButtonText}>취소</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[styles.modalButton, styles.confirmButton]}
                 onPress={handleAddItem}>
                 <Text style={styles.modalButtonText}>추가</Text>
@@ -311,12 +317,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 20,
   },
-  // dropdownMenuContainer: {
-  //   marginTop: 20,
-  //   borderWidth: 1,
-  //   borderColor: '#ced4da',
-  //   borderRadius: 4,
-  // },
   modalContent: {
     backgroundColor: '#fff',
     padding: 20,
