@@ -196,7 +196,8 @@ function SalesWriteEditor() {
           <View
             style={styles.buttonStyle}
             onInsert={onInsert}
-            onPress={onPressAddBtn}>
+            onPress={onPressAddBtn}></View>
+        </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.5} onPress={startAddItem}>
           <View style={styles.buttonStyle}>
             <Image source={require('../../assets/add_white.png')} />
