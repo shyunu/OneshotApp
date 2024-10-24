@@ -129,6 +129,7 @@ function ContractWriteEditor() {
       <TextInput
         style={styles.contractPriceTextInput}
         placeholder="계약가격을 입력하세요"
+        keyboardType="number-pad"
       />
 
       <Text style={styles.text}>
