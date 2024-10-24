@@ -80,7 +80,7 @@ function InventoryWriteEditor() {
         setItems={setSupllier}
         style={styles.dropdown}
         placeholder="공급업체를 선택하세요"
-        dropdownMenuStyle={styles.dropdownMenu}
+        dropdownContainerStyle={styles.dropdownContainer}
       />
       <Text style={styles.text}>담당자명</Text>
       {/* // disable */}
@@ -142,9 +142,10 @@ function InventoryWriteEditor() {
               setOpen={setOpenCategory}
               setValue={setValueCategory}
               setItems={setCategory}
-              style={styles.dropdownMenu}
+              style={styles.dropdown}
               placeholder="카테고리를 선택하세요"
               zIndex={3000}
+              dropdownContainerStyle={styles.dropdownContainer}
             />
 
             <Text style={styles.text}>상품명</Text>
@@ -155,10 +156,10 @@ function InventoryWriteEditor() {
               setOpen={setOpenProduct}
               setValue={setValueProduct}
               setItems={setProduct}
-              style={styles.dropdownMenu}
+              style={styles.dropdown}
               placeholder="상품을 선택하세요"
               zIndex={2000}
-              dropdownMenuContainerStyle={styles.dropdownMenuContainer}
+              dropdownContainerStyle={styles.dropdownContainer}
             />
 
             <Text style={styles.text}>구매수량</Text>
@@ -212,13 +213,14 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   text: {
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 8,
   },
   input: {
     height: 40,
     borderColor: '#ced4da',
     borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: 15,
     paddingHorizontal: 12,
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -230,24 +232,26 @@ const styles = StyleSheet.create({
   },
   disable: {
     backgroundColor: '#f0f0f0',
-    color: '#6c757d',
+    color: '#000',
     elevation: 0,
     shadowOpacity: 0,
+    height: 40,
   },
   dropdown: {
+    minHeight: 40,
     borderRadius: 4,
     borderColor: '#ced4da',
-    marginBottom: 10,
+    marginBottom: 15,
   },
-  dropdownMenu: {
+  dropdownContainer: {
     borderColor: '#ced4da',
-    marginBottom: 10,
+    borderRadius: 4,
   },
   purchaseProduct: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e3e3e3',
+    marginTop: 10,
+    marginBottom: 5,
   },
   purchaseTitle: {
     fontSize: 16,
@@ -256,14 +260,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   addButton: {
-    backgroundColor: '#e3e3e3',
+    backgroundColor: '#00569A',
     padding: 12,
     borderRadius: 4,
     marginTop: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 30,
-    height: 30,
+    width: 33,
+    height: 33,
   },
   addButtonText: {
     color: '#fff',
@@ -273,8 +277,9 @@ const styles = StyleSheet.create({
   // 테이블 화면
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#e3e3e3',
     padding: 10,
+    height: 40,
     borderBottomWidth: 1,
     borderBottomColor: '#ced4da',
   },
@@ -288,6 +293,8 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
+    textAlign: 'center',
+    height: 40,
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ced4da',
@@ -304,13 +311,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 20,
   },
-  dropdownMenuContainer: {
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: '#ced4da',
-    borderRadius: 4,
-    maxHeight: 200,
-  },
+  // dropdownMenuContainer: {
+  //   marginTop: 20,
+  //   borderWidth: 1,
+  //   borderColor: '#ced4da',
+  //   borderRadius: 4,
+  // },
   modalContent: {
     backgroundColor: '#fff',
     padding: 20,
@@ -335,7 +341,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   cancelButton: {
-    backgroundColor: '#6c757d',
+    backgroundColor: '#d0d6e3',
   },
   confirmButton: {
     backgroundColor: '#00569A',
@@ -344,6 +350,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
+    fontSize: 16,
+    letterSpacing: 5,
+    marginLeft: 6,
   },
 });
 
