@@ -1,6 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainTab from './MainTab';
+import InventoryWriteScreen from './inventory/InventoryWriteScreen';
 import ContractWriteScreen from './contract/ContractWriteScreen';
 import SalesWriteScreen from './sales/SalesWriteScreen';
 
@@ -12,6 +13,11 @@ function RootStack() {
       <Stack.Screen
         name="MainTab"
         component={MainTab}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="InventoryWrite"
+        component={InventoryWriteScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

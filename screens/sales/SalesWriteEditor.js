@@ -52,6 +52,10 @@ function SalesWriteEditor({resetFields}) {
     setSalesItems([...salesItems, item]);
   };
 
+  const navigation = useNavigation();
+  const onPressAddBtn = () => {
+    navigation.navigate('SalesItem');
+  };
   //모든 필드 초기화
   function resetFields() {
     setClient(null);
@@ -129,6 +133,11 @@ function SalesWriteEditor({resetFields}) {
         <Text style={{fontSize: 16, marginTop: 6, marginLeft: 5}}>
           판매 상품
         </Text>
+        <TouchableOpacity activeOpacity={0.5}>
+          <View
+            style={styles.buttonStyle}
+            onInsert={onInsert}
+            onPress={onPressAddBtn}>
         <TouchableOpacity activeOpacity={0.5} onPress={startAddItem}>
           <View style={styles.buttonStyle}>
             <Image source={require('../../assets/add_white.png')} />
