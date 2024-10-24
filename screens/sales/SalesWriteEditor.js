@@ -58,7 +58,7 @@ function SalesWriteEditor({client, onChangeClient}) {
   const navigation = useNavigation();
   const onPressAddBtn = () => {
     navigation.navigate('SalesItem');
-  }
+  };
 
   return (
     <View style={styles.block}>
@@ -117,7 +117,10 @@ function SalesWriteEditor({client, onChangeClient}) {
           판매 상품
         </Text>
         <TouchableOpacity activeOpacity={0.5}>
-          <View style={styles.buttonStyle} onInsert={onInsert} onPress={onPressAddBtn} >
+          <View
+            style={styles.buttonStyle}
+            onInsert={onInsert}
+            onPress={onPressAddBtn}>
             <Image source={require('../../assets/add_white.png')} />
           </View>
         </TouchableOpacity>
