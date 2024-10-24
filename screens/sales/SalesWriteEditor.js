@@ -8,12 +8,13 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SalesItem from './SalesItem';
+import axios from 'axios';
 
-
-function SalesWriteEditor({resetFields}) {
+function SalesWriteEditor() {
   const nextInputRef = useRef(); // 다음 필드 참조
   const [disable, setDisabled] = useState(false); //textinput disabled처리
 
@@ -24,18 +25,66 @@ function SalesWriteEditor({resetFields}) {
   const day = today.getDate();
   const formattedDate = `${year}년 ${month}월 ${day}일`;
 
-  // 고객사
-  const [client, setClient] = useState(null);
-  const [openClient, setOpenClient] = useState(false);
+  //고객사정보
   const [clientBusinessNo, setClientBusinessNo] = useState('');
   const [managerName, setManagerName] = useState('');
   const [managerPhone, setManagerPhone] = useState('');
-  const [clientLists, setClientLists] = useState([
-    {label: '고객사1', value: 'client1'},
-    {label: '고객사2', value: 'client2'},
-    {label: '고객사3', value: 'client3'},
-    {label: '고객사4', value: 'client4'},
-  ]);
+
+  // 고객사
+  const [client, setClient] = useState(null);
+  const [openClient, setOpenClient] = useState(false);
+  const [clientLists, setClientLists] = useState([]);
+
+  const [loading, setLoading] = useState(true); // 로딩 상태
+
+  const fetchData = async () => {
+    try {
+      const clientResponse = await axios.get(
+        'http://172.30.1.63:8181/salesApp/getClientList',
+      );
+      console.log('API Response:', clientResponse.data); // 응답 데이터 확인
+
+      setClientLists(
+        clientResponse.data.map(client => ({
+          label: client.clientName,
+          value: client.clientNo,
+        })),
+      );
+    } catch (error) {
+      Alert.alert('Error', '데이터를 가져오기 실패!');
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // 컴포넌트 마운트 시 데이터 가져오기
+  }, []);
+
+  //client를 선택하면 고객사정보 불러오기
+  useEffect(() => {
+    const fetchClientContent = async () => {
+      if (client) {
+        try {
+          const response = await axios.get(
+            `http://172.30.1.63:8181/salesApp/getClientContent/${client}`,
+          );
+          setClientBusinessNo(response.data.clientBusinessNo || '');
+          setManagerName(response.data.managerName || '');
+          setManagerPhone(response.data.managerPhone || '');
+        } catch (error) {
+          Alert.alert('Error', '고객사정보 불러오기 실패!');
+        }
+      } else {
+        // 클라이언트가 선택되지 않았을 때 초기화
+        setClientBusinessNo('');
+        setManagerName('');
+        setManagerPhone('');
+      }
+    };
+    fetchClientContent();
+  }, [client]);
 
   //모달창
   const [modalIsVisible, setModalIsVisible] = useState(false);
@@ -74,10 +123,17 @@ function SalesWriteEditor({resetFields}) {
   }
 
   //원화 + 천원단위(,)
-  const formatCurrency = (amount) => {
-    return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 원`;
-};
+  const formatCurrency = amount => {
+    return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원`;
+  };
 
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.block}>
@@ -99,6 +155,9 @@ function SalesWriteEditor({resetFields}) {
         placeholder="고객사를 선택하세요"
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
+        listEmptyComponent={() => (
+          <Text style={styles.emptyMessage}>등록된 고객사가 없습니다.</Text>
+        )}
       />
 
       <Text style={styles.text}>사업자번호</Text>
@@ -139,6 +198,7 @@ function SalesWriteEditor({resetFields}) {
         isVisible={modalIsVisible}
         onClose={endAddItem}
         onAddItem={addItem}
+        clientNo={client}
       />
 
       <View style={styles.salesItemContainer}>
@@ -153,10 +213,14 @@ function SalesWriteEditor({resetFields}) {
         {salesItems.map((item, index) => (
           <View style={styles.tableRow} key={index}>
             <Text style={styles.contentText}>{item.valueProduct}</Text>
-            <Text style={styles.contentText}>{formatCurrency(item.contractPrice)}</Text>
+            <Text style={styles.contentText}>
+              {formatCurrency(item.contractPrice)}
+            </Text>
             <Text style={styles.contentText}>{item.inventoryQuantity}</Text>
             <Text style={styles.contentText}>{item.quantity}</Text>
-            <Text style={styles.contentText}>{formatCurrency(item.amount)}</Text>
+            <Text style={styles.contentText}>
+              {formatCurrency(item.amount)}
+            </Text>
           </View>
         ))}
       </View>
