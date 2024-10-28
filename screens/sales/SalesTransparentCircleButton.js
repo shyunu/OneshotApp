@@ -14,7 +14,7 @@ function SalesTransparentCircleButton({name, color, hasMarginRight, onPress}) {
               backgroundColor: '#efefef',
             },
         ]}
-        onLongPress={onPress}
+        onPress={onPress}
         android_ripple={{color: '#ededed'}}>
         <Icon name={name} size={24} color={color} />
       </Pressable>

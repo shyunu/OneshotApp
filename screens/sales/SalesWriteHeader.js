@@ -1,18 +1,58 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Alert} from 'react-native';
 import SalesTransparentCircleButton from './SalesTransparentCircleButton';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
-function SalesWriteHeader() {
+function SalesWriteHeader({onResetFields, onRegist}) {
   const navigation = useNavigation();
   const onGoBack = () => {
-    console.log('Hi1');
     if (navigation.canGoBack()) {
-      console.log(navigation.canGoBack());
       navigation.pop();
     }
   };
+
+  //초기화 버튼(delete-forever)
+  function alertDeleteConfirm() {
+    Alert.alert(
+      '\n',
+      '판매 등록 정보를 초기화하시겠습니까?\n',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: () => {
+            if (onResetFields) {
+              onResetFields();
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  }
+
+  //저장하기 버튼(check)
+  function alertCheckConfirm() {
+    Alert.alert('\n', '판매를 등록하시겠습니까?\n', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '확인',
+        onPress: () => {
+          console.log('onRegist 호출됨'); // 로그 추가
+
+          if (onRegist) {
+            onRegist();
+          }
+        },
+      },
+    ]);
+  }
 
   return (
     <View style={styles.block}>
@@ -31,8 +71,13 @@ function SalesWriteHeader() {
           name="delete-forever"
           color="#ef5350"
           hasMarginRight
+          onPress={alertDeleteConfirm}
         />
-        <SalesTransparentCircleButton name="check" color="#009688" />
+        <SalesTransparentCircleButton
+          name="check"
+          color="#00569A"
+          onPress={alertCheckConfirm}
+        />
       </View>
     </View>
   );

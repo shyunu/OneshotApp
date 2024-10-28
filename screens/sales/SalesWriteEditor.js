@@ -1,4 +1,3 @@
-import {useNavigation} from '@react-navigation/native';
 import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
@@ -14,33 +13,41 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import SalesItem from './SalesItem';
 import axios from 'axios';
 
-function SalesWriteEditor() {
+function SalesWriteEditor({onSaveData}) {
   const nextInputRef = useRef(); // 다음 필드 참조
   const [disable, setDisabled] = useState(false); //textinput disabled처리
 
-  // 등록일자
+  // 등록일자 *** order_sdate(date)
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const day = today.getDate();
-  const formattedDate = `${year}년 ${month}월 ${day}일`;
+  const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(
+    day,
+  ).padStart(2, '0')}`;
 
   //고객사정보
   const [clientBusinessNo, setClientBusinessNo] = useState('');
   const [managerName, setManagerName] = useState('');
   const [managerPhone, setManagerPhone] = useState('');
+  const [employeeNo, setEmployeeNo] = useState(''); //*** employee_no(int)
 
   // 고객사
-  const [client, setClient] = useState(null);
+  const [client, setClient] = useState(null); //*** client_no(int)
   const [openClient, setOpenClient] = useState(false);
   const [clientLists, setClientLists] = useState([]);
-
   const [loading, setLoading] = useState(true); // 로딩 상태
 
+  //배송상태
+  const [deliveryStatus, setDeliveryStatus] = useState('배송대기'); //*** delivery_status(string)
+  const [delivery, setDelivery] = useState(null); //*** delivery(date)
+
+  //고객사리스트 불러오기
   const fetchData = async () => {
     try {
       const clientResponse = await axios.get(
-        'http://172.30.1.63:8181/salesApp/getClientList',
+        // 'http://172.30.1.63:8181/salesApp/getClientList',
+        'http://localhost:8181/salesApp/getClientList',
       );
       console.log('API Response:', clientResponse.data); // 응답 데이터 확인
 
@@ -68,7 +75,8 @@ function SalesWriteEditor() {
       if (client) {
         try {
           const response = await axios.get(
-            `http://172.30.1.63:8181/salesApp/getClientContent/${client}`,
+            // `http://172.30.1.63:8181/salesApp/getClientContent/${client}`,
+            `http://localhost:8181/salesApp/getClientContent/${client}`,
           );
           setClientBusinessNo(response.data.clientBusinessNo || '');
           setManagerName(response.data.managerName || '');
@@ -77,7 +85,6 @@ function SalesWriteEditor() {
           Alert.alert('Error', '고객사정보 불러오기 실패!');
         }
       } else {
-        // 클라이언트가 선택되지 않았을 때 초기화
         setClientBusinessNo('');
         setManagerName('');
         setManagerPhone('');
@@ -95,16 +102,65 @@ function SalesWriteEditor() {
     setModalIsVisible(false);
   }
 
+  //선택된 상품 관리(중복등록안되게)
+  const [selectedProducts, setSelectedProducts] = useState([]);
   //추가된 상품
   const [salesItems, setSalesItems] = useState([]);
   const addItem = item => {
     setSalesItems([...salesItems, item]);
+    setSelectedProducts([...selectedProducts, item.product]);
   };
 
-  const navigation = useNavigation();
-  const onPressAddBtn = () => {
-    navigation.navigate('SalesItem');
-  };
+  console.log('저장된 필드 값:', {
+    orderSdate: formattedDate,
+    employeeNo: managerName,
+    clientNo: client,
+    deliveryStatus: deliveryStatus,
+    delivery: delivery,
+    orderItems: salesItems.map(item => ({
+      productNo: item.product,
+      contractPrice: item.contractPrice,
+      productQuantity: item.productQuantity,
+      amount: item.amount,
+    })),
+  });
+
+  //판매등록 정보들을 부모컴포넌트로 전달하기
+  useEffect(() => {
+    // console.log('formattedDate:', formattedDate);
+    // console.log('employeeNo:', employeeNo);
+    // console.log('client:', client);
+    // console.log('deliveryStatus:', deliveryStatus);
+    // console.log('delivery:', delivery);
+    // console.log('salesItems:', salesItems);
+    if (
+      formattedDate &&
+      // employeeNo &&
+      client &&
+      deliveryStatus &&
+      // delivery &&
+      salesItems.length > 0
+    ) {
+      // client와 salesItems가 유효한 경우에만 실행
+      const data = {
+        orderSdate: formattedDate,
+        // employeeNo: employeeNo,
+        clientNo: client,
+        deliveryStatus: deliveryStatus,
+        delivery: delivery,
+        orderItems: salesItems.map(item => ({
+          productNo: item.product,
+          contractPrice: item.contractPrice,
+          productQuantity: item.productQuantity,
+          amount: item.amount,
+        })),
+      };
+      onSaveData(data);
+    } else {
+      console.log('필드 값이 유효하지 않거나, 판매 항목이 없습니다.');
+    }
+  }, [formattedDate, employeeNo, client, deliveryStatus, delivery, salesItems]);
+
   //모든 필드 초기화
   function resetFields() {
     setClient(null);
@@ -112,23 +168,12 @@ function SalesWriteEditor() {
     setManagerName('');
     setManagerPhone('');
     setSalesItems([]);
-  }
-
-  //필드를 초기화할 것인지 물어보기
-  function onAskReset() {
-    Alert.alert('초기화', '정말로 초기화하시겠습니까?', [
-      {text: '취소', style: 'cancel'},
-      {
-        text: '초기화',
-        onPress: resetFields,
-        style: 'destructive',
-      },
-    ]);
+    setSelectedProducts([]);
   }
 
   //원화 + 천원단위(,)
   const formatCurrency = amount => {
-    return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원`;
+    return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원`;
   };
 
   if (loading) {
@@ -192,42 +237,45 @@ function SalesWriteEditor() {
         <Text style={{fontSize: 16, marginTop: 6, marginLeft: 5}}>
           판매 상품
         </Text>
-        <TouchableOpacity activeOpacity={0.5} onPress={startAddItem}>
+        <TouchableOpacity activeOpacity={0.8} onPress={startAddItem}>
           <View style={styles.buttonStyle}>
             <Image source={require('../../assets/add_white.png')} />
           </View>
         </TouchableOpacity>
       </View>
-      <SalesItem
-        isVisible={modalIsVisible}
-        onClose={endAddItem}
-        onAddItem={addItem}
-        clientNo={client}
-      />
 
       <View style={styles.salesItemContainer}>
         <View style={styles.tableHeader}>
           <Text style={styles.headerText}>상품명</Text>
           <Text style={styles.headerText}>가격</Text>
-          <Text style={styles.headerText}>재고</Text>
+          {/* <Text style={styles.headerText}>재고</Text> */}
           <Text style={styles.headerText}>개수</Text>
           <Text style={styles.headerText}>금액</Text>
         </View>
 
         {salesItems.map((item, index) => (
           <View style={styles.tableRow} key={index}>
-            <Text style={styles.contentText}>{item.valueProduct}</Text>
+            <Text style={styles.contentText}>{item.product}</Text>
             <Text style={styles.contentText}>
               {formatCurrency(item.contractPrice)}
             </Text>
-            <Text style={styles.contentText}>{item.inventoryQuantity}</Text>
-            <Text style={styles.contentText}>{item.quantity}</Text>
+            {/* <Text style={styles.contentText}>{item.inventoryQuantity}</Text> */}
+            <Text style={styles.contentText}>{item.productQuantity}</Text>
             <Text style={styles.contentText}>
               {formatCurrency(item.amount)}
             </Text>
           </View>
         ))}
       </View>
+
+      <SalesItem
+        isVisible={modalIsVisible}
+        onClose={endAddItem}
+        onAddItem={addItem}
+        clientNo={client}
+        style={styles.modalContainer}
+        selectedProducts={selectedProducts}
+      />
     </View>
   );
 }
@@ -239,7 +287,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   text: {
-    marginBottom: 10,
+    marginBottom: 8,
+    fontSize: 16,
   },
   input: {
     height: 40,
@@ -247,7 +296,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 10,
-    marginBottom: 12,
+    marginBottom: 15,
     backgroundColor: '#fff',
     fontSize: 16,
     color: '#495057',
@@ -258,13 +307,14 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   inputDisabled: {
-    backgroundColor: '#f5f3f4',
+    backgroundColor: '#f0f0f0',
+    color: '#000',
   },
   dropdown: {
     minHeight: 40,
     borderColor: '#ced4da',
     borderRadius: 4,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   dropdownContainer: {
     borderColor: '#ced4da',
@@ -272,22 +322,25 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 10,
+    marginBottom: 5,
   },
   buttonStyle: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 25,
-    height: 25,
-    backgroundColor: '#e3e3e3',
-    borderRadius: 7,
-  },
-  salesItemContainer: {
-    marginTop: 10,
+    width: 33,
+    height: 33,
+    backgroundColor: '#00569A',
+    borderRadius: 4,
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#f5f3f4',
+    alignItems: 'center',
+    backgroundColor: '#e3e3e3',
     padding: 10,
+    height: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ced4da',
   },
   headerText: {
     flex: 1,
@@ -296,13 +349,27 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    borderBottomColor: '#f5f3f4',
+    alignItems: 'center',
+    borderBottomColor: '#ced4da',
     borderBottomWidth: 1,
   },
   contentText: {
     flex: 1,
     textAlign: 'center',
-    padding: 4,
+    padding: 10,
+    height: 40,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 20,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
