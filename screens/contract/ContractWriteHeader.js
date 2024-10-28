@@ -1,17 +1,70 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Alert} from 'react-native';
 import ContractTransparentCircleButton from './ContractTransparentCircleButton';
+import axios from 'axios';
 
-function ContractWriteHeader() {
+function ContractWriteHeader({
+  clientNo,
+  setClientNo,
+  productNo,
+  setProductNo,
+  selectedStartDate,
+  setSelectedStartDate,
+  selectedEndDate,
+  setSelectedEndDate,
+  contractPrice,
+  setContractPrice,
+  contractItems,
+  setContractItems,
+  loading,
+  setLoading,
+}) {
   const navigation = useNavigation();
+
   const onGoBack = () => {
-    console.log('Hi1');
     if (navigation.canGoBack()) {
-      console.log('Hi2');
       navigation.pop();
     }
   };
+
+  const onReset = () => {
+    setClientNo(null);
+    setProductNo(null);
+    setSelectedStartDate('');
+    setSelectedEndDate('');
+    setContractPrice('');
+    setContractItems([]);
+  };
+
+  const onsubmit = async () => {
+    setLoading(true); // 로딩 상태 활성화
+    try {
+      const response = await axios.post(
+        'http://172.30.1.28:8181/contractApp/contract',
+        {
+          clientNo: clientNo,
+          productNo: productNo,
+          contractSdate: selectedStartDate,
+          contractEdate: selectedEndDate,
+          contractPrice: contractPrice,
+        },
+      );
+
+      if (response.status === 201) {
+        Alert.alert('Success', '계약이 성공적으로 등록되었습니다.');
+      } else {
+        Alert.alert('Error', '계약 등록에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', '서버에 연결하는 데 실패했습니다.');
+    } finally {
+      setLoading(false); // 로딩 상태 비활성화
+    }
+    onGoBack();
+  };
+
   return (
     <View style={styles.block}>
       <View style={styles.iconButtonWrapper}>
@@ -29,8 +82,13 @@ function ContractWriteHeader() {
           name="delete-forever"
           color="#ef5350"
           hasMarginRight
+          onPress={onReset}
         />
-        <ContractTransparentCircleButton name="check" color="#009688" />
+        <ContractTransparentCircleButton
+          name="check"
+          color="#009688"
+          onPress={onsubmit}
+        />
       </View>
     </View>
   );

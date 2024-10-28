@@ -7,30 +7,43 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 
-function ContractWriteEditor() {
+function ContractWriteEditor({
+  clientNo,
+  setClientNo,
+  productNo,
+  setProductNo,
+  selectedStartDate,
+  setSelectedStartDate,
+  selectedEndDate,
+  setSelectedEndDate,
+  contractPrice,
+  setContractPrice,
+  contractItems,
+  setContractItems,
+  loading,
+  setLoading,
+}) {
+  //고객사
   const [clientOpen, setClientOpen] = useState(false);
-  const [clientValue, setClientValue] = useState(null);
   const [clientItems, setClientItems] = useState([]);
 
+  //상품
   const [productOpen, setProductOpen] = useState(false);
-  const [productValue, setProductValue] = useState(null);
   const [productItems, setProductItems] = useState([]);
 
-  const [loading, setLoading] = useState(true); // 로딩 상태 관리
-
+  //계약 시작 및 종료일
   const [isStartDatePickerVisible, setStartDatePickerVisibility] =
     useState(false);
-  const [selectedStartDate, setSelectedStartDate] = useState('');
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
-  const [selectedEndDate, setSelectedEndDate] = useState('');
 
-  // 고객사 목록과 상품 목록을 동시에 가져오는 함수
+  // 고객사 및 상품 목록 가져오기
   const fetchData = async () => {
     try {
       const [clientResponse, productResponse] = await Promise.all([
@@ -52,16 +65,51 @@ function ContractWriteEditor() {
         })),
       );
     } catch (error) {
-      Alert.alert('Error', '데이터를 가져오는 데 실패했습니다.');
       console.log(error);
+      Alert.alert('Error', '데이터를 가져오는 데 실패했습니다.');
     } finally {
       setLoading(false); // 데이터 로딩 완료 후 로딩 상태 변경
     }
   };
 
+  // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
-    fetchData(); // 컴포넌트 마운트 시 데이터 가져오기
+    fetchData();
   }, []);
+
+  const onChangeClientAndProduct = async () => {
+    if (clientNo != null && productNo != null) {
+      try {
+        const response = await axios.get(
+          'http://172.30.1.28:8181/contractApp/getContractList',
+          {
+            params: {
+              clientNo: clientNo,
+              productNo: productNo,
+            },
+          },
+        );
+        const updatedItems = response.data.map(item => ({
+          ...item,
+          contractSdate: convertToLocalDate(item.contractSdate),
+          contractEdate: convertToLocalDate(item.contractEdate),
+        }));
+        setContractItems(updatedItems);
+      } catch (error) {
+        console.log(error);
+        Alert.alert('Error', '데이터를 가져오는 데 실패했습니다.');
+      } finally {
+        setLoading(false); // 데이터 로딩 완료 후 로딩 상태 변경
+      }
+    }
+  };
+
+  // 서버의 UTC 날짜를 로컬 시간(KST)으로 변환
+  const convertToLocalDate = utcDate => {
+    const date = new Date(utcDate); // 서버로부터 받은 UTC 날짜
+    const localDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // KST(UTC+9) 적용
+    return localDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
+  };
 
   const showStartDatePicker = () => setStartDatePickerVisibility(true);
   const hideStartDatePicker = () => setStartDatePickerVisibility(false);
@@ -79,6 +127,20 @@ function ContractWriteEditor() {
     hideEndDatePicker();
   };
 
+  const formatDate = date => {
+    if (!date) return '';
+    const validDate = new Date(date);
+    if (isNaN(validDate)) return '-';
+    return validDate.toISOString().split('T')[0];
+  };
+
+  const formatCurrency = amount => {
+    if (isNaN(amount) || amount === null) return '- 원';
+    return `${parseInt(amount, 10)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원`;
+  };
+
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -92,48 +154,41 @@ function ContractWriteEditor() {
       <Text style={styles.text}>고객사</Text>
       <DropDownPicker
         open={clientOpen}
-        value={clientValue}
+        value={clientNo}
         items={clientItems}
         setOpen={setClientOpen}
-        setValue={setClientValue}
+        setValue={setClientNo}
         setItems={setClientItems}
         placeholder="고객사를 선택하세요"
-        style={styles.dropdown}
-        dropDownContainerStyle={styles.dropdownContainer}
         listEmptyComponent={() => (
           <Text style={styles.emptyMessage}>등록된 고객사가 없습니다.</Text>
         )}
+        style={styles.dropdown}
+        dropDownContainerStyle={styles.dropdownContainer}
         zIndex={3000}
         zIndexInverse={1000}
+        onChangeValue={onChangeClientAndProduct}
       />
-
       <Text style={styles.text}>상품</Text>
       <DropDownPicker
         open={productOpen}
-        value={productValue}
+        value={productNo}
         items={productItems}
         setOpen={setProductOpen}
-        setValue={setProductValue}
+        setValue={setProductNo}
         setItems={setProductItems}
         placeholder="상품을 선택하세요"
-        style={styles.dropdown}
-        dropDownContainerStyle={styles.dropdownContainer}
         listEmptyComponent={() => (
           <Text style={styles.emptyMessage}>등록된 상품이 없습니다.</Text>
         )}
+        style={styles.dropdown}
+        dropDownContainerStyle={styles.dropdownContainer}
         zIndex={2000}
         zIndexInverse={1000}
+        onChangeValue={onChangeClientAndProduct}
       />
-
-      <Text style={styles.text}>계약가격</Text>
-      <TextInput
-        style={styles.contractPriceTextInput}
-        placeholder="계약가격을 입력하세요"
-        keyboardType="number-pad"
-      />
-
       <Text style={styles.text}>
-        {'계약시작일                                 계약종료일'}
+        {'계약시작일                             계약종료일'}
       </Text>
       <View style={styles.dateBox}>
         <View style={styles.dateBox}>
@@ -176,6 +231,43 @@ function ContractWriteEditor() {
           />
         </View>
       </View>
+      <Text style={styles.text}>계약가격</Text>
+      <TextInput
+        style={styles.contractPriceTextInput}
+        placeholder="계약가격을 입력하세요"
+        keyboardType="numeric"
+        value={contractPrice}
+        onChangeText={setContractPrice}
+      />
+      <Text style={styles.text}>계약내역</Text>
+      <View style={styles.tableContainer}>
+        <View style={styles.tableHeader}>
+          <Text style={styles.tableHeaderText}>계약시작일</Text>
+          <Text style={styles.tableHeaderText}>계약종료일</Text>
+          <Text style={styles.tableHeaderText}>계약가격</Text>
+        </View>
+        <ScrollView style={styles.tableBody}>
+          {contractItems && contractItems.length > 0 ? (
+            contractItems.map(item => (
+              <View key={item.contractPriceNo} style={styles.tableRow}>
+                <Text style={styles.tableCell}>
+                  {formatDate(item.contractSdate)}
+                </Text>
+                <Text style={styles.tableCell}>
+                  {formatDate(item.contractEdate)}
+                </Text>
+                <Text style={styles.tableCell}>
+                  {formatCurrency(item.contractPrice)}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCell}>계약내역이 없습니다</Text>
+            </View>
+          )}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -186,13 +278,14 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   text: {
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 8,
   },
   dropdown: {
     minHeight: 40,
     borderColor: '#ced4da',
     borderRadius: 4,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   dropdownContainer: {
     borderColor: '#ced4da',
@@ -206,7 +299,7 @@ const styles = StyleSheet.create({
   dateBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   contractPriceTextInput: {
     height: 40,
@@ -214,7 +307,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   contractDateTextInput: {
     height: 40,
@@ -240,6 +333,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  // 테이블 화면
+  tableHeader: {
+    flexDirection: 'row',
+    height: 40,
+    padding: 10,
+    backgroundColor: '#e3e3e3',
+    borderBottomColor: '#ced4da',
+    borderBottomWidth: 1,
+  },
+  tableHeaderText: {
+    flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  tableBody: {
+    maxHeight: 150,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ced4da',
+  },
+  tableCell: {
+    flex: 1,
+    textAlign: 'center',
+    height: 40,
+    padding: 10,
   },
 });
 
