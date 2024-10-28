@@ -307,7 +307,7 @@ PODS:
     - React-jsi (= 0.70.15)
     - React-logger (= 0.70.15)
     - React-perflogger (= 0.70.15)
-  - RNDateTimePicker (5.0.0):
+  - RNDateTimePicker (6.0.0):
     - React-Core
   - RNScreens (3.25.0):
     - React-Core
@@ -478,7 +478,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 12a2a859fa22368d2fc3ca7594504fd130b91a18
   React-runtimeexecutor: 04332dda2f2335ea4ddaf9255de069d3269f4e8b
   ReactCommon: 200471e0841cf2f7cde1fa2ef3d3c199ed970c07
-  RNDateTimePicker: f373697ba49f57499e2d4714092a2bd4c40d1c36
+  RNDateTimePicker: dffe10cd6be50dadc8823aab75c9f6999e778371
   RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   RNVectorIcons: 441de54a3b30f7d1be9354b5dc96ad6e2219948a
   Yoga: d6134eb3d6e3675afc1d6d65ccb3169b60e21980
