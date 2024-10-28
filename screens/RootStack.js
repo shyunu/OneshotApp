@@ -1,5 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Login from './Login';
 import MainTab from './MainTab';
 import InventoryWriteScreen from './inventory/InventoryWriteScreen';
 import ContractWriteScreen from './contract/ContractWriteScreen';
@@ -11,6 +12,11 @@ const Stack = createNativeStackNavigator();
 function RootStack() {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="MainTab"
         component={MainTab}

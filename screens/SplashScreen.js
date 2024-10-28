@@ -1,12 +1,13 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {Text, StyleSheet, Image} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function SplashScreen() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Image source={require('../assets/logo-white.png')} style={styles.logo} />
       <Text style={styles.title}>ONE SHOT</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -25,9 +26,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   logo: {
-    width: 100, // 로고의 너비
-    height: 100, // 로고의 높이
-    resizeMode: 'contain', // 이미지가 상자에 맞게 조정되도록 설정
+    width: 100,
+    height: 100,
+    resizeMode: 'contain', 
   },
 });
 
