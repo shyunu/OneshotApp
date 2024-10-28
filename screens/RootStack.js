@@ -4,6 +4,7 @@ import MainTab from './MainTab';
 import InventoryWriteScreen from './inventory/InventoryWriteScreen';
 import ContractWriteScreen from './contract/ContractWriteScreen';
 import SalesWriteScreen from './sales/SalesWriteScreen';
+import SalesScreen from './sales/SalesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,11 @@ function RootStack() {
       <Stack.Screen
         name="SalesWrite"
         component={SalesWriteScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SalesScreen"
+        component={SalesScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
