@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import RootStack from './screens/RootStack';
 import SplashScreen from './screens/SplashScreen';
+import Login from './screens/Login';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
