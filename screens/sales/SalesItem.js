@@ -102,7 +102,7 @@ function SalesItem({
         .map(product => ({
           label: product.productName,
           value: product.productNo,
-          // value: product.productName
+          productName: product.productName, // 추가로 포함할 값
         }));
       setProductLists(productOptions);
     } catch (error) {
@@ -169,8 +169,6 @@ function SalesItem({
               setOpen={setOpenProduct}
               setValue={value => {
                 setProduct(value);
-                // 선택한 상품 이름 설정
-                setProductName(productLists.find(item => item.value === value)?.label || ''); 
               }}
               setItems={setProductLists}
               placeholder="상품을 선택하세요"
