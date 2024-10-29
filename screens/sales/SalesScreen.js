@@ -8,10 +8,10 @@ function SalesScreen() {
   
 
   return (
-    <SafeAreaView style={styles.block}>
+    <View style={styles.block}>
       <SalesList />
       <SalesFloatingWriteButton />
-    </SafeAreaView>
+    </View>
   );
 }
 

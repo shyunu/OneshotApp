@@ -95,7 +95,6 @@ function SalesItem({
       );
 
       const data = await response.json();
-      console.log(data); // 반환된 데이터의 형식 확인
 
       const productOptions = data
         .filter(product => !selectedProducts.includes(product.productNo))
@@ -105,20 +104,19 @@ function SalesItem({
         }));
 
       setProductLists(productOptions);
-
-      // 제품 선택 시 호출되는 함수
-      function handleProductSelect(productNo) {
-        const selectedProduct = data.find(
-          product => product.productNo === productNo,
-        );
-        if (selectedProduct) {
-          setProductName(selectedProduct.productName); // 선택한 제품의 이름을 저장
-        }
-      }
     } catch (error) {
       Alert.alert('Error', '상품 목록 조회 실패!');
     }
   };
+
+  function handleProductSelect(productNo) {
+    const selectedProduct = productLists.find(
+      product => product.value === productNo,
+    );
+    if (selectedProduct) {
+      setProductName(selectedProduct.label);
+    }
+  }
 
   // 상품을 선택하면 계약가격&재고 가져오기
   useEffect(() => {
@@ -158,8 +156,8 @@ function SalesItem({
   useEffect(() => {
     const price = parseFloat(contractPrice) || 0; // 계약가격
     const qty = parseFloat(productQuantity) || 0; // 수량
-    setAmount(price * qty); // 금액 계산
-  }, [contractPrice, productQuantity]); // contractPrice와 quantity가 변경될 때마다 금액 계산
+    setAmount(price * qty); 
+  }, [contractPrice, productQuantity]); 
 
   return (
     <Modal
@@ -177,8 +175,9 @@ function SalesItem({
               value={product}
               items={productLists}
               setOpen={setOpenProduct}
-              setValue={value => {
-                setProduct(value);
+              setValue={setProduct}
+              onChangeValue={value => {
+                handleProductSelect(value);
               }}
               setItems={setProductLists}
               placeholder="상품을 선택하세요"

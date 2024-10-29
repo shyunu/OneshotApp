@@ -160,14 +160,7 @@ function SalesWriteEditor({onSaveData}) {
     })),
   });
 
-  //판매등록 정보들을 부모컴포넌트로 전달하기
   useEffect(() => {
-    // console.log('formattedDate:', formattedDate);
-    // console.log('employeeNo:', employeeNo);
-    // console.log('client:', client);
-    // console.log('deliveryStatus:', deliveryStatus);
-    // console.log('delivery:', delivery);
-    // console.log('salesItems:', salesItems);
     if (
       formattedDate &&
       // employeeNo &&
