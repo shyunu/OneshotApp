@@ -28,8 +28,8 @@ function InventoryWriteEditor() {
   const [supplierItems, setSupplierItems] = useState([]);
 
   // 공급업체 정보
-  const [employeeName, setEmployeeName] = useState('');
-  const [employeeNumber, setEmployeeNumber] = useState('');
+  const [managerName, setManagerName] = useState('');
+  const [managerPhone, setManagerPhone] = useState('');
 
   // 카테고리
   const [openCategory, setOpenCategory] = useState(false);
@@ -42,9 +42,13 @@ function InventoryWriteEditor() {
   const [product, setProduct] = useState([]);
 
   // 가격과 수량
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [purchasePrice, setPurchasePrice] = useState('');
+  const [purchaseQuantity, setPurchaseQuantity] = useState('');
   const [subTotal, setSubTotal] = useState('');
+
+  // 화면 표시용
+  const [displayPrice, setDisplayPrice] = useState('');
+  const [displayQuantity, setDisplayQuantity] = useState('');
 
   const [data, setData] = useState('');
 
@@ -52,7 +56,7 @@ function InventoryWriteEditor() {
   const fetchSupplier = async () => {
     try {
       const supplierResponse = await axios.get(
-        'http://172.30.1.43:8181/inventoryApp/getSuppliers',
+        'http://172.30.1.48:8181/inventoryApp/getSuppliers',
       );
 
       setSupplierItems(
@@ -79,19 +83,17 @@ function InventoryWriteEditor() {
       if (valueSupplier) {
         try {
           const supplierListResponse = await axios.get(
-            `http://172.30.1.43:8181/inventoryApp/getSupplier/${valueSupplier}`,
+            `http://172.30.1.48:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
           );
-          console.log(supplierListResponse.data);
-
-          setEmployeeName(supplierListResponse.data.employeeName || '');
-          setEmployeeNumber(supplierListResponse.data.employeeNumber || '');
+          setManagerName(supplierListResponse.data.managerName || '');
+          setManagerPhone(supplierListResponse.data.managerPhone || '');
         } catch (error) {
           console.log(error);
-          Alert.alert('Error', '실패');
+          Alert.alert('Error', '데이터 로드 실패');
         }
       } else {
-        setEmployeeName('');
-        setEmployeeNumber('');
+        setManagerName('');
+        setManagerPhone('');
       }
     };
     fetchSupplierList();
@@ -102,7 +104,7 @@ function InventoryWriteEditor() {
     if (!supplierNo) return; // supplierNo가 없으면 실행X
     try {
       const categoryResponse = await axios.get(
-        `http://172.30.1.43:8181/inventoryApp/getCategories?supplierNo=${supplierNo}`,
+        `http://172.30.1.48:8181/inventoryApp/getCategories?supplierNo=${supplierNo}`,
       );
       setCategory(
         categoryResponse.data.map(category => ({
@@ -125,7 +127,7 @@ function InventoryWriteEditor() {
 
     try {
       const productResponse = await axios.get(
-        `http://172.30.1.43:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
+        `http://172.30.1.48:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
       );
       const productItems = productResponse.data.map(product => ({
         label: product.productName,
@@ -143,23 +145,25 @@ function InventoryWriteEditor() {
   }, [valueCategory]);
 
   useEffect(() => {
-    if (price && quantity) {
-      setSubTotal((parseFloat(price) * parseInt(quantity)).toFixed(2));
+    if (purchasePrice && purchaseQuantity) {
+      setSubTotal(
+        (parseFloat(purchasePrice) * parseInt(purchaseQuantity)).toFixed(2),
+      );
     } else {
       setSubTotal('');
     }
-  }, [price, quantity]);
+  }, [purchasePrice, purchaseQuantity]);
 
   const handleAddItem = () => {
-    if (valueCategory && valueProduct && quantity && price) {
+    if (valueCategory && valueProduct && purchaseQuantity && purchasePrice) {
       const newItem = {
         category: category.find(c => c.value === valueCategory)?.label,
         product: product.find(p => p.value === valueProduct)?.label,
-        quantity: quantity,
-        price: price,
+        purchaseQuantity: purchaseQuantity,
+        purchasePrice: purchasePrice,
       };
       setItems([...items, newItem]);
-      resetFields();
+      resetModal();
       setModalVisible(false);
     } else {
       Alert.alert('Warning', '모든 필드를 입력해주세요.');
@@ -167,30 +171,32 @@ function InventoryWriteEditor() {
     }
   };
 
-  const resetFields = () => {
-    setValueCategory(null);
-    setValueProduct(null);
-    setQuantity('');
-    setPrice('');
-    setSubTotal('');
+  const formatNumber = value => {
+    if (!value) return '';
+    return parseInt(value, 10).toLocaleString('ko-KR');
   };
 
-  useEffect(() => {
-    if (!modalVisible) {
-      resetFields();
-    }
-  }, [modalVisible]);
+  // const handleInputChange = {type,value} => {
+  //   const formatValue = formatNumber(value);
+  //   if(type === 'price') {
+  //     setPrice
+  //   }
+  // }
+
+  function resetModal() {
+    setValueCategory(null);
+    setValueProduct(null);
+    setPurchaseQuantity('');
+    setPurchasePrice('');
+    setSubTotal('');
+  }
 
   function ResetDelete() {
     Alert.alert('경고', '정말로 초기화하시겠습니까?', [
       {text: '취소', style: 'cancel'},
       {
         text: '확인',
-        onPress: () => {
-          if (onRegister) {
-            onRegister();
-          }
-        },
+        onPress: () => {},
       },
     ]);
   }
@@ -228,15 +234,15 @@ function InventoryWriteEditor() {
       <TextInput
         style={[styles.input, styles.disable]}
         editable={false}
-        value={employeeName}
-        onChangeText={setEmployeeName}
+        value={managerName}
+        onChangeText={setManagerName}
       />
       <Text style={styles.text}>담당자연락처</Text>
       <TextInput
         style={[styles.input, styles.disable]}
         editable={false}
-        value={employeeNumber}
-        onChangeText={setEmployeeNumber}
+        value={managerPhone}
+        onChangeText={setManagerPhone}
       />
       <View style={styles.purchaseProduct}>
         <Text style={styles.purchaseTitle}>상품구매</Text>
@@ -253,14 +259,16 @@ function InventoryWriteEditor() {
           <Text style={styles.tableHeaderText}>상품명</Text>
           <Text style={styles.tableHeaderText}>수량</Text>
           <Text style={styles.tableHeaderText}>가격</Text>
+          {/* <Text style={styles.tableHeaderText}>소계</Text> */}
         </View>
         <ScrollView style={styles.tableBody}>
           {items.map((item, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={styles.tableCell}>{item.category}</Text>
               <Text style={styles.tableCell}>{item.product}</Text>
-              <Text style={styles.tableCell}>{item.quantity}</Text>
-              <Text style={styles.tableCell}>{item.price}</Text>
+              <Text style={styles.tableCell}>{item.purchaseQuantity}</Text>
+              <Text style={styles.tableCell}>{item.purchasePrice}</Text>
+              {/* <Text style={styles.tableCell}>{item.subTotal}</Text> */}
             </View>
           ))}
         </ScrollView>
@@ -317,8 +325,8 @@ function InventoryWriteEditor() {
                 <TextInput
                   placeholder="구매수량을 입력하세요"
                   style={styles.input}
-                  value={quantity}
-                  onChangeText={setQuantity}
+                  value={purchaseQuantity}
+                  onChangeText={setPurchaseQuantity}
                   keyboardType="number-pad"
                 />
 
@@ -326,8 +334,8 @@ function InventoryWriteEditor() {
                 <TextInput
                   placeholder="구매가격을 입력하세요"
                   style={styles.input}
-                  value={price}
-                  onChangeText={setPrice}
+                  value={purchasePrice}
+                  onChangeText={setPurchasePrice}
                   keyboardType="number-pad"
                 />
 
@@ -342,7 +350,10 @@ function InventoryWriteEditor() {
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={[styles.modalButton, styles.cancelButton]}
-                    onPress={() => setModalVisible(false)}>
+                    onPress={() => {
+                      setModalVisible(false);
+                      resetModal();
+                    }}>
                     <Text style={styles.modalButtonText}>취소</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
