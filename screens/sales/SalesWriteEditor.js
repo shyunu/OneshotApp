@@ -12,6 +12,7 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 import SalesItem from './SalesItem';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function SalesWriteEditor({onSaveData}) {
   const nextInputRef = useRef(); // 다음 필드 참조
@@ -106,9 +107,39 @@ function SalesWriteEditor({onSaveData}) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   //추가된 상품
   const [salesItems, setSalesItems] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+
   const addItem = item => {
     setSalesItems([...salesItems, item]);
     setSelectedProducts([...selectedProducts, item.product]);
+  };
+
+  useEffect(() => {
+    const total = salesItems.reduce((sum, item) => sum + item.amount, 0);
+    setTotalAmount(total);
+  }, [salesItems]);
+
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const handleRowPress = index => {
+    setSelectedRowIndex(index === selectedRowIndex ? null : index);
+  };
+
+  const handleDelete = () => {
+    if (selectedRowIndex !== null) {
+      const deletedProduct = salesItems[selectedRowIndex].product; // 삭제된 상품의 product 값 저장
+      
+      // salesItems에서 선택된 행을 삭제하고 상태 업데이트
+      setSalesItems(prevItems =>
+        prevItems.filter((_, index) => index !== selectedRowIndex),
+      );
+  
+      // selectedProducts에서도 삭제된 상품을 제거
+      setSelectedProducts(prevProducts =>
+        prevProducts.filter(product => product !== deletedProduct),
+      );
+  
+      setSelectedRowIndex(null); 
+    }
   };
 
   console.log('저장된 필드 값:', {
@@ -119,6 +150,7 @@ function SalesWriteEditor({onSaveData}) {
     delivery: delivery,
     orderItems: salesItems.map(item => ({
       productNo: item.product,
+      productName: item.productName,
       contractPrice: item.contractPrice,
       productQuantity: item.productQuantity,
       amount: item.amount,
@@ -242,6 +274,12 @@ function SalesWriteEditor({onSaveData}) {
             <Image source={require('../../assets/add_white.png')} />
           </View>
         </TouchableOpacity>
+
+        <TouchableOpacity activeOpacity={0.8} onPress={handleDelete}>
+          <View style={styles.deleteButtonStyle}>
+            <Icon name="horizontal-rule" size={24} color="white" />
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.salesItemContainer}>
@@ -254,18 +292,31 @@ function SalesWriteEditor({onSaveData}) {
         </View>
 
         {salesItems.map((item, index) => (
-          <View style={styles.tableRow} key={index}>
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.tableRow,
+              index === selectedRowIndex && styles.selectedRow,
+            ]}
+            onPress={() => handleRowPress(index)}>
             <Text style={styles.contentText}>{item.product}</Text>
             <Text style={styles.contentText}>
               {formatCurrency(item.contractPrice)}
             </Text>
-            {/* <Text style={styles.contentText}>{item.inventoryQuantity}</Text> */}
             <Text style={styles.contentText}>{item.productQuantity}</Text>
             <Text style={styles.contentText}>
               {formatCurrency(item.amount)}
             </Text>
-          </View>
+          </TouchableOpacity>
         ))}
+
+        <View style={styles.amountWrap}>
+          <Text style={{marginLeft: 25, letterSpacing: 5}}>합계</Text>
+          <TextInput
+            style={styles.amount}
+            editable={false}
+            value={formatCurrency(totalAmount)}></TextInput>
+        </View>
       </View>
 
       <SalesItem
@@ -332,6 +383,15 @@ const styles = StyleSheet.create({
     height: 33,
     backgroundColor: '#00569A',
     borderRadius: 4,
+    marginLeft: 210,
+  },
+  deleteButtonStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 33,
+    height: 33,
+    backgroundColor: '#00569A',
+    borderRadius: 4,
   },
   tableHeader: {
     flexDirection: 'row',
@@ -370,6 +430,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  amountWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 10,
+    height: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ced4da',
+  },
+  amount: {
+    height: 30,
+    width: 100,
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    fontSize: 16,
+    color: '#495057',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 2,
+    marginLeft: 188,
+    textAlign: 'right',
+    paddingRight: 10,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  selectedRow: {
+    backgroundColor: '#f0f0f0',
   },
 });
 
