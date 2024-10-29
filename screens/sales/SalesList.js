@@ -1,19 +1,27 @@
-import React from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, {useState} from 'react';
+import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import SalesSearchFrame from './SalesSearchFrame';
-
+import SalesDetail from './SalesDetail';
 
 function SalesList() {
+  // 모달 상태 관리
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  function startAddItem() {
+    setModalIsVisible(true);
+  }
+
+  function endAddItem() {
+    setModalIsVisible(false);
+  }
+
 
   return (
     <View style={styles.wrapper}>
       <SalesSearchFrame />
 
-      <View style={styles.infoContainer}>
+      {/* infoContainer를 TouchableOpacity로 감싸기 */}
+      <TouchableOpacity style={styles.infoContainer} onPress={startAddItem}>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>No.</Text>
         </View>
@@ -28,7 +36,16 @@ function SalesList() {
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>상품리스트</Text>
         </View>
-      </View>
+      </TouchableOpacity>
+
+      {/* SalesDetail 모달 - modalIsVisible에 따라 표시 */}
+      {modalIsVisible && (
+        <SalesDetail
+          isVisible={modalIsVisible}
+          onClose={endAddItem}
+          style={styles.modalContainer}
+        />
+      )}
     </View>
   );
 }
@@ -58,6 +75,13 @@ const styles = StyleSheet.create({
     color: '#333',
     flex: 1,
     textAlign: 'left',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 20,
   },
 });
 

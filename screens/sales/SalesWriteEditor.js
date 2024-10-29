@@ -72,9 +72,9 @@ function SalesWriteEditor({onSaveData}) {
 
   //client를 선택하면 고객사정보 불러오기
   useEffect(() => {
-    setSalesItems([]); 
+    setSalesItems([]);
     setSelectedProducts([]);
-    setSelectedRowIndex(null); 
+    setSelectedRowIndex(null);
     const fetchClientContent = async () => {
       if (client) {
         try {
@@ -305,6 +305,13 @@ function SalesWriteEditor({onSaveData}) {
             </Text>
           </TouchableOpacity>
         ))}
+
+        {/* <View style={styles.tableRow}>
+          <Text style={styles.contentText}></Text>
+          <Text style={styles.contentText}></Text>
+          <Text style={styles.contentText}></Text>
+          <Text style={styles.contentText}></Text>
+        </View> */}
 
         <View style={styles.amountWrap}>
           <Text style={{marginLeft: 25, letterSpacing: 5}}>합계</Text>
