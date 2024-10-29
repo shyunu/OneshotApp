@@ -72,6 +72,9 @@ function SalesWriteEditor({onSaveData}) {
 
   //client를 선택하면 고객사정보 불러오기
   useEffect(() => {
+    setSalesItems([]); 
+    setSelectedProducts([]);
+    setSelectedRowIndex(null); 
     const fetchClientContent = async () => {
       if (client) {
         try {
@@ -127,18 +130,18 @@ function SalesWriteEditor({onSaveData}) {
   const handleDelete = () => {
     if (selectedRowIndex !== null) {
       const deletedProduct = salesItems[selectedRowIndex].product; // 삭제된 상품의 product 값 저장
-      
+
       // salesItems에서 선택된 행을 삭제하고 상태 업데이트
       setSalesItems(prevItems =>
         prevItems.filter((_, index) => index !== selectedRowIndex),
       );
-  
+
       // selectedProducts에서도 삭제된 상품을 제거
       setSelectedProducts(prevProducts =>
         prevProducts.filter(product => product !== deletedProduct),
       );
-  
-      setSelectedRowIndex(null); 
+
+      setSelectedRowIndex(null);
     }
   };
 
@@ -299,7 +302,7 @@ function SalesWriteEditor({onSaveData}) {
               index === selectedRowIndex && styles.selectedRow,
             ]}
             onPress={() => handleRowPress(index)}>
-            <Text style={styles.contentText}>{item.product}</Text>
+            <Text style={styles.contentText}>{item.productName}</Text>
             <Text style={styles.contentText}>
               {formatCurrency(item.contractPrice)}
             </Text>

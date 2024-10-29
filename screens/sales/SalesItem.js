@@ -102,9 +102,19 @@ function SalesItem({
         .map(product => ({
           label: product.productName,
           value: product.productNo,
-          productName: product.productName, // 추가로 포함할 값
         }));
+
       setProductLists(productOptions);
+
+      // 제품 선택 시 호출되는 함수
+      function handleProductSelect(productNo) {
+        const selectedProduct = data.find(
+          product => product.productNo === productNo,
+        );
+        if (selectedProduct) {
+          setProductName(selectedProduct.productName); // 선택한 제품의 이름을 저장
+        }
+      }
     } catch (error) {
       Alert.alert('Error', '상품 목록 조회 실패!');
     }

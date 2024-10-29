@@ -46,21 +46,6 @@ function SalesList() {
         <Icon name="search" size={28} style={styles.searchIcon} />
       </View>
 
-      {/* {salesData.map((item, index) => (
-        <View key={index} style={styles.infoContainer}>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>No.{item.ORDER_HEADER_NO}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>판매등록일자: {item.ORDER_SDATE}</Text>
-            <Text style={styles.infoText}>판매담당자명: {item.EMPLOYEE_NAME}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>고객사명: {item.CLIENT_NAME}</Text>
-            <Text style={styles.infoText}>총거래가: {item.TOTAL_AMOUNT}</Text>
-          </View>
-        </View>
-      ))} */}
       <View style={styles.infoContainer}>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>No.</Text>
