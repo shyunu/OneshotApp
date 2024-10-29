@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,39 +9,146 @@ import {
   ScrollView,
   Platform,
   Image,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 
 function InventoryWriteEditor() {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false); // 모달창
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true); // 로딩 상태 관리
+  const [purchaseNo, setPurchaseNo] = useState('');
 
+  // 공급업체
   const [openSupplier, setOpenSupplier] = useState(false);
   const [valueSupplier, setValueSupplier] = useState(null);
-  const [supplier, setSupllier] = useState([
-    {label: '공급업체1', value: 'supplier1'},
-    {label: '공급업체2', value: 'supplier2'},
-    {label: '공급업체3', value: 'supplier3'},
-  ]);
+  const [supplierItems, setSupplierItems] = useState([]);
 
+  // 공급업체 정보
+  const [employeeName, setEmployeeName] = useState('');
+  const [employeeNumber, setEmployeeNumber] = useState('');
+
+  // 카테고리
   const [openCategory, setOpenCategory] = useState(false);
   const [valueCategory, setValueCategory] = useState(null);
-  const [category, setCategory] = useState([
-    {label: '카테고리1', value: 'category1'},
-    {label: '카테고리2', value: 'category2'},
-    {label: '카테고리3', value: 'category3'},
-  ]);
+  const [category, setCategory] = useState([]);
 
+  // 상품
   const [openProduct, setOpenProduct] = useState(false);
   const [valueProduct, setValueProduct] = useState(null);
-  const [product, setProduct] = useState([
-    {label: '상품1', value: 'product1'},
-    {label: '상품2', value: 'product2'},
-  ]);
+  const [product, setProduct] = useState([]);
 
-  const [quantity, setQuantity] = useState('');
+  // 가격과 수량
   const [price, setPrice] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [subTotal, setSubTotal] = useState('');
+
+  const [data, setData] = useState('');
+
+  // 공급업체 선택
+  const fetchSupplier = async () => {
+    try {
+      const supplierResponse = await axios.get(
+        'http://172.30.1.43:8181/inventoryApp/getSuppliers',
+      );
+
+      setSupplierItems(
+        supplierResponse.data.map(supplier => ({
+          label: supplier.supplierName,
+          value: supplier.supplierNo,
+        })),
+      );
+    } catch (error) {
+      console.log('데이터 로드 오류: ', error);
+      Alert.alert('Error', '데이터 로드 실패');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSupplier();
+  }, []); // 빈 배열을 넣어 컴포넌트가 처음 마운트될 때만 실행하도록 설정
+
+  // 공급업체 관련 정보 가져오기
+  useEffect(() => {
+    const fetchSupplierList = async () => {
+      if (valueSupplier) {
+        try {
+          const supplierListResponse = await axios.get(
+            `http://172.30.1.43:8181/inventoryApp/getSupplier/${valueSupplier}`,
+          );
+          console.log(supplierListResponse.data);
+
+          setEmployeeName(supplierListResponse.data.employeeName || '');
+          setEmployeeNumber(supplierListResponse.data.employeeNumber || '');
+        } catch (error) {
+          console.log(error);
+          Alert.alert('Error', '실패');
+        }
+      } else {
+        setEmployeeName('');
+        setEmployeeNumber('');
+      }
+    };
+    fetchSupplierList();
+  }, [valueSupplier]);
+
+  // supplierNo가 있을 때 데이터 불러오기
+  const fetchCategories = async supplierNo => {
+    if (!supplierNo) return; // supplierNo가 없으면 실행X
+    try {
+      const categoryResponse = await axios.get(
+        `http://172.30.1.43:8181/inventoryApp/getCategories?supplierNo=${supplierNo}`,
+      );
+      setCategory(
+        categoryResponse.data.map(category => ({
+          label: category.categoryName,
+          value: category.categoryNo,
+        })),
+      );
+    } catch (error) {
+      console.error('카테고리 로드 오류: ', error);
+      Alert.alert('Error', '카테고리 로드 실패');
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories(valueSupplier);
+  }, [valueSupplier]);
+
+  const fetchProducts = async () => {
+    if (!valueCategory) return;
+
+    try {
+      const productResponse = await axios.get(
+        `http://172.30.1.43:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
+      );
+      const productItems = productResponse.data.map(product => ({
+        label: product.productName,
+        value: product.productNo,
+      }));
+      setProduct(productItems);
+    } catch (error) {
+      setError(error.message);
+      console.error('Error products:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts(valueCategory);
+  }, [valueCategory]);
+
+  useEffect(() => {
+    if (price && quantity) {
+      setSubTotal((parseFloat(price) * parseInt(quantity)).toFixed(2));
+    } else {
+      setSubTotal('');
+    }
+  }, [price, quantity]);
 
   const handleAddItem = () => {
     if (valueCategory && valueProduct && quantity && price) {
@@ -52,54 +159,84 @@ function InventoryWriteEditor() {
         price: price,
       };
       setItems([...items, newItem]);
-
-      // 리셋
-      setValueCategory(null);
-      setValueProduct(null);
-      setQuantity('');
-      setPrice('');
+      resetFields();
       setModalVisible(false);
+    } else {
+      Alert.alert('Warning', '모든 필드를 입력해주세요.');
+      return;
     }
   };
 
-  const [data, setData] = useState('');
+  const resetFields = () => {
+    setValueCategory(null);
+    setValueProduct(null);
+    setQuantity('');
+    setPrice('');
+    setSubTotal('');
+  };
+
+  useEffect(() => {
+    if (!modalVisible) {
+      resetFields();
+    }
+  }, [modalVisible]);
+
+  function ResetDelete() {
+    Alert.alert('경고', '정말로 초기화하시겠습니까?', [
+      {text: '취소', style: 'cancel'},
+      {
+        text: '확인',
+        onPress: () => {
+          if (onRegister) {
+            onRegister();
+          }
+        },
+      },
+    ]);
+  }
+
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>데이터를 로드 중입니다</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.block}>
       <Text style={styles.text}>구매내역번호</Text>
       <TextInput
-        // placeholder="상품구매"
-        // value={purchaseNo}
         style={[styles.input, styles.disable]}
         editable={false}
+        onChangeText={setPurchaseNo}
       />
       <Text style={styles.text}>공급업체명</Text>
       <DropDownPicker
         open={openSupplier}
         value={valueSupplier}
-        items={supplier}
+        items={supplierItems}
         setOpen={setOpenSupplier}
         setValue={setValueSupplier}
-        setItems={setSupllier}
+        setItems={setSupplierItems}
         style={styles.dropdown}
         placeholder="공급업체를 선택하세요"
         dropdownContainerStyle={styles.dropdownContainer}
       />
       <Text style={styles.text}>담당자명</Text>
-      {/* // disable */}
       <TextInput
-        // placeholder="담당자명"
-        // value={employeeName}
         style={[styles.input, styles.disable]}
         editable={false}
+        value={employeeName}
+        onChangeText={setEmployeeName}
       />
       <Text style={styles.text}>담당자연락처</Text>
-      {/* //disable */}
       <TextInput
-        // placeholder="담당자연락처"
-        // value={employeeNumber}
         style={[styles.input, styles.disable]}
         editable={false}
+        value={employeeNumber}
+        onChangeText={setEmployeeNumber}
       />
       <View style={styles.purchaseProduct}>
         <Text style={styles.purchaseTitle}>상품구매</Text>
@@ -128,85 +265,96 @@ function InventoryWriteEditor() {
           ))}
         </ScrollView>
       </View>
-
       {/* 모달팝업 */}
       <Modal
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>상품 추가</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{flex: 1}}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
+            {/* 안드보다 아이폰에 offset을 줘야 버튼 바가 가려지지 않음 */}
+            <ScrollView
+              contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
+              showsVerticalScrollIndicator={false}>
+              {/* keyboardDismissMode="on-drag"
+              keyboardShouldPersistTaps="handled"> */}
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>상품 추가</Text>
 
-            <Text style={styles.text}>카테고리</Text>
-            <DropDownPicker
-              open={openCategory}
-              value={valueCategory}
-              items={category}
-              setOpen={setOpenCategory}
-              setValue={setValueCategory}
-              setItems={setCategory}
-              style={styles.dropdown}
-              placeholder="카테고리를 선택하세요"
-              zIndex={300}
-              dropdownContainerStyle={styles.dropdownContainer}
-            />
+                <Text style={styles.text}>카테고리</Text>
+                <DropDownPicker
+                  open={openCategory}
+                  value={valueCategory}
+                  items={category}
+                  setOpen={setOpenCategory}
+                  setValue={setValueCategory}
+                  setItems={setCategory}
+                  style={styles.dropdown}
+                  placeholder="카테고리를 선택하세요"
+                  zIndex={300}
+                  dropdownContainerStyle={styles.dropdownContainer}
+                  // onChangeValue={handleCategoryChange}
+                />
 
-            <Text style={styles.text}>상품명</Text>
-            <DropDownPicker
-              open={openProduct}
-              value={valueProduct}
-              items={product}
-              setOpen={setOpenProduct}
-              setValue={setValueProduct}
-              setItems={setProduct}
-              style={styles.dropdown}
-              placeholder="상품을 선택하세요"
-              zIndex={200}
-              dropdownContainerStyle={styles.dropdownContainer}
-            />
+                <Text style={styles.text}>상품명</Text>
+                <DropDownPicker
+                  open={openProduct}
+                  value={valueProduct}
+                  items={product}
+                  setOpen={setOpenProduct}
+                  setValue={setValueProduct}
+                  setItems={setProduct}
+                  style={styles.dropdown}
+                  placeholder="상품을 선택하세요"
+                  zIndex={200}
+                  dropdownContainerStyle={styles.dropdownContainer}
+                />
 
-            <Text style={styles.text}>구매수량</Text>
-            <TextInput
-              placeholder="구매수량"
-              style={styles.input}
-              value={quantity}
-              onChangeText={setQuantity}
-              keyboardType="numeric"
-            />
+                <Text style={styles.text}>구매수량</Text>
+                <TextInput
+                  placeholder="구매수량을 입력하세요"
+                  style={styles.input}
+                  value={quantity}
+                  onChangeText={setQuantity}
+                  keyboardType="number-pad"
+                />
 
-            <Text style={styles.text}>구매가격</Text>
-            <TextInput
-              placeholder="구매가격"
-              style={styles.input}
-              value={price}
-              onChangeText={setPrice}
-              keyboardType="numeric"
-            />
+                <Text style={styles.text}>구매가격</Text>
+                <TextInput
+                  placeholder="구매가격을 입력하세요"
+                  style={styles.input}
+                  value={price}
+                  onChangeText={setPrice}
+                  keyboardType="number-pad"
+                />
 
-            <Text style={styles.text}>소계</Text>
-            {/* //disable */}
-            <TextInput
-              // value={employeeNumber}
-              style={[styles.input, styles.disable]}
-              editable={false}
-            />
+                <Text style={styles.text}>소계</Text>
+                <TextInput
+                  style={[styles.input, styles.disable]}
+                  editable={false}
+                  onChangeText={setSubTotal}
+                />
 
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setModalVisible(false)}>
-                <Text style={styles.modalButtonText}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={[styles.modalButton, styles.confirmButton]}
-                onPress={handleAddItem}>
-                <Text style={styles.modalButtonText}>추가</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+                <View style={styles.modalButtons}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={[styles.modalButton, styles.cancelButton]}
+                    onPress={() => setModalVisible(false)}>
+                    <Text style={styles.modalButtonText}>취소</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={[styles.modalButton, styles.confirmButton]}
+                    onPress={handleAddItem}>
+                    <Text style={styles.modalButtonText}>추가</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </View>
       </Modal>
     </View>
@@ -221,6 +369,11 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 8,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   input: {
     height: 40,
@@ -314,6 +467,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 20,
   },
