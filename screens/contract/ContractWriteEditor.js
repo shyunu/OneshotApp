@@ -206,6 +206,9 @@ function ContractWriteEditor({
           <DateTimePickerModal
             isVisible={isStartDatePickerVisible}
             mode="date"
+            maximumDate={
+              selectedEndDate ? new Date(selectedEndDate) : undefined
+            }
             onConfirm={handleStartConfirm}
             onCancel={hideStartDatePicker}
           />
@@ -226,6 +229,9 @@ function ContractWriteEditor({
           <DateTimePickerModal
             isVisible={isEndDatePickerVisible}
             mode="date"
+            minimumDate={
+              selectedStartDate ? new Date(selectedStartDate) : undefined
+            }
             onConfirm={handleEndConfirm}
             onCancel={hideEndDatePicker}
           />
@@ -312,6 +318,7 @@ const styles = StyleSheet.create({
   contractDateTextInput: {
     height: 40,
     width: 120,
+    color: '#000000',
     borderColor: '#ced4da',
     borderWidth: 1,
     borderRadius: 4,

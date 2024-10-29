@@ -5,11 +5,11 @@ import ContractWriteEditor from './ContractWriteEditor';
 import ContractWriteHeader from './ContractWriteHeader';
 
 function ContractWriteScreen() {
-  const [clientNo, setClientNo] = useState(null);
-  const [productNo, setProductNo] = useState(null);
+  const [clientNo, setClientNo] = useState(0);
+  const [productNo, setProductNo] = useState(0);
   const [selectedStartDate, setSelectedStartDate] = useState('');
   const [selectedEndDate, setSelectedEndDate] = useState('');
-  const [contractPrice, setContractPrice] = useState('');
+  const [contractPrice, setContractPrice] = useState(0);
   const [contractItems, setContractItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
