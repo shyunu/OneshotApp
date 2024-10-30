@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function SalesSearchFrame() {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: '100%',
     height: 40,
-    bottom: 25,
+    // bottom: 25,
   },
   searchIcon: {
     marginLeft: 5,

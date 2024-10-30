@@ -173,6 +173,7 @@ function SalesWriteEditor({onSaveData}) {
       const data = {
         orderSdate: formattedDate,
         // employeeNo: employeeNo,
+        employeeNo: 1,
         clientNo: client,
         deliveryStatus: deliveryStatus,
         delivery: delivery,
