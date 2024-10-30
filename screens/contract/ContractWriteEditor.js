@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 
@@ -25,6 +26,8 @@ function ContractWriteEditor({
   setSelectedEndDate,
   contractPrice,
   setContractPrice,
+  imageUri,
+  setImageUri,
   contractItems,
   setContractItems,
   loading,
@@ -141,6 +144,27 @@ function ContractWriteEditor({
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원`;
   };
 
+  const [fileName, setFileName] = useState('');
+
+  const selectImage = () => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
+      if (!response.didCancel && !response.errorCode) {
+        const asset = response.assets[0];
+
+        // 파일 이름이 존재하는 경우 사용
+        if (asset.fileName) {
+          setFileName(asset.fileName);
+        } else {
+          // 파일 이름이 없는 경우 URI에서 추출
+          const uriParts = asset.uri.split('/');
+          setFileName(uriParts[uriParts.length - 1]);
+        }
+
+        setImageUri(asset.uri);
+      }
+    });
+  };
+
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -160,9 +184,6 @@ function ContractWriteEditor({
         setValue={setClientNo}
         setItems={setClientItems}
         placeholder="고객사를 선택하세요"
-        listEmptyComponent={() => (
-          <Text style={styles.emptyMessage}>등록된 고객사가 없습니다.</Text>
-        )}
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
         zIndex={3000}
@@ -178,9 +199,6 @@ function ContractWriteEditor({
         setValue={setProductNo}
         setItems={setProductItems}
         placeholder="상품을 선택하세요"
-        listEmptyComponent={() => (
-          <Text style={styles.emptyMessage}>등록된 상품이 없습니다.</Text>
-        )}
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
         zIndex={2000}
@@ -199,7 +217,7 @@ function ContractWriteEditor({
             editable={false}
           />
           <TouchableOpacity
-            style={styles.dateButton}
+            style={styles.contractDateButton}
             onPress={showStartDatePicker}>
             <Icon name="event-available" size={24} style={styles.icon} />
           </TouchableOpacity>
@@ -222,7 +240,7 @@ function ContractWriteEditor({
             editable={false}
           />
           <TouchableOpacity
-            style={styles.dateButton}
+            style={styles.contractDateButton}
             onPress={showEndDatePicker}>
             <Icon name="event-available" size={24} style={styles.icon} />
           </TouchableOpacity>
@@ -245,6 +263,20 @@ function ContractWriteEditor({
         value={contractPrice}
         onChangeText={setContractPrice}
       />
+      <Text style={styles.text}>첨부파일</Text>
+      <View style={styles.contractFileBox}>
+        <TextInput
+          style={styles.contractFileTextInput}
+          value={fileName}
+          placeholder="등록된 계약서가 없습니다."
+          editable={false}
+        />
+        <TouchableOpacity
+          style={styles.contractFileButton}
+          onPress={selectImage}>
+          <Icon name="upload" size={24} style={styles.icon} />
+        </TouchableOpacity>
+      </View>
       <Text style={styles.text}>계약내역</Text>
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
@@ -283,10 +315,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+
   text: {
     fontSize: 16,
     marginBottom: 8,
   },
+
   dropdown: {
     minHeight: 40,
     borderColor: '#ced4da',
@@ -296,17 +330,13 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     borderColor: '#ced4da',
   },
-  emptyMessage: {
-    textAlign: 'center',
-    paddingVertical: 10,
-    color: 'gray',
-    fontSize: 16,
-  },
+
   dateBox: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
   },
+
   contractPriceTextInput: {
     height: 40,
     borderColor: '#ced4da',
@@ -315,6 +345,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
   },
+
   contractDateTextInput: {
     height: 40,
     width: 120,
@@ -325,7 +356,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginRight: 8,
   },
-  dateButton: {
+  contractDateButton: {
     minHeight: 40,
     backgroundColor: '#00569A',
     borderRadius: 4,
@@ -333,9 +364,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
+
+  contractFileBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  contractFileTextInput: {
+    height: 40,
+    width: 305,
+    color: '#000000',
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginRight: 8,
+  },
+  contractFileButton: {
+    minHeight: 40,
+    backgroundColor: '#00569A',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+  },
+
   icon: {
     color: 'white',
   },
+
   loader: {
     flex: 1,
     justifyContent: 'center',

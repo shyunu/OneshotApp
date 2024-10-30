@@ -15,6 +15,8 @@ function ContractWriteHeader({
   setSelectedEndDate,
   contractPrice,
   setContractPrice,
+  imageUri,
+  setImageUri,
   contractItems,
   setContractItems,
   loading,
