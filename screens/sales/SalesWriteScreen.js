@@ -39,6 +39,7 @@ function SalesWriteScreen() {
         {
           text: '확인',
           onPress: () => navigation.navigate('MainTab', {screen: '판매관리'}),
+          // onPress: () => navigation.navigate('SalesScreen')
         },
       ]);
     } catch (error) {
