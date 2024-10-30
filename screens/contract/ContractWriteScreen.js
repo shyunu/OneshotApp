@@ -10,6 +10,7 @@ function ContractWriteScreen() {
   const [selectedStartDate, setSelectedStartDate] = useState('');
   const [selectedEndDate, setSelectedEndDate] = useState('');
   const [contractPrice, setContractPrice] = useState(0);
+  const [imageUri, setImageUri] = useState(null);
   const [contractItems, setContractItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,6 +31,8 @@ function ContractWriteScreen() {
         setContractItems={setContractItems}
         loading={loading}
         setLoading={setLoading}
+        imageUri={imageUri}
+        setImageUri={setImageUri}
       />
       <ContractWriteEditor
         clientNo={clientNo}
@@ -46,6 +49,8 @@ function ContractWriteScreen() {
         setContractItems={setContractItems}
         loading={loading}
         setLoading={setLoading}
+        imageUri={imageUri}
+        setImageUri={setImageUri}
       />
     </SafeAreaView>
   );
