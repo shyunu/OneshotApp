@@ -1,11 +1,13 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import ContractSearchFrame from './ContractSearchFrame';
 import ContractList from './ContractList';
 import ContractFloatingWriteButton from './ContractFloatingWriteButton';
 
 function ContractScreen() {
   return (
     <View style={styles.block}>
+      <ContractSearchFrame />
       <ContractList />
       <ContractFloatingWriteButton />
     </View>

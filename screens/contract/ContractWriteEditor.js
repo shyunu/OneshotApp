@@ -84,7 +84,7 @@ function ContractWriteEditor({
     if (clientNo != null && productNo != null) {
       try {
         const response = await axios.get(
-          'http://172.30.1.28:8181/contractApp/getContractList',
+          'http://172.30.1.28:8181/contractApp/getContractPriceByClientNoAndProductNo',
           {
             params: {
               clientNo: clientNo,
