@@ -6,7 +6,8 @@ import axios from 'axios';
 
 function SalesList() {
   const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [orderList, setOrderList] = useState([]); // 주문 데이터 저장
+  const [orderList, setOrderList] = useState([]); // 주문 데이터
+  const [selectedOrder, setSelectedOrder] = useState(null); //선택한 주문건
 
   useEffect(() => {
     fetchOrderList();
@@ -52,7 +53,10 @@ function SalesList() {
     <TouchableOpacity
       key={item.ORDER_HEADER_NO}
       style={styles.infoContainer}
-      onPress={startAddItem}>
+      onPress={() => {
+        setSelectedOrder(item);
+        startAddItem();
+      }}>
       <View style={styles.infoRow}>
         <Text style={styles.infoText}>
           no. <Text style={styles.dataText}>{item.orderHeaderNo}</Text>
@@ -88,18 +92,21 @@ function SalesList() {
 
   return (
     <View style={styles.wrapper}>
-      <SalesSearchFrame />
+
+
       <FlatList
         data={orderList}
         renderItem={renderItem}
         keyExtractor={item => item.orderHeaderNo.toString()}
         contentContainerStyle={styles.listContent}
+        style={styles.listWrap}
       />
 
       {modalIsVisible && (
         <SalesDetail
           isVisible={modalIsVisible}
           onClose={endAddItem}
+          selectedOrder={selectedOrder}
           style={styles.modalContainer}
         />
       )}
@@ -110,10 +117,14 @@ function SalesList() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    marginTop: 15,
+    // marginTop: 10,
   },
   listContent: {
-    top: 5,
+    // top: 5,
+  },
+  listWrap: {
+    // 스크롤했을 때 리스트가 검색란에 가려지는 부분 방지용으로 margin했음
+    // marginTop: 15,
   },
   infoContainer: {
     borderColor: '#e3e3e3',
