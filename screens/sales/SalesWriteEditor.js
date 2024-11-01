@@ -173,6 +173,7 @@ function SalesWriteEditor({onSaveData}) {
       const data = {
         orderSdate: formattedDate,
         // employeeNo: employeeNo,
+        employeeNo: 1,
         clientNo: client,
         deliveryStatus: deliveryStatus,
         delivery: delivery,
@@ -305,6 +306,13 @@ function SalesWriteEditor({onSaveData}) {
             </Text>
           </TouchableOpacity>
         ))}
+
+        {/* <View style={styles.tableRow}>
+          <Text style={styles.contentText}></Text>
+          <Text style={styles.contentText}></Text>
+          <Text style={styles.contentText}></Text>
+          <Text style={styles.contentText}></Text>
+        </View> */}
 
         <View style={styles.amountWrap}>
           <Text style={{marginLeft: 25, letterSpacing: 5}}>합계</Text>

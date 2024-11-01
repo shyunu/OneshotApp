@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
+import {StyleSheet, View, TextInput} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function SalesSearchFrame() {
-
   const [search, setSearch] = useState('');
-  const [salesData, setSalesData] = useState([]);
+
   function onDeleteAll() {
     setSearch('');
   }
@@ -45,8 +44,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: '100%',
     height: 40,
-    marginTop: 35,
     bottom: 15,
+    marginTop: 35,
   },
   searchIcon: {
     marginLeft: 5,
@@ -65,6 +64,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 25,
   },
-})
+});
 
 export default SalesSearchFrame;

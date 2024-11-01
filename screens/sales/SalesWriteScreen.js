@@ -38,7 +38,10 @@ function SalesWriteScreen() {
       Alert.alert('\n', '판매가 정상 등록되었습니다!\n', [
         {
           text: '확인',
-          onPress: () => navigation.navigate('MainTab', {screen: '판매관리'}),
+          onPress: () => navigation.navigate('MainTab', { 
+            screen: '판매관리',
+            params: { updatedData: salesData } // 등록된 데이터 전달
+          }),
         },
       ]);
     } catch (error) {
