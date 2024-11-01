@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
 import SalesSearchFrame from './SalesSearchFrame';
 
-
 function SalesList() {
-
   return (
     <View style={styles.wrapper}>
       <SalesSearchFrame />

@@ -1,15 +1,14 @@
-import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, View, Text, Alert} from 'react-native';
 import InventoryFloatingWriteButton from './InventoryFloatingWriteButton';
 import InventoryList from './InventoryList';
-import axios from 'axios';
+import InventorySearchFrame from './InventorySearchFrame';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 function InventoryScreen() {
-  const navigation = useNavigation();
-
   return (
     <View style={styles.block}>
+      <InventorySearchFrame />
       <InventoryList />
       <InventoryFloatingWriteButton />
     </View>

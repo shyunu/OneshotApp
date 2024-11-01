@@ -72,9 +72,9 @@ function SalesWriteEditor({onSaveData}) {
 
   //client를 선택하면 고객사정보 불러오기
   useEffect(() => {
-    setSalesItems([]); 
+    setSalesItems([]);
     setSelectedProducts([]);
-    setSelectedRowIndex(null); 
+    setSelectedRowIndex(null);
     const fetchClientContent = async () => {
       if (client) {
         try {
