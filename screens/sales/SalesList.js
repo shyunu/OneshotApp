@@ -1,13 +1,8 @@
-import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
-import SalesSearchFrame from './SalesSearchFrame';
-
-function SalesList() {
 import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
 import SalesSearchFrame from './SalesSearchFrame';
-import SalesDetail from './SalesDetail';
 import axios from 'axios';
+import SalesDetail from './SalesDetail';
 
 function SalesList() {
   const [modalIsVisible, setModalIsVisible] = useState(false);
@@ -97,8 +92,6 @@ function SalesList() {
 
   return (
     <View style={styles.wrapper}>
-
-
       <FlatList
         data={orderList}
         renderItem={renderItem}
