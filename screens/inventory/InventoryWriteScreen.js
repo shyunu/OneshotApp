@@ -46,11 +46,9 @@ function InventoryWriteScreen() {
         setItems={setItems}
         loading={loading}
         setLoading={setLoading}
-        employeeNo={employeeNo} // employeeNo 전달
         onReset={handleReset}
       />
       <InventoryWriteEditor
-        // key={JSON.stringify(items)}
         items={items}
         // setItems={setItems}
         addItem={addItem}
@@ -62,8 +60,6 @@ function InventoryWriteScreen() {
         setManagerName={setManagerName}
         loading={loading}
         setLoading={setLoading}
-        // employeeNo={employeeNo} // employeeNo 전달
-        // key={editorKey}
       />
     </SafeAreaView>
   );
