@@ -4,21 +4,35 @@ import SalesSearchFrame from './SalesSearchFrame';
 import axios from 'axios';
 import SalesDetail from './SalesDetail';
 
-function SalesList() {
+function SalesList({searchKeyword}) {
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const [orderList, setOrderList] = useState([]); // 주문 데이터
   const [selectedOrder, setSelectedOrder] = useState(null); //선택한 주문건
+  const [filteredOrderList, setFilteredOrderList] = useState([]);
 
   useEffect(() => {
     fetchOrderList();
   }, []);
+
+  useEffect(() => {
+    setFilteredOrderList(
+      orderList.filter(order => {
+        const lowerCaseKeyword = searchKeyword.toLowerCase();
+        return (
+          order.clientName.toLowerCase().includes(lowerCaseKeyword) ||
+          order.employeeName.toLowerCase().includes(lowerCaseKeyword) ||
+          order.productNames.toLowerCase().includes(lowerCaseKeyword)
+        );
+      }),
+    );
+  }, [searchKeyword, orderList]);
 
   const fetchOrderList = () => {
     axios
       .get('http://localhost:8181/salesApp/order')
       .then(response => {
         setOrderList(response.data);
-        console.log(response.data);
+        setFilteredOrderList(response.data); // 초기 목록 설정
       })
       .catch(error => {
         console.error('Error fetching order data:', error);
@@ -58,34 +72,36 @@ function SalesList() {
         startAddItem();
       }}>
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>
-          no. <Text style={styles.dataText}>{item.orderHeaderNo}</Text>
+        <Text style={styles.infoText}>No.</Text>
+        <Text style={[styles.dataText, {right: 145}]}>
+          {item.orderHeaderNo}
         </Text>
       </View>
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>
-          판매등록일자:{' '}
+        <View style={styles.infoColumn}>
+          <Text style={styles.infoText}>판매등록일자</Text>
           <Text style={styles.dataText}>{formatDate(item.orderSdate)}</Text>
-        </Text>
-        <Text style={styles.infoText}>
-          판매담당자명: <Text style={styles.dataText}>{item.employeeName}</Text>
-        </Text>
+        </View>
+        <View style={styles.infoColumn}>
+          <Text style={styles.infoText}>판매담당자명</Text>
+          <Text style={styles.dataText}>{item.employeeName}</Text>
+        </View>
       </View>
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>
-          고객사명: <Text style={styles.dataText}>{item.clientName}</Text>
-        </Text>
-        <Text style={styles.infoText}>
-          총거래가:{' '}
+        <View style={styles.infoColumn}>
+          <Text style={styles.infoText}>고객사명</Text>
+          <Text style={styles.dataText}>{item.clientName}</Text>
+        </View>
+        <View style={styles.infoColumn}>
+          <Text style={styles.infoText}>총거래가</Text>
           <Text style={styles.dataText}>
             {formatCurrency(item.totalAmount)}
           </Text>
-        </Text>
+        </View>
       </View>
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>
-          상품리스트: <Text style={styles.dataText}>{item.productNames}</Text>
-        </Text>
+        <Text style={styles.infoText}>상품리스트</Text>
+        <Text style={[styles.dataText, {right: 90}]}>{item.productNames}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -93,11 +109,17 @@ function SalesList() {
   return (
     <View style={styles.wrapper}>
       <FlatList
-        data={orderList}
+        data={filteredOrderList}
         renderItem={renderItem}
         keyExtractor={item => item.orderHeaderNo.toString()}
         contentContainerStyle={styles.listContent}
-        style={styles.listWrap}
+        ListEmptyComponent={
+          <TouchableOpacity style={styles.infoContainer}>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoText}>판매내역이 없습니다</Text>
+            </View>
+          </TouchableOpacity>
+        }
       />
 
       {modalIsVisible && (
@@ -118,11 +140,7 @@ const styles = StyleSheet.create({
     // marginTop: 10,
   },
   listContent: {
-    // top: 5,
-  },
-  listWrap: {
-    // 스크롤했을 때 리스트가 검색란에 가려지는 부분 방지용으로 margin했음
-    // marginTop: 15,
+    bottom: 10,
   },
   infoContainer: {
     borderColor: '#e3e3e3',
@@ -133,16 +151,30 @@ const styles = StyleSheet.create({
   },
   infoRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    //justifyContent: 'space-between',
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#e3e3e3',
   },
+  infoColumn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '50%',
+  },
   infoText: {
     fontSize: 13,
     color: '#333',
-    flex: 1,
+    // flex: 0.8,
     textAlign: 'left',
+    width: '50%',
+  },
+  dataText: {
+    fontSize: 13,
+    color: '#333',
+    textAlign: 'left',
+    right: 15,
+    width: '45%',
   },
   modalContainer: {
     flex: 1,
@@ -150,10 +182,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 20,
-  },
-  dataText: {
-    fontWeight: 'bold', // 데이터 텍스트를 강조
-    color: '#333', // 텍스트 색상
   },
 });
 
