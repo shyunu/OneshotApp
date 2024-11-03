@@ -41,9 +41,9 @@ function SalesDetail({ isVisible, onClose, selectedOrder }) {
   const renderOrderItem = ({ item }) => (
     <View style={styles.tableRow}>
       <Text style={styles.contentText}>{item.productName}</Text>
-      <Text style={styles.contentText}>{formatCurrency(item.contractPrice)}</Text>
-      <Text style={styles.contentText}>{item.productQuantity}</Text>
-      <Text style={styles.contentText}>{formatCurrency(item.amount)}</Text>
+      <Text style={[styles.contentText, styles.priceText]}>{formatCurrency(item.contractPrice)}</Text>
+      <Text style={[styles.contentText, styles.quantityText]}>{item.productQuantity}</Text>
+      <Text style={[styles.contentText, styles.amountText]}>{formatCurrency(item.amount)}</Text>
     </View>
   );
 
@@ -81,7 +81,7 @@ function SalesDetail({ isVisible, onClose, selectedOrder }) {
           </View>
 
           <View style={styles.amountWrap}>
-            <Text style={{ marginLeft: 25, letterSpacing: 5 }}>합계</Text>
+            <Text style={{ marginLeft: 15, letterSpacing: 5 }}>합계</Text>
             <TextInput
               style={styles.amount}
               editable={false}
@@ -148,9 +148,18 @@ const styles = StyleSheet.create({
   },
   contentText: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: 'left',
     padding: 10,
     height: 40,
+  },
+  priceText: {
+    left: 7,
+  },
+  quantityText: {
+    left: 22,
+  },
+  amountText: {
+    right: 5,
   },
   modalButtons: {
     flexDirection: 'row',
@@ -200,7 +209,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     paddingRight: 8,
     fontWeight: 'bold',
-    marginLeft: 140,
+    marginLeft: 150,
   },
 });
 

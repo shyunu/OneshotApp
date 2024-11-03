@@ -1,13 +1,10 @@
 import React, {useState} from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
+import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-function SalesSearchFrame() {
-
-  const [search, setSearch] = useState('');
-  const [salesData, setSalesData] = useState([]);
+function SalesSearchFrame({searchKeyword, setSearchKeyword, onSearch}) {
   function onDeleteAll() {
-    setSearch('');
+    setSearchKeyword('');
   }
 
   return (
@@ -15,10 +12,10 @@ function SalesSearchFrame() {
       <TextInput
         placeholder="검색어를 입력하세요"
         style={styles.searchInput}
-        value={search}
-        onChangeText={setSearch}
+        value={searchKeyword}
+        onChangeText={setSearchKeyword}
       />
-      {search !== '' ? (
+      {searchKeyword !== '' ? (
         <TouchableOpacity onPress={onDeleteAll}>
           <Icon name="cancel" size={20} style={{color: 'red', opacity: 0.5}} />
         </TouchableOpacity>
@@ -29,8 +26,9 @@ function SalesSearchFrame() {
           style={{color: '#e3e3e3', opacity: 0.5, marginRight: 5}}
         />
       )}
-
-      <Icon name="search" size={28} style={styles.searchIcon} />
+      <TouchableOpacity onPress={onSearch}>
+        <Icon name="search" size={28} style={styles.searchIcon} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -65,6 +63,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 25,
   },
-})
+});
 
 export default SalesSearchFrame;

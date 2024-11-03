@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SalesItem from './SalesItem';
@@ -100,6 +101,10 @@ function SalesWriteEditor({onSaveData}) {
   //모달창
   const [modalIsVisible, setModalIsVisible] = useState(false);
   function startAddItem() {
+    if(!client) {
+      Alert.alert('고객사를 선택하세요');
+      return;
+    }
     setModalIsVisible(true);
   }
   function endAddItem() {
@@ -266,7 +271,10 @@ function SalesWriteEditor({onSaveData}) {
         <Text style={{fontSize: 16, marginTop: 6, marginLeft: 5}}>
           판매 상품
         </Text>
-        <TouchableOpacity activeOpacity={0.8} onPress={startAddItem}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          // disabled={!client}
+          onPress={startAddItem}>
           <View style={styles.buttonStyle}>
             <Image source={require('../../assets/add_white.png')} />
           </View>
@@ -283,36 +291,36 @@ function SalesWriteEditor({onSaveData}) {
         <View style={styles.tableHeader}>
           <Text style={styles.headerText}>상품명</Text>
           <Text style={styles.headerText}>가격</Text>
-          {/* <Text style={styles.headerText}>재고</Text> */}
           <Text style={styles.headerText}>개수</Text>
           <Text style={styles.headerText}>금액</Text>
         </View>
 
-        {salesItems.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.tableRow,
-              index === selectedRowIndex && styles.selectedRow,
-            ]}
-            onPress={() => handleRowPress(index)}>
-            <Text style={styles.contentText}>{item.productName}</Text>
-            <Text style={styles.contentText}>
-              {formatCurrency(item.contractPrice)}
-            </Text>
-            <Text style={styles.contentText}>{item.productQuantity}</Text>
-            <Text style={styles.contentText}>
-              {formatCurrency(item.amount)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-
-        {/* <View style={styles.tableRow}>
-          <Text style={styles.contentText}></Text>
-          <Text style={styles.contentText}></Text>
-          <Text style={styles.contentText}></Text>
-          <Text style={styles.contentText}></Text>
-        </View> */}
+        <ScrollView style={styles.tableBody}>
+          {salesItems && salesItems.length > 0 ? (
+            salesItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.tableRow,
+                  index === selectedRowIndex && styles.selectedRow,
+                ]}
+                onPress={() => handleRowPress(index)}>
+                <Text style={styles.contentText}>{item.productName}</Text>
+                <Text style={styles.contentText}>
+                  {formatCurrency(item.contractPrice)}
+                </Text>
+                <Text style={styles.contentText}>{item.productQuantity}</Text>
+                <Text style={styles.contentText}>
+                  {formatCurrency(item.amount)}
+                </Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <View style={styles.tableRow}>
+              <Text style={styles.contentText}>등록된 상품이 없습니다</Text>
+            </View>
+          )}
+        </ScrollView>
 
         <View style={styles.amountWrap}>
           <Text style={{marginLeft: 25, letterSpacing: 5}}>합계</Text>
@@ -466,6 +474,9 @@ const styles = StyleSheet.create({
   },
   selectedRow: {
     backgroundColor: '#f0f0f0',
+  },
+  tableBody: {
+    maxHeight: 150,
   },
 });
 
