@@ -1,10 +1,8 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, TextInput} from 'react-native';
+import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-function SalesSearchFrame() {
-  const [search, setSearch] = useState('');
-
+function SalesSearchFrame({search, setSearch, onSearch}) {
   function onDeleteAll() {
     setSearch('');
   }
@@ -29,7 +27,12 @@ function SalesSearchFrame() {
         />
       )}
 
-      <Icon name="search" size={28} style={styles.searchIcon} />
+      <Icon
+        name="search"
+        size={28}
+        style={styles.searchIcon}
+        onPress={onSearch}
+      />
     </View>
   );
 }

@@ -1,10 +1,39 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {Modal} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import axios from 'axios';
 
-function ContractDetail({isVisible, onClose}) {
-  const [disable, setDisabled] = useState(false); //textinput disabled처리
+function ContractDetail({isVisible, onClose, contractPriceNo}) {
+  const [imageData, setImageData] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://172.30.1.28:8181/contractApp/getContractFile/${contractPriceNo}`,
+      );
+      if (response.data) {
+        const base64Image = `data:image/jpeg;base64,${response.data}`;
+        setImageData(base64Image);
+      } else {
+        console.log('이미지 데이터가 비어 있습니다.');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isVisible) {
+      fetchData();
+    }
+  }, [isVisible]);
 
   return (
     <Modal
@@ -15,10 +44,14 @@ function ContractDetail({isVisible, onClose}) {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>판매 상세</Text>
-          <Image
-            source={require('../../assets/logo.png')}
-            style={{width: 300}}
-          />
+          {imageData ? (
+            <Image
+              source={{uri: imageData}}
+              style={{width: 300, height: 300}}
+            />
+          ) : (
+            <Text>등록된 계약서가 없습니다</Text>
+          )}
           <View style={styles.modalButtons}>
             <TouchableOpacity
               style={[styles.modalButton, styles.confirmButton]}

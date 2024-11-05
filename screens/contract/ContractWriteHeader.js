@@ -17,6 +17,10 @@ function ContractWriteHeader({
   setContractPrice,
   imageUri,
   setImageUri,
+  fileName,
+  setFileName,
+  fileType,
+  setFileType,
   contractItems,
   setContractItems,
   loading,
@@ -37,20 +41,30 @@ function ContractWriteHeader({
     setSelectedEndDate('');
     setContractPrice('');
     setContractItems([]);
+    setImageUri(null);
+    setFileName('');
+    setFileType('');
   };
+
+  const formData = new FormData();
+  formData.append('file', {
+    uri: imageUri,
+    name: fileName,
+    type: fileType,
+  });
+  formData.append('clientNo', clientNo);
+  formData.append('productNo', productNo);
+  formData.append('selectedStartDate', selectedStartDate);
+  formData.append('selectedEndDate', selectedEndDate);
+  formData.append('contractPrice', contractPrice);
 
   const onsubmit = async () => {
     setLoading(true); // 로딩 상태 활성화
     try {
       const response = await axios.post(
         'http://172.30.1.28:8181/contractApp/contract',
-        {
-          clientNo: clientNo,
-          productNo: productNo,
-          contractSdate: selectedStartDate,
-          contractEdate: selectedEndDate,
-          contractPrice: contractPrice,
-        },
+        formData,
+        {headers: {'Content-Type': 'multipart/form-data'}},
       );
 
       if (response.status === 201) {

@@ -28,6 +28,10 @@ function ContractWriteEditor({
   setContractPrice,
   imageUri,
   setImageUri,
+  fileName,
+  setFileName,
+  fileType,
+  setFileType,
   contractItems,
   setContractItems,
   loading,
@@ -144,23 +148,13 @@ function ContractWriteEditor({
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원`;
   };
 
-  const [fileName, setFileName] = useState('');
-
   const selectImage = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (!response.didCancel && !response.errorCode) {
         const asset = response.assets[0];
-
-        // 파일 이름이 존재하는 경우 사용
-        if (asset.fileName) {
-          setFileName(asset.fileName);
-        } else {
-          // 파일 이름이 없는 경우 URI에서 추출
-          const uriParts = asset.uri.split('/');
-          setFileName(uriParts[uriParts.length - 1]);
-        }
-
         setImageUri(asset.uri);
+        setFileName(asset.fileName);
+        setFileType(asset.type);
       }
     });
   };
