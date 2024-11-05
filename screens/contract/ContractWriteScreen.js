@@ -11,6 +11,8 @@ function ContractWriteScreen() {
   const [selectedEndDate, setSelectedEndDate] = useState('');
   const [contractPrice, setContractPrice] = useState(0);
   const [imageUri, setImageUri] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const [fileType, setFileType] = useState('');
   const [contractItems, setContractItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,12 +29,16 @@ function ContractWriteScreen() {
         setSelectedEndDate={setSelectedEndDate}
         contractPrice={contractPrice}
         setContractPrice={setContractPrice}
+        imageUri={imageUri}
+        setImageUri={setImageUri}
+        fileName={fileName}
+        setFileName={setFileName}
+        fileType={fileType}
+        setFileType={setFileType}
         contractItems={contractItems}
         setContractItems={setContractItems}
         loading={loading}
         setLoading={setLoading}
-        imageUri={imageUri}
-        setImageUri={setImageUri}
       />
       <ContractWriteEditor
         clientNo={clientNo}
@@ -45,12 +51,16 @@ function ContractWriteScreen() {
         setSelectedEndDate={setSelectedEndDate}
         contractPrice={contractPrice}
         setContractPrice={setContractPrice}
+        imageUri={imageUri}
+        setImageUri={setImageUri}
+        fileName={fileName}
+        setFileName={setFileName}
+        fileType={fileType}
+        setFileType={setFileType}
         contractItems={contractItems}
         setContractItems={setContractItems}
         loading={loading}
         setLoading={setLoading}
-        imageUri={imageUri}
-        setImageUri={setImageUri}
       />
     </SafeAreaView>
   );
