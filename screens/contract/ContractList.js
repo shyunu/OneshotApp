@@ -22,14 +22,18 @@ function ContractList({search}) {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(
-        `http://172.30.1.28:8181/contractApp/getContractPriceList/${search}`, // 검색어를 URL에 추가하여 필터링
-      );
+      const url = search
+        ? `http://172.30.1.28:8181/contractApp/getContractPriceList/${encodeURIComponent(
+            search,
+          )}`
+        : 'http://172.30.1.28:8181/contractApp/getContractPriceList'; // search가 없을 경우 전체 조회 경로
+      const response = await axios.get(url);
+      console.log(response.data);
       const updatedItems = response.data.map((item, index) => ({
         ...item,
         contractSdate: convertToLocalDate(item.contractSdate),
         contractEdate: convertToLocalDate(item.contractEdate),
-        key: index.toString(), // 고유 키 추가
+        key: index.toString(),
       }));
       setContractPriceItems(updatedItems);
     } catch (error) {
