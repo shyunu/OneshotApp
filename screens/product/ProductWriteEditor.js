@@ -1,37 +1,32 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-} from 'react-native';
+import {StyleSheet, View, Text, TextInput} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-// 공급업체
-const [openSupplier, setOpenSupplier] = useState(false);
-const [valueSupplier, setValueSupplier] = useState(null);
-const [supplierItems, setSupplierItems] = useState([]);
-
-// 공급업체 정보
-const [supplierBusinessNo, setSupplierBusinessNo] = useState('');
-const [managerName, setManagerName] = useState('');
-const [managerPhone, setManagerPhone] = useState('');
-
-// 카테고리
-const [openCategory, setOpenCategory] = useState(false);
-const [valueCategory, setValueCategory] = useState(null);
-const [categoryItems, setCategoryItems] = useState([]);
-
-// 상품
-const [openProduct, setOpenProduct] = useState(false);
-const [valueProduct, setValueProduct] = useState(null);
-const [productItems, setProductItems] = useState([]);
-
-const [purchaseStatus, setPurchaseStatus] = useState(''); // 판매상태
-const [purchasePrice, setPurchasePrice] = useState(''); // 판매가격
-const [safetyQuantity, setSafeQuantity] = useState(''); // 안전재고수량
-
 function ProductWriteEditor() {
+  // 공급업체
+  const [openSupplier, setOpenSupplier] = useState(false);
+  const [valueSupplier, setValueSupplier] = useState(null);
+  const [supplierItems, setSupplierItems] = useState([]);
+
+  // 공급업체 정보
+  const [supplierBusinessNo, setSupplierBusinessNo] = useState('');
+  const [managerName, setManagerName] = useState('');
+  const [managerPhone, setManagerPhone] = useState('');
+
+  // 카테고리
+  const [openCategory, setOpenCategory] = useState(false);
+  const [valueCategory, setValueCategory] = useState(null);
+  const [categoryItems, setCategoryItems] = useState([]);
+
+  // 상품
+  const [openProduct, setOpenProduct] = useState(false);
+  const [valueProduct, setValueProduct] = useState(null);
+  const [productItems, setProductItems] = useState([]);
+
+  const [purchaseStatus, setPurchaseStatus] = useState(''); // 판매상태
+  const [purchasePrice, setPurchasePrice] = useState(''); // 판매가격
+  const [safetyQuantity, setSafeQuantity] = useState(''); // 안전재고수량
+
   return (
     <View style={styles.block}>
       <Text style={styles.text}>공급업체명</Text>
