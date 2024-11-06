@@ -37,11 +37,6 @@ function RootStack() {
         component={SalesWriteScreen}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name="SalesScreen"
-        component={SalesScreen}
-        options={{headerShown: false}}
-      />
     </Stack.Navigator>
   );
 }
