@@ -1,12 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Alert} from 'react-native';
+import {StyleSheet, View, Text, Alert, ActivityIndicator} from 'react-native';
 import InventoryTransparentCircleButton from './InventoryTransparentCircleButton';
 import axios from 'axios';
 
 function InventoryWriteHeader({
-  purchaseNo,
-  setPurchaseNo,
   supplierNo,
   setSupplierNo,
   managerName,
@@ -15,11 +13,11 @@ function InventoryWriteHeader({
   setManagerPhone,
   items,
   setItems,
+  loading,
   setLoading,
-  employeeNo,
-  onResetFields,
 }) {
   const navigation = useNavigation();
+  const [valueSupplier, setValueSupplier] = useState(supplierNo);
 
   const onGoBack = () => {
     if (navigation.canGoBack()) {
@@ -34,133 +32,47 @@ function InventoryWriteHeader({
       {
         text: '확인',
         onPress: () => {
-          // setSupplierNo(null);
+          setLoading(true);
+
+          navigation.replace('InventoryWrite');
+          // 데이터 초기화
+          // setSupplierNo('');
           // setManagerName('');
           // setManagerPhone('');
           // setItems([]);
-          console.log('초기화 후 상태:', {
-            supplierNo: null,
-            managerName: '',
-            managerPhone: '',
-            items: [],
-          });
+
+          setLoading(false);
           Alert.alert('초기화 완료', '모든 항목이 초기화되었습니다');
         },
       },
     ]);
   };
 
-  // check 버튼 클릭 시 데이터 등록
-  // const ConfirmCheck = async () => {
-  //   if (!items.length) {
-  //     Alert.alert('오류', '등록할 상품을 추가해주세요.');
-  //     return;
-  //   }
-
-  //   if (!supplierNo) {
-  //     Alert.alert('오류', '공급업체를 선택해주세요.');
-  //     return;
-  //   }
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.post(
-  //       'http://192.168.0.10:8181/inventoryApp/registerPurchase',
-  //       {
-  //         supplierNo: supplierNo,
-  //         items,
-  //         employeeNo,
-  //       },
-  //     );
-  //     console.log('등록 성공:', response.data);
-  //     Alert.alert('등록 성공', '상품 구매가 성공적으로 등록되었습니다');
-  //     setManagerName('');
-  //     setManagerPhone('');
-  //     setItems([]); // 등록 후 초기화
-  //     navigation.goBack(); // 페이지로 돌아가기
-  //   } catch (error) {
-  //     console.error('등록 실패:', error);
-  //     Alert.alert('등록 실패', '데이터 등록 중 오류가 발생했습니다');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  //   onGoBack();
-  // };
-
-  // -----------------------
-  // const ConfirmCheck = async () => {
-  //   console.log('현재 items:', items); // items 내용 확인용 로그
-
-  //   if (!items || items.length === 0) {
-  //     Alert.alert('오류', '등록할 상품을 추가해주세요.');
-  //     return;
-  //   }
-
-  //   if (!supplierNo) {
-  //     Alert.alert('오류', '공급업체를 선택해주세요.');
-  //     return;
-  //   }
-
-  //   setLoading(true);
-  //   try {
-  //     const purchaseData = {
-  //       supplierInfo: {
-  //         supplierNo,
-  //         managerName,
-  //         managerPhone,
-  //       },
-  //       items,
-  //     };
-
-  //     const response = await axios.post(
-  //       'http://192.168.0.10:8181/inventoryApp/registerPurchase',
-  //       purchaseData,
-  //     );
-
-  //     console.log('등록 성공:', response.data);
-  //     Alert.alert('등록 성공', '상품 구매가 성공적으로 등록되었습니다');
-
-  //     // 등록 후 필드 초기화
-  //     setSupplierNo('');
-  //     setManagerName('');
-  //     setManagerPhone('');
-  //     setItems([]); // 초기화
-  //     onGoBack();
-  //   } catch (error) {
-  //     console.error('등록 실패:', error);
-  //     Alert.alert('등록 실패', '데이터 등록 중 오류가 발생했습니다');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
+  // 등록
   const ConfirmCheck = async () => {
+    console.log('아이템: ', items);
     if (!items || items.length === 0) {
       Alert.alert('오류', '등록할 상품을 추가해주세요.');
       return;
     }
-
     if (!supplierNo) {
       Alert.alert('오류', '공급업체를 선택해주세요.');
       return;
     }
-
-    setLoading(true);
+    setLoading(false);
     try {
-      const purchaseData = {
-        supplierInfo: {
-          supplierNo,
-          managerName,
-          managerPhone,
-        },
-        items: items.map(item => ({
-          productNo: item.productNo,
-          purchaseQuantity: parseInt(item.purchaseQuantity),
-          purchasePrice: parseInt(item.purchasePrice),
-        })),
-      };
+      const purchaseData = items.map(item => ({
+        // supplierNo: supplierNo,
+        productNo: item.productNo,
+        purchaseQuantity: parseInt(item.purchaseQuantity),
+        purchasePrice: parseInt(item.purchasePrice),
+        employeeNo: 1, // 임시로 직원번호 1 설정
+      }));
+      console.log('구매 데이터:', purchaseData);
 
       const response = await axios.post(
-        'http://192.168.0.10:8181/inventoryApp/registerPurchase',
+        'http://172.30.1.11:8181/inventoryApp/registerPurchase',
+        // 'http://192.168.0.10:8181/inventoryApp/registerPurchase',
         purchaseData,
       );
 
@@ -168,18 +80,44 @@ function InventoryWriteHeader({
       Alert.alert('등록 성공', '상품 구매가 성공적으로 등록되었습니다');
 
       // 초기화
-      setSupplierNo(null);
-      setManagerName('');
-      setManagerPhone('');
-      setItems([]);
+      // setSupplierNo(null);
+      // setManagerName('');
+      // setManagerPhone('');
+      // setItems([]);
       onGoBack();
     } catch (error) {
       console.error('등록 실패:', error);
       Alert.alert('등록 실패', '데이터 등록 중 오류가 발생했습니다');
+      // }
+      // } catch (error) {
+      // if (error.response) {
+      //   console.error('서버 응답 오류:', error.response.data);
+      //   Alert.alert(
+      //     '등록 실패',
+      //     `오류: ${
+      //       error.response.data.message || '데이터 등록 중 오류가 발생했습니다.'
+      //     }`,
+      //   );
+      // } else if (error.request) {
+      //   console.error('요청이 서버에 도달하지 못했습니다:', error.request);
+      //   Alert.alert('등록 실패', '서버에 요청을 보내지 못했습니다.');
+      // } else {
+      //   console.error('오류 발생:', error.message);
+      //   Alert.alert('등록 실패', '예기치 않은 오류가 발생했습니다.');
+      // }
     } finally {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>데이터를 로드 중입니다</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.block}>
@@ -227,6 +165,11 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
+    alignItems: 'center',
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
 });

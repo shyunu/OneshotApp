@@ -1,6 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Image, View, StyleSheet} from 'react-native';
+import HomeScreen from './home/HomeScreen';
 import ContractScreen from './contract/ContractScreen';
 import InventoryScreen from './inventory/InventoryScreen';
 import SalesScreen from './sales/SalesScreen';
@@ -15,6 +16,23 @@ function MainTab() {
         tabBarActiveTintColor: '#00569A',
         headerStyle: styles.header,
       }}>
+      <Tab.Screen
+        name="홈"
+        component={HomeScreen}
+        options={{
+          headerLeft: () => (
+            <View style={styles.headerLeftContainer}>
+              <Image
+                style={styles.logo}
+                source={require('../assets/logo.png')}
+              />
+            </View>
+          ),
+          tabBarIcon: ({color, size}) => (
+            <Icon name="home" size={size} color={color} />
+          ),
+        }}
+      />
       <Tab.Screen
         name="재고관리"
         component={InventoryScreen}

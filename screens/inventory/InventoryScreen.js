@@ -1,15 +1,27 @@
-import React from 'react';
-import {StyleSheet, View, Text, Alert} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import InventoryFloatingWriteButton from './InventoryFloatingWriteButton';
 import InventoryList from './InventoryList';
 import InventorySearchFrame from './InventorySearchFrame';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 function InventoryScreen() {
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [purchaseList, setPurchaseList] = useState([]); // 구매 목록 상태 추가
+
+  // 검색어 변경 시 호출
+  const handleSearch = keyword => {
+    setSearchKeyword(keyword);
+  };
+
+  // 구매 등록 후 목록에 추가
+  const addPurchaseItem = newItem => {
+    setPurchaseList(prevList => [...prevList, newItem]);
+  };
+
   return (
     <View style={styles.block}>
-      <InventorySearchFrame />
-      <InventoryList />
+      <InventorySearchFrame onSearch={handleSearch} />
+      <InventoryList searchKeyword={searchKeyword} />
       <InventoryFloatingWriteButton />
     </View>
   );
