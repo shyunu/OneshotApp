@@ -18,26 +18,33 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import InventoryItem from './InventoryItem';
 
-function InventoryWriteEditor() {
+function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
   const [modalVisible, setModalVisible] = useState(false); // 모달창
-  const [items, setItems] = useState([]); // 구매 상품
+  // const [items, setItems] = useState([]); // 구매 상품
   const [loading, setLoading] = useState(true); // 로딩 상태 관리
+
+  // 구매내역번호
   const [purchaseNo, setPurchaseNo] = useState('');
 
   // 공급업체
   const [openSupplier, setOpenSupplier] = useState(false);
-  const [valueSupplier, setValueSupplier] = useState(null);
+  // const [valueSupplier, setValueSupplier] = useState(null);
+  const [valueSupplier, setValueSupplier] = useState(supplierNo || null);
   const [supplierItems, setSupplierItems] = useState([]);
 
   // 공급업체 정보
   const [managerName, setManagerName] = useState('');
   const [managerPhone, setManagerPhone] = useState('');
 
+  // 선택된 행 인덱스 저장
+  const [selectedRow, setSelectedRow] = useState(null);
+
   // 공급업체 선택
   const fetchSupplier = async () => {
     try {
       const supplierResponse = await axios.get(
-        'http://localhost:8181/inventoryApp/getSuppliers',
+        // 'http://192.168.0.10:8181/inventoryApp/getSuppliers',
+        'http://172.30.1.11:8181/inventoryApp/getSuppliers',
       );
 
       setSupplierItems(
@@ -54,20 +61,24 @@ function InventoryWriteEditor() {
     }
   };
 
+  console.log('valueSupplier:', valueSupplier);
+
   useEffect(() => {
     fetchSupplier();
   }, []); // 빈 배열을 넣어 컴포넌트가 처음 마운트될 때만 실행하도록 설정
 
   // 공급업체 관련 정보 가져오기 (담당자명, 연락처)
   useEffect(() => {
-    const fetchSupplierList = async () => {
+    const fetchSupplierInfo = async () => {
       if (valueSupplier) {
         try {
           const supplierListResponse = await axios.get(
-            `http://localhost:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
+            // `http://192.168.0.10:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
+            `http://172.30.1.11:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
           );
           setManagerName(supplierListResponse.data.managerName || '');
           setManagerPhone(supplierListResponse.data.managerPhone || '');
+          setSupplierNo(valueSupplier); // 상위 컴포넌트의 supplierNo도 설정
         } catch (error) {
           console.log(error);
           Alert.alert('Error', '공급업체 정보 불러오기에 실패했습니다.');
@@ -77,75 +88,39 @@ function InventoryWriteEditor() {
         setManagerPhone('');
       }
     };
-    fetchSupplierList();
-  }, [valueSupplier]);
+    fetchSupplierInfo();
+  }, [valueSupplier, setSupplierNo]);
 
-  // const calculateSubTotal = (quantity, price) => {
-  //   const subtotal = (Number(quantity) || 0) * (Number(price) || 0);
-  //   setSubTotal(subtotal);
-  // };
-
-  // 상품 추가
-  // const handleAddItem = () => {
-  //   if (valueCategory && valueProduct && purchaseQuantity && purchasePrice) {
-  //     const newItem = {
-  //       category: category.find(c => c.value === valueCategory)?.label,
-  //       product: product.find(p => p.value === valueProduct)?.label,
-  //       productNo: valueProduct, // productNo 추가
-  //       purchaseQuantity: displayQuantity,
-  //       purchasePrice: displayPrice,
-  //       subTotal: formatNumber(subTotal) + '원',
-  //     };
-  //     setItems([...items, newItem]);
-  //     resetModal();
-  //     setModalVisible(false);
-  //   } else {
-  //     Alert.alert('Warning', '모든 필드를 입력해주세요.');
-  //     return;
+  // valueSupplier가 변경될 때 items 초기화
+  // useEffect(() => {
+  //   if (valueSupplier) {
+  //     setItems([]);
   //   }
-  // };
+  // }, [valueSupplier]);
 
-  // const handleAddItem = () => {
-  //   if (valueCategory && valueProduct && purchaseQuantity && purchasePrice) {
-  //     const newItem = {
-  //       category: category.find(c => c.value === valueCategory)?.label,
-  //       product: product.find(p => p.value === valueProduct)?.label,
-  //       productNo: valueProduct,
-  //       // 숫자만 추출하여 저장
-  //       purchaseQuantity: purchaseQuantity, // 원래 숫자값 사용
-  //       purchasePrice: purchasePrice, // 원래 숫자값 사용
-  //       // 화면 표시용 형식화된 값들
-  //       displayQuantity: displayQuantity,
-  //       displayPrice: displayPrice,
-  //       displaySubTotal: formatNumber(subTotal) + '원',
-  //     };
-  //     console.log('Adding new item:', newItem); // 디버깅용
-  //     setItems([...items, newItem]);
-  //     resetModal();
-  //     setModalVisible(false);
-  //   } else {
-  //     Alert.alert('Warning', '모든 필드를 입력해주세요.');
-  //     return;
-  //   }
-  // };
-
+  // 모달 열기
   const openModal = () => {
     setModalVisible(true);
   };
-
+  // 모달 닫기
   const closeModal = () => {
     setModalVisible(false);
   };
 
-  // 상품 추가 함수
-  const addItem = item => {
-    // setItems(prevItems => {
-    //   const updatedItems = [...prevItems, item];
-    //   console.log('Updated items:', updatedItems);
-    //   return updatedItems;
-    // });
-    setItems([...items, item]);
-    console.log('items: ', items);
+  // 아이템 추가
+  const handleAddItem = newItem => {
+    if (items.some(item => item.productNo === newItem.productNo)) {
+      Alert.alert('오류', '이미 추가된 상품입니다.');
+      return;
+    }
+    setItems([...items, newItem]);
+    setModalVisible(false);
+  };
+
+  // 아이템 삭제
+  const handleDeleteItem = index => {
+    setItems(items.filter((_, itemIndex) => itemIndex !== index));
+    setSelectedRow(null); // 삭제 후 선택된 행 인덱스 초기화
   };
 
   // 로딩
@@ -177,7 +152,7 @@ function InventoryWriteEditor() {
         setItems={setSupplierItems}
         style={styles.dropdown}
         placeholder="공급업체를 선택하세요"
-        dropdownContainerStyle={styles.dropdownContainer}
+        dropDownContainerStyle={styles.dropdownContainer}
       />
       <Text style={styles.text}>담당자명</Text>
       <TextInput
@@ -198,16 +173,19 @@ function InventoryWriteEditor() {
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.addButton}
-          // onPress={() => setModalVisible(true)}
           onPress={openModal}>
           <Image source={require('../../assets/add_white.png')} />
         </TouchableOpacity>
 
-        <TouchableOpacity activeOpacity={0.8}>
-          <View style={styles.deleteButtonStyle}>
-            <Icon name="horizontal-rule" size={24} color="white" />
-          </View>
-        </TouchableOpacity>
+        {items.length >= 0 && (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => handleDeleteItem(selectedRow)}>
+            <View style={styles.deleteButtonStyle}>
+              <Icon name="horizontal-rule" size={24} color="white" />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
@@ -215,20 +193,25 @@ function InventoryWriteEditor() {
           <Text style={styles.tableHeaderText}>상품명</Text>
           <Text style={styles.tableHeaderText}>수량</Text>
           <Text style={styles.tableHeaderText}>가격</Text>
-          {/* <Text style={styles.tableHeaderText}>소계</Text> */}
         </View>
 
         <ScrollView style={styles.tableBody}>
           {items.map((item, index) => (
-            <View key={index} style={styles.tableRow}>
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.tableRow,
+                selectedRow === index && styles.selectedRow,
+              ]}
+              onPress={() => setSelectedRow(index)} // 행 클릭 시 인덱스 저장
+            >
               <Text style={styles.tableCell}>{item.category}</Text>
               <Text style={styles.tableCell}>{item.product}</Text>
               <Text style={styles.tableCell}>{item.displayQuantity}</Text>
               <Text style={styles.tableCell}>{item.displayPrice}</Text>
-              {/* <Text style={styles.tableCell}>{item.purchaseQuantity}</Text>
-              <Text style={styles.tableCell}>{item.purchasePrice}</Text> */}
-              {/* <Text style={styles.tableCell}>{item.subTotal}</Text> */}
-            </View>
+
+              {/* </View> */}
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
@@ -236,7 +219,8 @@ function InventoryWriteEditor() {
       <InventoryItem
         modalVisible={modalVisible}
         closeModal={closeModal}
-        addItem={item => setItems([...items, item])}
+        addItem={handleAddItem} // InventoryItem에 handleAddItem 전달
+        supplierNo={valueSupplier}
         style={styles.modalContainer}
       />
     </View>
@@ -280,13 +264,12 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     minHeight: 40,
-    borderRadius: 4,
     borderColor: '#ced4da',
+    borderRadius: 4,
     marginBottom: 15,
   },
   dropdownContainer: {
     borderColor: '#ced4da',
-    borderRadius: 4,
   },
   purchaseProduct: {
     flexDirection: 'row',
@@ -350,18 +333,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ced4da',
   },
+  selectedRow: {
+    backgroundColor: '#f0f0f0',
+  },
   tableCell: {
     flex: 1,
     textAlign: 'center',
-  },
-
-  // 모달화면
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 20,
   },
 });
 

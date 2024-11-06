@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
+import {TextInput, TouchableOpacity, View, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-function InventorySearchFrame({onSearch}) {
+function ProductSearchFrame() {
   const [search, setSearch] = useState('');
 
   // 검색어 입력 처리 (디바운싱 적용)
@@ -12,14 +12,15 @@ function InventorySearchFrame({onSearch}) {
   };
 
   // 검색 아이콘 클릭 시 검색어로 목록 조회
-  const handleSearchPress = () => {
-    console.log('search: ', search);
-    onSearch(search); // 입력된 검색어를 onSearch에 전달
+  const handleSearch = () => {
+    console.log('검색: ', search);
+    // onSearch(search);
   };
 
+  // 검색 초기화
   function onDeleteAll() {
     setSearch('');
-    onSearch(''); // 검색어 초기화 시 빈 문자열로 검색
+    // onSearch(''); // 검색어 초기화 시 빈 문자열로 검색
   }
 
   return (
@@ -46,7 +47,7 @@ function InventorySearchFrame({onSearch}) {
         name="search"
         size={28}
         style={styles.searchIcon}
-        onPress={handleSearchPress}
+        onPress={handleSearch}
       />
     </View>
   );
@@ -75,5 +76,4 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 });
-
-export default InventorySearchFrame;
+export default ProductSearchFrame;
