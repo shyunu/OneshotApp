@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
-import SalesSearchFrame from './SalesSearchFrame';
+import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import SalesDetail from './SalesDetail';
 
@@ -10,9 +10,24 @@ function SalesList({searchKeyword}) {
   const [selectedOrder, setSelectedOrder] = useState(null); //선택한 주문건
   const [filteredOrderList, setFilteredOrderList] = useState([]);
 
-  useEffect(() => {
-    fetchOrderList();
+  const fetchOrderList = useCallback(() => {
+    axios
+      .get('http://localhost:8181/salesApp/order')
+      .then(response => {
+        setOrderList(response.data);
+        setFilteredOrderList(response.data); // 초기 목록 설정
+      })
+      .catch(error => {
+        console.error('Error fetching order data:', error);
+      });
   }, []);
+
+  // useFocusEffect를 사용하여 화면이 포커스될 때마다 fetchOrderList 호출
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrderList();
+    }, [fetchOrderList]),
+  );
 
   useEffect(() => {
     setFilteredOrderList(
@@ -26,18 +41,6 @@ function SalesList({searchKeyword}) {
       }),
     );
   }, [searchKeyword, orderList]);
-
-  const fetchOrderList = () => {
-    axios
-      .get('http://localhost:8181/salesApp/order')
-      .then(response => {
-        setOrderList(response.data);
-        setFilteredOrderList(response.data); // 초기 목록 설정
-      })
-      .catch(error => {
-        console.error('Error fetching order data:', error);
-      });
-  };
 
   function startAddItem() {
     setModalIsVisible(true);

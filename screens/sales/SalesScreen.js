@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import SalesSearchFrame from './SalesSearchFrame';
 import SalesFloatingWriteButton from './SalesFloatingWriteButton';
 import SalesList from './SalesList';
