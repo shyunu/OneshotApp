@@ -20,7 +20,6 @@ import InventoryItem from './InventoryItem';
 
 function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
   const [modalVisible, setModalVisible] = useState(false); // 모달창
-  // const [items, setItems] = useState([]); // 구매 상품
   const [loading, setLoading] = useState(true); // 로딩 상태 관리
 
   // 구매내역번호
@@ -44,7 +43,7 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
     try {
       const supplierResponse = await axios.get(
         // 'http://192.168.0.10:8181/inventoryApp/getSuppliers',
-        'http://172.30.1.11:8181/inventoryApp/getSuppliers',
+        'http://172.30.1.14:8181/inventoryApp/getSuppliers',
       );
 
       setSupplierItems(
@@ -54,8 +53,8 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
         })),
       );
     } catch (error) {
-      console.log('데이터 로드 오류: ', error);
-      Alert.alert('Error', '데이터 로드 실패');
+      console.log('공급업체 로드 오류: ', error);
+      Alert.alert('Error', '공급업체 로드 실패');
     } finally {
       setLoading(false);
     }
@@ -74,7 +73,7 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
         try {
           const supplierListResponse = await axios.get(
             // `http://192.168.0.10:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
-            `http://172.30.1.11:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
+            `http://172.30.1.14:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
           );
           setManagerName(supplierListResponse.data.managerName || '');
           setManagerPhone(supplierListResponse.data.managerPhone || '');
