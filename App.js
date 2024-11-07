@@ -6,7 +6,7 @@ import { Text } from 'react-native';
 
 // 글로벌 폰트 설정
 Text.defaultProps = Text.defaultProps || {};
-Text.defaultProps.style = { fontFamily: 'establish Retrosans' };
+Text.defaultProps.style = { fontFamily: 'Pretendard-Regular' };
 
 function App() {
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
