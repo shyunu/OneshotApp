@@ -145,8 +145,8 @@ const HomeScreen = () => {
         <View style={styles.goalInputContainer}>
           <TextInput
             style={[
-              styles.input,
-              {backgroundColor: isEditing ? '#fff' : '#f0f0f0'}, // 편집 상태에 따라 배경색 변경
+              styles.input, 
+              {backgroundColor: isEditing ? '#fff' : '#F8F8F8'}, // 편집 상태에 따라 배경색 변경
             ]}
             value={tempGoalAmount}
             onChangeText={setTempGoalAmount}
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#e3e3e3',
     borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
