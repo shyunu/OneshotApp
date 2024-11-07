@@ -21,16 +21,16 @@ function ProductWriteHeader() {
           color="#424242"
         />
       </View>
+      <View>
+        <Text style={styles.title}>등록</Text>
+      </View>
       <View style={styles.buttons}>
-        <InventoryTransparentCircleButton
+        <ProductTransparentCircleButton
           name="delete-forever"
           color="#ef5350"
           hasMarginRight
         />
-        <InventoryTransparentCircleButton
-          name="check"
-          color="#009688"
-        />
+        <ProductTransparentCircleButton name="check" color="#009688" />
       </View>
     </View>
   );
