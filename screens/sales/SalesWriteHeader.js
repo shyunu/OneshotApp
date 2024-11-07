@@ -14,8 +14,8 @@ function SalesWriteHeader({onResetFields, onRegist}) {
   //초기화 버튼(delete-forever)
   function alertDeleteConfirm() {
     Alert.alert(
-      '\n',
-      '판매 등록 정보를 초기화하시겠습니까?\n',
+      '경고\n',
+      '초기화하시겠습니까?\n',
       [
         {
           text: '취소',
@@ -34,7 +34,7 @@ function SalesWriteHeader({onResetFields, onRegist}) {
 
   //저장하기 버튼(check)
   function alertCheckConfirm() {
-    Alert.alert('\n', '판매를 등록하시겠습니까?\n', [
+    Alert.alert('확인\n', '판매를 등록하시겠습니까?\n', [
       {
         text: '취소',
         style: 'cancel',
