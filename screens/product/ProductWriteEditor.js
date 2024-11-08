@@ -8,6 +8,7 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
@@ -49,65 +50,42 @@ function ProductWriteEditor() {
   //   );
   // }
 
-  // const fetchSupplierList = async () => {
-  //   try {
-  //     const [supplierListResponse, supplResponse] = await Promise.all([
-  //       'http://172.30.1.14:8181/productApp/getSupplierList',
-  //       'http://172.30.1.14:8181/productApp/getCategoryList',
-  //     ]);
-  //     setSupplierItems(
-  //       supplierListResponse.data.map(supplier => ({
-  //         label: supplier.supplierName,
-  //         value: supplier.supplierNo,
-  //       })),
-  //     );
-
-  //     setCategoryItems(
-  //       categoryListResponse.data.map(category => ({
-  //         label: category.categoryName,
-  //         value: category.categoryNo,
-  //       })),
-  //     );
-  //   } catch (error) {
-  //     console.log(error);
-  //     Alert.alert('Error', '데이터를 가져오는 데 실패했습니다');
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchSupplierList();
-  // }, []);
-
-  const fetchSupplierList = async () => {
-    try {
-      const supplierListResponse = await axios.get(
-        'http://172.30.1.14:8181/productApp/getSupplierList',
-      );
-      setSupplierItems(
-        supplierListResponse.data.map(supplier => ({
-          label: supplier.supplierName,
-          value: supplier.supplierNo,
-        })),
-      );
-    } catch (error) {
-      console.log('공급업체 로드 오류: ', error);
-      Alert.alert('Error', '공급업체 로드 실패');
-    }
-    // } finally {
-    //   setLoading(false);
-    // }
+  // 천단위 콤마
+  const formatNumber = value => {
+    if (!value) return 0;
+    return parseInt(value, 10).toLocaleString('ko-KR');
   };
 
+  // 공급업체
   useEffect(() => {
+    const fetchSupplierList = async () => {
+      try {
+        const supplierListResponse = await axios.get(
+          'http://172.30.1.17:8181/productApp/getSupplierList',
+        );
+        setSupplierItems(
+          supplierListResponse.data.map(supplier => ({
+            label: supplier.supplierName,
+            value: supplier.supplierNo,
+          })),
+        );
+      } catch (error) {
+        console.log('공급업체 로드 오류: ', error);
+        Alert.alert('Error', '공급업체 로드 실패');
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchSupplierList();
   }, []);
 
+  // 공급업체 관련 정보
   useEffect(() => {
     const fetchSupplierInfo = async () => {
       if (valueSupplier) {
         try {
           const supplierInfoResponse = await axios.get(
-            `http://172.30.1.14:8181/productApp/getSupplierContent/${valueSupplier}`,
+            `http://172.30.1.17:8181/productApp/getSupplierContent/${valueSupplier}`,
           );
           setSupplierBusinessNo(supplierInfoResponse.data.supplierBusinessNo);
           setManagerName(supplierInfoResponse.data.managerName);
@@ -125,101 +103,121 @@ function ProductWriteEditor() {
     fetchSupplierInfo();
   }, [valueSupplier]);
 
+  // 카테고리
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoryResponse = await axios.get(
+          `http://172.30.1.17:8181/productApp/getCategoryList`,
+        );
+        setCategoryItems(
+          categoryResponse.data.map(category => ({
+            label: category.categoryName,
+            value: category.categoryNo,
+          })),
+        );
+      } catch (error) {
+        console.log('카테고리 오류:', error);
+        Alert.alert('Error', '카테고리 로드 실패');
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
-    <ScrollView>
-      <View style={styles.block}>
-        <Text style={styles.text}>공급업체명</Text>
-        <DropDownPicker
-          open={openSupplier}
-          value={valueSupplier}
-          items={supplierItems}
-          setOpen={setOpenSupplier}
-          setValue={setValueSupplier}
-          setItems={setSupplierItems}
-          style={styles.dropdown}
-          placeholder="공급업체를 선택하세요"
-          dropDownContainerStyle={styles.dropdownContainer}
-        />
-        <Text style={styles.text}>사업자번호</Text>
-        <TextInput
-          style={[styles.input, styles.disable]}
-          editable={false}
-          value={supplierBusinessNo}
-          onChangeText={setSupplierBusinessNo}
-        />
-        <Text style={styles.text}>담당자</Text>
-        <TextInput
-          style={[styles.input, styles.disable]}
-          editable={false}
-          value={managerName}
-          onChangeText={setManagerName}
-        />
-        <Text style={styles.text}>담당자연락처</Text>
-        <TextInput
-          style={[styles.input, styles.disable]}
-          editable={false}
-          value={managerPhone}
-          onChangeText={setManagerPhone}
-        />
-        <Text style={styles.text}>카테고리</Text>
-        <DropDownPicker
-          open={openCategory}
-          value={valueCategory}
-          items={categoryItems}
-          setOpen={setOpenCategory}
-          setValue={setValueCategory}
-          setItems={setCategoryItems}
-          style={styles.dropdown}
-          placeholder="카테고리를 선택하세요"
-          dropDownContainerStyle={styles.dropdownContainer}
-        />
-        <Text style={styles.text}>판매상태</Text>
-        <TextInput
-          style={[styles.input, styles.disable]}
-          editable={false}
-          value={purchaseStatus}
-          onChangeText={setPurchaseStatus}
-        />
-        <Text style={styles.text}>상품명</Text>
-        <DropDownPicker
-          open={openProduct}
-          value={valueProduct}
-          items={productItems}
-          setOpen={setOpenProduct}
-          setValue={setValueProduct}
-          setItems={setProductItems}
-          // zIndex={200}
-          style={styles.dropdown}
-          placeholder="상품을 선택하세요"
-          dropDownContainerStyle={styles.dropdownContainer}
-        />
-        <Text style={styles.text}>판매가격</Text>
-        <TextInput
-          placeholder="판매가격을 입력해주세요"
-          style={styles.input}
-          // value={displayPrice}
-          // onChangeText={setDisplayPrice}
-          keyboardType="number-pad"
-        />
-        <Text style={styles.text}>안전재고수량</Text>
-        <TextInput
-          placeholder="안전재고수량을 입력해주세요"
-          style={styles.input}
-          // value={displayPrice}
-          // onChangeText={setDisplayPrice}
-          keyboardType="number-pad"
-        />
-        <Text style={styles.purchaseTitle}>상품내역</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}
+      keyboardVerticalOffset={Platform.OS === 'android' ? 100 : 0}>
+      <ScrollView>
+        <View style={styles.block}>
+          <Text style={styles.text}>공급업체명</Text>
+          <DropDownPicker
+            open={openSupplier}
+            value={valueSupplier}
+            items={supplierItems}
+            setOpen={setOpenSupplier}
+            setValue={setValueSupplier}
+            setItems={setSupplierItems}
+            style={styles.dropdown}
+            placeholder="공급업체를 선택하세요"
+            dropDownContainerStyle={styles.dropdownContainer}
+          />
+          <Text style={styles.text}>사업자번호</Text>
+          <TextInput
+            style={[styles.input, styles.disable]}
+            editable={false}
+            value={supplierBusinessNo}
+            onChangeText={setSupplierBusinessNo}
+          />
+          <Text style={styles.text}>담당자</Text>
+          <TextInput
+            style={[styles.input, styles.disable]}
+            editable={false}
+            value={managerName}
+            onChangeText={setManagerName}
+          />
+          <Text style={styles.text}>담당자연락처</Text>
+          <TextInput
+            style={[styles.input, styles.disable]}
+            editable={false}
+            value={managerPhone}
+            onChangeText={setManagerPhone}
+          />
+          <Text style={styles.text}>카테고리</Text>
+          <DropDownPicker
+            open={openCategory}
+            value={valueCategory}
+            items={categoryItems}
+            setOpen={setOpenCategory}
+            setValue={setValueCategory}
+            setItems={setCategoryItems}
+            style={styles.dropdown}
+            placeholder="카테고리를 선택하세요"
+            zIndex={300}
+            dropDownContainerStyle={styles.dropdownContainer}
+          />
+          <Text style={styles.text}>판매상태</Text>
+          <TextInput
+            style={[styles.input, styles.disable]}
+            editable={false}
+            value={purchaseStatus}
+            onChangeText={setPurchaseStatus}
+          />
+          <Text style={styles.text}>상품명</Text>
+          <TextInput
+            placeholder="상품을 입력해주세요"
+            style={styles.input}
+            value={valueProduct}
+            onChangeText={setValueProduct}
+          />
+          <Text style={styles.text}>판매가격</Text>
+          <TextInput
+            placeholder="판매가격을 입력해주세요"
+            style={styles.input}
+            // value={displayPrice}
+            // onChangeText={setDisplayPrice}
+            keyboardType="number-pad"
+          />
+          <Text style={styles.text}>안전재고수량</Text>
+          <TextInput
+            placeholder="안전재고수량을 입력해주세요"
+            style={styles.input}
+            // value={displayPrice}
+            // onChangeText={setDisplayPrice}
+            keyboardType="number-pad"
+          />
+          <Text style={styles.purchaseTitle}>상품내역</Text>
 
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.tableHeaderText}>카테고리</Text>
-            <Text style={styles.tableHeaderText}>상품명</Text>
-            <Text style={styles.tableHeaderText}>수량</Text>
-            <Text style={styles.tableHeaderText}>가격</Text>
-          </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.tableHeaderText}>카테고리</Text>
+              <Text style={styles.tableHeaderText}>상품명</Text>
+              <Text style={styles.tableHeaderText}>수량</Text>
+              <Text style={styles.tableHeaderText}>가격</Text>
+            </View>
 
-          {/* <FlatList
+            {/* <FlatList
             data={productItems}
             keyExtractor={item => item.id.toString()} // item의 고유 ID 사용
             renderItem={({item}) => (
@@ -232,9 +230,10 @@ function ProductWriteEditor() {
             )}
             style={styles.tableBody}
           /> */}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
