@@ -35,7 +35,7 @@ function SalesWriteScreen() {
         salesData,
       );
 
-      Alert.alert('\n', '판매가 정상 등록되었습니다!\n', [
+      Alert.alert('등록 성공\n', '판매가 정상 등록되었습니다!\n', [
         {
           text: '확인',
           onPress: () => navigation.goBack(),
