@@ -27,7 +27,7 @@ function InventoryWriteHeader({
 
   // 초기화 버튼
   const onReset = () => {
-    Alert.alert('경고', '초기화하시겠습니까?', [
+    Alert.alert('경고 \n', '초기화하시겠습니까?', [
       {text: '취소', style: 'cancel'},
       {
         text: '확인',
@@ -71,20 +71,31 @@ function InventoryWriteHeader({
       console.log('구매 데이터:', purchaseData);
 
       const response = await axios.post(
-        'http://172.30.1.14:8181/inventoryApp/registerPurchase',
+        'http://localhost:8181/inventoryApp/registerPurchase',
         // 'http://192.168.0.10:8181/inventoryApp/registerPurchase',
         purchaseData,
       );
 
-      console.log('등록 성공:', response.data);
-      Alert.alert('등록 성공', '상품 구매가 성공적으로 등록되었습니다');
+      Alert.alert('확인 \n', '구매를 등록하시겠습니까?', [
+        {text: '취소', style: 'cancel'},
+        {
+          text: '확인',
+          onPress: () => {
+            setLoading(true);
+            setLoading(false);
+            console.log('등록 성공:', response.data);
+            Alert.alert('등록 성공 \n', '구매가 성공적으로 등록되었습니다');
+            onGoBack();
+          },
+        },
+      ]);
 
       // 초기화
       // setSupplierNo(null);
       // setManagerName('');
       // setManagerPhone('');
       // setItems([]);
-      onGoBack();
+      // onGoBack();
     } catch (error) {
       console.error('등록 실패:', error);
       Alert.alert('등록 실패', '데이터 등록 중 오류가 발생했습니다');

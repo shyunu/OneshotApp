@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   Alert,
   ScrollView,
@@ -28,7 +29,7 @@ function InventoryList({searchKeyword}) {
     try {
       const purchaseListResponse = await axios.get(
         // `http://192.168.0.10:8181/inventoryApp/purchaseList`,
-        'http://172.30.1.14:8181/inventoryApp/purchaseList',
+        'http://localhost:8181/inventoryApp/purchaseList',
         {
           params: {searchKeyword},
           // amount: 10,
@@ -45,6 +46,12 @@ function InventoryList({searchKeyword}) {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPurchaseList();
+    }, [fetchPurchaseList]),
+  );
 
   // 초기 로딩 및 검색어 변경 시 목록 조회
   useEffect(() => {
@@ -77,44 +84,32 @@ function InventoryList({searchKeyword}) {
               <View style={styles.infoContainer}>
                 <View style={styles.infoRow}>
                   <Text style={styles.infoText}>
-                    No. <Text style={styles.dataText}>{item.purchaseNo}</Text>
+                    No. <Text style={styles.infoText}>{item.purchaseNo}</Text>
                   </Text>
                 </View>
                 <View style={styles.infoRow}>
+                  <Text style={styles.infoText}>공급업체명</Text>
+                  <Text style={styles.infoText}>{item.supplierName}</Text>
+                  <Text style={styles.infoText}>카테고리</Text>
+                  <Text style={styles.infoText}>{item.categoryName}</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoText}>상품명</Text>
+                  <Text style={styles.infoText}>{item.productName}</Text>
+
+                  <Text style={styles.infoText}>구매수량</Text>
                   <Text style={styles.infoText}>
-                    공급업체명:{' '}
-                    <Text style={styles.dataText}>{item.supplierName}</Text>
-                  </Text>
-                  <Text style={styles.infoText}>
-                    카테고리:{' '}
-                    <Text style={styles.dataText}>{item.categoryName}</Text>
+                    {formatNumber(item.purchaseQuantity)}개
                   </Text>
                 </View>
                 <View style={styles.infoRow}>
+                  <Text style={styles.infoText}>구매단가</Text>
                   <Text style={styles.infoText}>
-                    상품명:{' '}
-                    <Text style={styles.dataText}>{item.productName}</Text>
+                    {formatNumber(item.purchasePrice)}원
                   </Text>
+                  <Text style={styles.infoText}>총가격</Text>
                   <Text style={styles.infoText}>
-                    구매수량:{' '}
-                    <Text style={styles.dataText}>
-                      {formatNumber(item.purchaseQuantity)}개
-                    </Text>
-                  </Text>
-                </View>
-                <View style={styles.infoRow}>
-                  <Text style={styles.infoText}>
-                    구매단가:{' '}
-                    <Text style={styles.dataText}>
-                      {formatNumber(item.purchasePrice)}원
-                    </Text>
-                  </Text>
-                  <Text style={styles.infoText}>
-                    총가격:{' '}
-                    <Text style={styles.dataText}>
-                      {formatNumber(item.purchasePrice * item.purchaseQuantity)}
-                      원
-                    </Text>
+                    {formatNumber(item.purchasePrice * item.purchaseQuantity)}원
                   </Text>
                 </View>
               </View>
@@ -123,7 +118,7 @@ function InventoryList({searchKeyword}) {
         ) : (
           <TouchableOpacity style={styles.infoContainer}>
             <View style={styles.infoRow}>
-              <Text style={styles.infoText}>계약내역이 없습니다</Text>
+              <Text style={styles.infoText}>구매내역이 없습니다</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -164,10 +159,13 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'left',
   },
-  dataText: {
-    fontWeight: 'bold',
-    color: '#333',
-  },
+  // dataText: {
+  //   fontSize: 13,
+  //   color: '#333',
+  //   textAlign: 'left',
+  //   right: 15,
+  //   width: '45%',
+  // },
 });
 
 export default InventoryList;

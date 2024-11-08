@@ -43,7 +43,7 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
     try {
       const supplierResponse = await axios.get(
         // 'http://192.168.0.10:8181/inventoryApp/getSuppliers',
-        'http://172.30.1.14:8181/inventoryApp/getSuppliers',
+        'http://localhost:8181/inventoryApp/getSuppliers',
       );
 
       setSupplierItems(
@@ -59,7 +59,6 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
       setLoading(false);
     }
   };
-
   console.log('valueSupplier:', valueSupplier);
 
   useEffect(() => {
@@ -73,7 +72,7 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
         try {
           const supplierListResponse = await axios.get(
             // `http://192.168.0.10:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
-            `http://172.30.1.14:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
+            `http://localhost:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
           );
           setManagerName(supplierListResponse.data.managerName || '');
           setManagerPhone(supplierListResponse.data.managerPhone || '');
@@ -218,7 +217,7 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
       <InventoryItem
         modalVisible={modalVisible}
         closeModal={closeModal}
-        addItem={handleAddItem} // InventoryItem에 handleAddItem 전달
+        addItem={handleAddItem}
         supplierNo={valueSupplier}
         style={styles.modalContainer}
       />

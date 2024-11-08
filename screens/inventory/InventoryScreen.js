@@ -13,11 +13,6 @@ function InventoryScreen() {
     setSearchKeyword(keyword);
   };
 
-  // 구매 등록 후 목록에 추가
-  const addPurchaseItem = newItem => {
-    setPurchaseList(prevList => [...prevList, newItem]);
-  };
-
   return (
     <View style={styles.block}>
       <InventorySearchFrame onSearch={handleSearch} />
