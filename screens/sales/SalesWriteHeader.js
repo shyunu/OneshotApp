@@ -42,7 +42,7 @@ function SalesWriteHeader({onResetFields, onRegist}) {
       {
         text: '확인',
         onPress: () => {
-          console.log('onRegist 호출됨'); // 로그 추가
+
 
           if (onRegist) {
             onRegist();
