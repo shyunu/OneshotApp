@@ -28,7 +28,6 @@ function ContractList({search}) {
           )}`
         : 'http://172.30.1.28:8181/contractApp/getContractPriceList'; // search가 없을 경우 전체 조회 경로
       const response = await axios.get(url);
-      console.log(response.data);
       const updatedItems = response.data.map((item, index) => ({
         ...item,
         contractSdate: convertToLocalDate(item.contractSdate),
