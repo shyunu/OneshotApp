@@ -18,6 +18,9 @@ function InventoryList({searchKeyword}) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  // 초기 로딩 여부 확인
+  const [hasFetched, setHasFetched] = useState(false);
+
   // 천단위 콤마
   const formatNumber = value => {
     if (!value) return '0';
@@ -49,14 +52,14 @@ function InventoryList({searchKeyword}) {
 
   useFocusEffect(
     useCallback(() => {
-      fetchPurchaseList();
-    }, [fetchPurchaseList]),
+      // 목록이 아직 로드되지 않았거나, 검색어가 변경된 경우에만 호출
+      if (!hasFetched || searchKeyword) {
+        fetchPurchaseList();
+        setHasFetched(true); // 목록이 한 번 로드된 후 상태 업데이트
+      }
+      // 초기 로딩 및 검색어 변경 시 목록 조회
+    }, [searchKeyword]),
   );
-
-  // 초기 로딩 및 검색어 변경 시 목록 조회
-  useEffect(() => {
-    fetchPurchaseList();
-  }, [searchKeyword]);
 
   // 새로고침
   const onRefresh = React.useCallback(() => {

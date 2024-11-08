@@ -68,13 +68,19 @@ function ProductList({}) {
                   <Text style={styles.infoText}>상품명</Text>
                   <Text style={styles.infoText}>{item.productName}</Text>
                   <Text style={styles.infoText}>총재고수량 </Text>
-                  <Text style={styles.infoText}>개</Text>
+                  <Text style={styles.infoText}>
+                    {formatNumber(item.inventoryQuantity)}개
+                  </Text>
                 </View>
                 <View style={styles.infoRow}>
                   <Text style={styles.infoText}>안전재고수량</Text>
-                  <Text style={styles.infoText}>원</Text>
+                  <Text style={styles.infoText}>
+                    {formatNumber(item.safetyQuantity)}개
+                  </Text>
                   <Text style={styles.infoText}>판매가격</Text>
-                  <Text style={styles.infoText}>원</Text>
+                  <Text style={styles.infoText}>
+                    {formatNumber(item.productPrice)}원
+                  </Text>
                 </View>
               </View>
             </View>
