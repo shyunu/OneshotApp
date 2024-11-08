@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
   Dimensions,
@@ -6,16 +6,23 @@ import {
   Text,
   ScrollView,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import {PieChart, BarChart} from 'react-native-chart-kit';
 import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
+
+
 const HomeScreen = () => {
   const screenWidth = Dimensions.get('window').width;
-  const [contractCount, setContractCount] = useState(0); //계약건수
-  const [salesCount, setSalesCount] = useState(0); //판매건수
+  const [contractCount, setContractCount] = useState(0); // 계약건수
+  const [salesCount, setSalesCount] = useState(0); // 판매건수
   const [quarterlyData, setQuarterlyData] = useState([0, 0, 0, 0]); // 분기별 매출액
-  const [achievementRate, setAchievementRate] = useState(0); //목표량 달성률
+  const [achievementRate, setAchievementRate] = useState(0); // 목표량 달성률
   const [goalAmount, setGoalAmount] = useState('15000000'); // 목표 금액 (기본 값은 1500만원)
+  const [tempGoalAmount, setTempGoalAmount] = useState(goalAmount); // 임시 목표 금액
+  const [isEditing, setIsEditing] = useState(false); // 목표 금액 편집 상태
+
   // API 호출
   const fetchCounts = async () => {
     try {
@@ -23,41 +30,50 @@ const HomeScreen = () => {
         'http://localhost:8181/homeApp/contractCount',
       );
       setContractCount(contractResponse.data);
+
       const salesResponse = await axios.get(
         'http://localhost:8181/homeApp/salesCount',
       );
       setSalesCount(salesResponse.data);
+
       // 분기별 매출액 가져오기
       const quarterlyResponse = await axios.get(
         'http://localhost:8181/homeApp/getQuarterlyOrderAmount',
       );
       const amounts = quarterlyResponse.data.map(item => item.total_amount);
       setQuarterlyData(amounts);
+
       const totalAmount = amounts.reduce((acc, amount) => acc + amount, 0);
       calculateAchievementRate(totalAmount); // 매출액에 따라 목표달성률 계산
     } catch (error) {
       console.error('Error fetching counts:', error);
     }
   };
+
   // 목표 달성률 계산
   const calculateAchievementRate = totalAmount => {
     const rate = (totalAmount / parseFloat(goalAmount)) * 100;
     setAchievementRate(rate);
   };
+
+  // 화면 포커스 시 데이터 갱신
+  useFocusEffect(
+    useCallback(() => {
+      fetchCounts();
+    }, [])
+  );
+
   useEffect(() => {
-    fetchCounts();
-  }, []);
-  // 목표 금액이 변경될 때마다 목표 달성률 재계산
-  useEffect(() => {
-    if (goalAmount && !isNaN(goalAmount)) {
+    if (!isEditing && goalAmount && !isNaN(goalAmount)) {
       const totalAmount = quarterlyData.reduce(
         (acc, amount) => acc + amount,
         0,
       );
       calculateAchievementRate(totalAmount);
     }
-  }, [goalAmount, quarterlyData]);
-  //세로막대차트(분기별 매출액)
+  }, [goalAmount, quarterlyData, isEditing]);
+
+  // 세로막대차트(분기별 매출액)
   const barData = {
     labels: ['1분기', '2분기', '3분기', '4분기'],
     datasets: [
@@ -66,12 +82,12 @@ const HomeScreen = () => {
       },
     ],
   };
-  //파이차트(3분기 목표판매량도달률)
+
+  // 파이차트(목표 달성률)
   const pieData = [
     {
       name: '달성률(%)',
       population: achievementRate,
-      // color: '#00569A',
       color: 'rgba(0, 86, 154, 0.5)',
       legendFontColor: '#7F7F7F',
       legendFontSize: 15,
@@ -84,6 +100,13 @@ const HomeScreen = () => {
       legendFontSize: 15,
     },
   ];
+
+  // 목표 금액 저장 함수
+  const handleSaveGoalAmount = () => {
+    setGoalAmount(tempGoalAmount);
+    setIsEditing(false); // 편집 모드 비활성화
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
@@ -98,6 +121,7 @@ const HomeScreen = () => {
             <Text style={styles.cardCount}>{salesCount}</Text>
           </View>
         </View>
+
         <Text style={styles.titleText}>분기별 매출액</Text>
         <BarChart
           style={styles.barChart}
@@ -116,14 +140,32 @@ const HomeScreen = () => {
           }}
           verticalLabelRotation={0}
         />
+
         <Text style={styles.titleText}>목표판매량</Text>
-        <TextInput
-          style={styles.input}
-          value={goalAmount}
-          onChangeText={setGoalAmount}
-          keyboardType="numeric"
-          placeholder="목표 금액 입력"
-        />
+        <View style={styles.goalInputContainer}>
+          <TextInput
+            style={[
+              styles.input, 
+              {backgroundColor: isEditing ? '#fff' : '#F8F8F8'}, // 편집 상태에 따라 배경색 변경
+            ]}
+            value={tempGoalAmount}
+            onChangeText={setTempGoalAmount}
+            keyboardType="numeric"
+            placeholder="목표 금액 입력"
+            editable={isEditing}
+          />
+          <TouchableOpacity
+            style={styles.changeButton}
+            onPress={() => {
+              if (isEditing) handleSaveGoalAmount();
+              setIsEditing(!isEditing);
+            }}>
+            <Text style={styles.changeButtonText}>
+              {isEditing ? '저장' : '변경'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <PieChart
           data={pieData}
           width={screenWidth - 50}
@@ -140,14 +182,15 @@ const HomeScreen = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff', // 전체 배경색 설정
+    backgroundColor: '#fff',
   },
   scrollView: {
     padding: 20,
-    backgroundColor: '#fff', // ScrollView 배경색 설정
+    backgroundColor: '#fff',
     flexGrow: 1,
   },
   titleText: {
@@ -161,8 +204,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   todayWrap: {
-    flexDirection: 'row', // 행 기준으로 정렬
-    justifyContent: 'space-between', // 카드 간 간격을 균일하게 조정
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   card: {
@@ -192,12 +235,30 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     left: 60,
   },
+  goalInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   input: {
+    flex: 1,
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#e3e3e3',
     borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
   },
+  changeButton: {
+    marginLeft: 10,
+    backgroundColor: '#00569A',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  changeButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
+
 export default HomeScreen;

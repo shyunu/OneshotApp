@@ -6,14 +6,14 @@ import ProductWriteEditor from './ProductWriteEditor';
 
 function ProductWriteScreen() {
   return (
-    <SafeAreaView style={StyleSheet.block}>
+    <SafeAreaView style={styles.block}>
       <ProductWriteHeader />
       <ProductWriteEditor />
     </SafeAreaView>
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   block: {
     flex: 1,
     backgroundColor: 'white',

@@ -27,7 +27,7 @@ function InventoryWriteHeader({
 
   // 초기화 버튼
   const onReset = () => {
-    Alert.alert('경고', '정말로 초기화하시겠습니까?', [
+    Alert.alert('경고', '초기화하시겠습니까?', [
       {text: '취소', style: 'cancel'},
       {
         text: '확인',
@@ -71,7 +71,7 @@ function InventoryWriteHeader({
       console.log('구매 데이터:', purchaseData);
 
       const response = await axios.post(
-        'http://172.30.1.11:8181/inventoryApp/registerPurchase',
+        'http://172.30.1.14:8181/inventoryApp/registerPurchase',
         // 'http://192.168.0.10:8181/inventoryApp/registerPurchase',
         purchaseData,
       );
