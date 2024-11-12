@@ -19,8 +19,8 @@ function InventorySearchFrame({onSearch}) {
 
   // 검색 초기화
   function onDeleteAll() {
-    setSearch('');
-    onSearch(''); // 검색어 초기화 시 빈 문자열로 검색
+    setSearch(''); // 검색어 초기화
+    onSearch(''); // 검색어가 비어 있으면 전체 목록 조회
   }
 
   return (

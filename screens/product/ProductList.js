@@ -26,7 +26,7 @@ function ProductList({searchKeyword}) {
     return parseInt(value, 10).toLocaleString('ko-KR');
   };
 
-  const fetchProductList = async () => {
+  const fetchProductList = async searchKeyword => {
     try {
       const productListResponse = await axios.get(
         `http://192.168.0.10:8181/productApp/productList`,
@@ -45,23 +45,25 @@ function ProductList({searchKeyword}) {
     }
   };
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (!hasFetched || searchKeyword) {
+  //       fetchProductList();
+  //       setHasFetched(true);
+  //     }
+  //   }, [searchKeyword]),
+  // );
+
   useFocusEffect(
     useCallback(() => {
-      if (!hasFetched || searchKeyword) {
-        fetchProductList();
-        setHasFetched(true);
-      }
+      fetchProductList(searchKeyword);
     }, [searchKeyword]),
   );
 
-  // function openModal(productNo) {
-  //   setSelectedProductNo(productNo); // 상품 번호 설정
-  //   setModalIsVisible(true);
-  // }
-
-  // function closeModal() {
-  //   setModalIsVisible(false);
-  // }
+  function onSearch(searchKeyword) {
+    setSearchKeyword(searchKeyword);
+    fetchProductList(searchKeyword);
+  }
 
   const openModal = product => {
     setSelectedProductNo(product);

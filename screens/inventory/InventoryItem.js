@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
@@ -125,6 +127,15 @@ function InventoryItem({modalVisible, closeModal, addItem, supplierNo}) {
     }
   }, [purchasePrice, purchaseQuantity]);
 
+  useEffect(() => {
+    setPurchaseQuantity('');
+    setPurchasePrice('');
+    setSubTotal('');
+    setDisplayQuantity('');
+    setDisplayPrice('');
+    setDisplaySubTotal('');
+  }, [valueCategory, valueProduct]);
+
   // 상품 추가
   const handleAddItem = () => {
     if (valueCategory && valueProduct && purchaseQuantity && purchasePrice) {
@@ -156,115 +167,133 @@ function InventoryItem({modalVisible, closeModal, addItem, supplierNo}) {
     setDisplayPrice('');
     setDisplayQuantity('');
     setSubTotal('');
+    setProductItems([]);
+    setOpenCategory(false); // 카테고리 드롭다운 닫기
+    setOpenProduct(false); // 상품 드롭다운 닫기
   }
+
+  // 모달이 닫힐 때 초기화
+  useEffect(() => {
+    if (!modalVisible) {
+      resetModal();
+    }
+  }, [modalVisible]);
 
   return (
     // {/* 모달팝업 */}
     <Modal
       transparent={true}
       visible={modalVisible}
-      onRequestClose={closeModal}>
+      // onRequestClose={closeModal}>
+      onRequestClose={() => {
+        resetModal();
+        closeModal();
+      }}>
       <View style={styles.modalContainer}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{flex: 1}}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
-          {/* 안드보다 아이폰에 offset을 줘야 버튼 바가 가려지지 않음 */}
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>상품 추가</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{flex: 1}}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>상품 추가</Text>
 
-            <Text style={styles.text}>카테고리</Text>
-            <DropDownPicker
-              open={openCategory}
-              value={valueCategory}
-              items={categoryItems}
-              setOpen={setOpenCategory}
-              setValue={setValueCategory}
-              setItems={setCategoryItems}
-              style={styles.dropdown}
-              placeholder="카테고리를 선택하세요"
-              zIndex={300}
-              dropDownContainerStyle={styles.dropdownContainer}
-            />
+              <Text style={styles.text}>카테고리</Text>
+              <DropDownPicker
+                open={openCategory}
+                value={valueCategory}
+                items={categoryItems}
+                setOpen={setOpenCategory}
+                setValue={setValueCategory}
+                setItems={setCategoryItems}
+                style={styles.dropdown}
+                placeholder="카테고리를 선택하세요"
+                zIndex={300}
+                dropDownContainerStyle={styles.dropdownContainer}
+              />
 
-            <Text style={styles.text}>상품명</Text>
-            <DropDownPicker
-              open={openProduct}
-              value={valueProduct}
-              items={productItems}
-              setOpen={setOpenProduct}
-              setValue={setValueProduct}
-              setItems={setProductItems}
-              zIndex={200}
-              style={styles.dropdown}
-              placeholder="상품을 선택하세요"
-              dropDownContainerStyle={styles.dropdownContainer}
-            />
+              <Text style={styles.text}>상품명</Text>
+              <DropDownPicker
+                open={openProduct}
+                value={valueProduct}
+                items={productItems}
+                setOpen={setOpenProduct}
+                setValue={setValueProduct}
+                setItems={setProductItems}
+                zIndex={200}
+                style={styles.dropdown}
+                placeholder="상품을 선택하세요"
+                dropDownContainerStyle={styles.dropdownContainer}
+              />
 
-            <Text style={styles.text}>구매수량</Text>
-            <TextInput
-              placeholder="구매수량을 입력하세요"
-              style={styles.input}
-              value={displayQuantity}
-              onChangeText={value =>
-                handleInputChange('purchaseQuantity', value)
-              }
-              keyboardType="number-pad"
-            />
+              <Text style={styles.text}>구매수량</Text>
+              <TextInput
+                placeholder="구매수량을 입력하세요"
+                style={styles.input}
+                value={displayQuantity}
+                onChangeText={value =>
+                  handleInputChange('purchaseQuantity', value)
+                }
+                keyboardType="number-pad"
+              />
 
-            <Text style={styles.text}>구매가격</Text>
-            <TextInput
-              placeholder="구매가격을 입력하세요"
-              style={styles.input}
-              value={displayPrice}
-              onChangeText={value => handleInputChange('purchasePrice', value)}
-              keyboardType="number-pad"
-            />
+              <Text style={styles.text}>구매가격</Text>
+              <TextInput
+                placeholder="구매가격을 입력하세요"
+                style={styles.input}
+                value={displayPrice}
+                onChangeText={value =>
+                  handleInputChange('purchasePrice', value)
+                }
+                keyboardType="number-pad"
+              />
 
-            <Text style={styles.text}>소계</Text>
-            <TextInput
-              style={[styles.input, styles.disable]}
-              editable={false}
-              value={subTotal ? formatNumber(subTotal) + '원' : ''}
-              onChangeText={setSubTotal}
-            />
+              <Text style={styles.text}>소계</Text>
+              <TextInput
+                style={[styles.input, styles.disable]}
+                editable={false}
+                value={subTotal ? formatNumber(subTotal) + '원' : ''}
+                onChangeText={setSubTotal}
+              />
 
-            <FlatList
-              data={items}
-              keyExtractor={item => index.toString()}
-              renderItem={({item}) => (
-                <View style={styles.itemContainer}>
-                  <Text>
-                    {item.category} - {item.product}
-                  </Text>
-                  <Text>
-                    {item.displayQuantity} | {item.displayPrice}
-                  </Text>
-                  <Text>소계: {item.displaySubTotal}</Text>
-                </View>
-              )}
-              style={styles.itemList}
-            />
+              <FlatList
+                data={items}
+                keyExtractor={item => index.toString()}
+                renderItem={({item}) => (
+                  <View style={styles.itemContainer}>
+                    <Text>
+                      {item.category} - {item.product}
+                    </Text>
+                    <Text>
+                      {item.displayQuantity} | {item.displayPrice}
+                    </Text>
+                    <Text>소계: {item.displaySubTotal}</Text>
+                  </View>
+                )}
+                style={styles.itemList}
+              />
 
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => {
-                  closeModal();
-                  resetModal();
-                }}>
-                <Text style={styles.modalButtonText}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={[styles.modalButton, styles.confirmButton]}
-                onPress={handleAddItem}>
-                <Text style={styles.modalButtonText}>추가</Text>
-              </TouchableOpacity>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={[styles.modalButton, styles.cancelButton]}
+                  // onPress={handleCloseModal}>
+                  onPress={() => {
+                    resetModal();
+                    closeModal();
+                  }}>
+                  <Text style={styles.modalButtonText}>취소</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={[styles.modalButton, styles.confirmButton]}
+                  onPress={handleAddItem}>
+                  <Text style={styles.modalButtonText}>추가</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
       </View>
     </Modal>
   );
@@ -317,8 +346,9 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 8,
     maxHeight: '80%',
+    marginHorizontal: 20,
+    overflow: 'scroll', // 내용이 넘칠 때 스크롤 활성화
     margin: 20,
-    // marginVertical: 'auto',
     marginTop: 150,
   },
   modalTitle: {
@@ -355,6 +385,7 @@ const styles = StyleSheet.create({
   },
   itemList: {
     maxHeight: 200, // 스크롤 가능한 영역 높이
+    overflow: 'scroll',
   },
   itemContainer: {
     borderBottomWidth: 1,
