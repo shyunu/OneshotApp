@@ -205,9 +205,7 @@ function InventoryItem({modalVisible, closeModal, addItem, supplierNo}) {
             <TextInput
               placeholder="구매수량을 입력하세요"
               style={styles.input}
-              // value={purchaseQuantity}
               value={displayQuantity}
-              // onChangeText={setPurchaseQuantity}
               onChangeText={value =>
                 handleInputChange('purchaseQuantity', value)
               }
@@ -218,9 +216,7 @@ function InventoryItem({modalVisible, closeModal, addItem, supplierNo}) {
             <TextInput
               placeholder="구매가격을 입력하세요"
               style={styles.input}
-              // value={purchasePrice}
               value={displayPrice}
-              // onChangeText={setPurchasePrice}
               onChangeText={value => handleInputChange('purchasePrice', value)}
               keyboardType="number-pad"
             />
@@ -255,7 +251,6 @@ function InventoryItem({modalVisible, closeModal, addItem, supplierNo}) {
                 activeOpacity={0.8}
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={() => {
-                  // setModalVisible(false);
                   closeModal();
                   resetModal();
                 }}>
