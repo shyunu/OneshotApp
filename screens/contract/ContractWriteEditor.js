@@ -26,11 +26,9 @@ function ContractWriteEditor({
   setSelectedEndDate,
   contractPrice,
   setContractPrice,
-  imageUri,
   setImageUri,
   fileName,
   setFileName,
-  fileType,
   setFileType,
   contractItems,
   setContractItems,
@@ -142,10 +140,13 @@ function ContractWriteEditor({
   };
 
   const formatCurrency = amount => {
-    if (isNaN(amount) || amount === null) return '- 원';
-    return `${parseInt(amount, 10)
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원`;
+    if (amount == null || isNaN(amount)) return '';
+    return `${amount.toLocaleString('ko-KR')} 원`;
+  };
+
+  const handleContractPriceChange = value => {
+    const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
+    setContractPrice(isNaN(numericValue) ? 0 : numericValue);
   };
 
   const selectImage = () => {
@@ -218,6 +219,7 @@ function ContractWriteEditor({
           <DateTimePickerModal
             isVisible={isStartDatePickerVisible}
             mode="date"
+            display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
             maximumDate={
               selectedEndDate ? new Date(selectedEndDate) : undefined
             }
@@ -241,6 +243,7 @@ function ContractWriteEditor({
           <DateTimePickerModal
             isVisible={isEndDatePickerVisible}
             mode="date"
+            display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
             minimumDate={
               selectedStartDate ? new Date(selectedStartDate) : undefined
             }
@@ -254,8 +257,8 @@ function ContractWriteEditor({
         style={styles.contractPriceTextInput}
         placeholder="계약가격을 입력하세요"
         keyboardType="numeric"
-        value={contractPrice}
-        onChangeText={setContractPrice}
+        value={formatCurrency(contractPrice)}
+        onChangeText={handleContractPriceChange}
       />
       <Text style={styles.text}>첨부파일</Text>
       <View style={styles.contractFileBox}>
@@ -309,12 +312,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-
   text: {
     fontSize: 16,
     marginBottom: 8,
   },
-
   dropdown: {
     minHeight: 40,
     borderColor: '#ced4da',
@@ -324,13 +325,11 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     borderColor: '#ced4da',
   },
-
   dateBox: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
   },
-
   contractPriceTextInput: {
     height: 40,
     borderColor: '#ced4da',
@@ -339,7 +338,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
   },
-
   contractDateTextInput: {
     height: 40,
     width: 120,
@@ -358,7 +356,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
-
   contractFileBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -382,18 +379,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
-
   icon: {
     color: 'white',
   },
-
   loader: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  // 테이블 화면
   tableHeader: {
     flexDirection: 'row',
     height: 40,
