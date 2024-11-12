@@ -111,8 +111,10 @@ function ContractList({search}) {
                 <Text style={styles.infoShortText}>
                   {formatCurrency(item.contractPrice)}
                 </Text>
-                <Text style={styles.infoShortText}>활성화</Text>
-                <Text style={styles.infoShortText}>비활성화</Text>
+                <Text style={styles.infoShortText}>계약상태</Text>
+                <Text style={styles.infoShortText}>
+                  {item.contractPriceStatus}
+                </Text>
               </View>
               <View style={styles.infoRow}>
                 <Text style={styles.infoShortText}>계약시작일</Text>

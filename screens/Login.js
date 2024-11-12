@@ -1,31 +1,48 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Image,
   Text,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 
 function Login() {
+  const [id, setId] = useState('');
+  const [pw, setPw] = useState('');
+
   const navigation = useNavigation();
   function onLogin() {
-    navigation.navigate('MainTab');
+    if (id.trim() === '1' && pw.trim() === '010101') {
+      navigation.navigate('MainTab');
+    } else {
+      Alert.alert(
+        '로그인 실패\n',
+        '계정 정보가 일치하지 않습니다.\n다시 확인 후 입력해 주세요.\n',
+      );
+    }
   }
+
   return (
     <SafeAreaView style={styles.block}>
       <Image source={require('../assets/logo-long.png')} style={styles.logo} />
       <Text style={styles.title}>ERP시스템 이용을 위해 로그인해주세요</Text>
-      {/* <Text syle={styles.title}>LOGIN</Text> */}
-      <TextInput style={styles.input} placeholder="아이디를 입력하세요" />
-      <TextInput style={styles.input} placeholder="비밀번호를 입력하세요" />
-
-      <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.buttonText} onPress={onLogin}>
-          로그인
-        </Text>
+      <TextInput
+        onChangeText={setId}
+        style={styles.input}
+        placeholder="아이디를 입력하세요"
+      />
+      <TextInput
+        onChangeText={setPw}
+        style={styles.input}
+        placeholder="비밀번호를 입력하세요"
+        secureTextEntry={true} // 비밀번호 보안 설정
+      />
+      <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
+        <Text style={styles.buttonText}>로그인</Text>
       </TouchableOpacity>
       <Text style={{fontSize: 14, marginTop: 30}}>
         © 2024 All Rights Reserved.
@@ -75,7 +92,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 20,
     backgroundColor: '#00569A',
-    TouchableOpacity: 0.8,
+    opacity: 0.8,
   },
   buttonText: {
     color: '#fff',

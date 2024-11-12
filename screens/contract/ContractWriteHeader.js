@@ -35,15 +35,28 @@ function ContractWriteHeader({
   };
 
   const onReset = () => {
-    setClientNo(null);
-    setProductNo(null);
-    setSelectedStartDate('');
-    setSelectedEndDate('');
-    setContractPrice('');
-    setContractItems([]);
-    setImageUri(null);
-    setFileName('');
-    setFileType('');
+    Alert.alert(
+      '경고\n',
+      '초기화하시겠습니까?\n',
+      [
+        {text: '취소', style: 'cancel'},
+        {
+          text: '확인',
+          onPress: () => {
+            setClientNo(null);
+            setProductNo(null);
+            setSelectedStartDate('');
+            setSelectedEndDate('');
+            setContractPrice('');
+            setContractItems([]);
+            setImageUri(null);
+            setFileName('');
+            setFileType('');
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   const formData = new FormData();
@@ -58,7 +71,7 @@ function ContractWriteHeader({
   formData.append('selectedEndDate', selectedEndDate);
   formData.append('contractPrice', contractPrice);
 
-  const onsubmit = async () => {
+  const onSubmitConfirmed = async () => {
     setLoading(true); // 로딩 상태 활성화
     try {
       const response = await axios.post(
@@ -79,6 +92,17 @@ function ContractWriteHeader({
       setLoading(false); // 로딩 상태 비활성화
     }
     onGoBack();
+  };
+
+  const onsubmit = () => {
+    if (clientNo == null || clientNo == '') {
+      Alert.alert('확인\n', '모든 내용을 입력해 주세요.\n');
+    } else {
+      Alert.alert('확인\n', '판매를 등록하시겠습니까?\n', [
+        {text: '취소', style: 'cancel'},
+        {text: '확인', onPress: onSubmitConfirmed},
+      ]);
+    }
   };
 
   return (
