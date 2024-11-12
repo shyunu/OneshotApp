@@ -89,18 +89,33 @@ function ProductWriteScreen() {
     setSafetyQuantity(numberOnly);
   };
 
-  const handleImageSelect = image => {
-    console.log('이미지 선택:', image);
-    if (typeof image === 'string') {
-      // 문자열로 들어온 경우 객체로 변환
-      setProductImgApp({
-        uri: image,
-        type: 'image/jpeg',
-        name: image.split('/').pop(),
-      });
-    } else {
-      setProductImgApp(image);
-    }
+  const handleImageSelect = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quality: 1,
+        includeBase64: true,
+      },
+      response => {
+        if (response.didCancel) {
+          console.log('사용자가 이미지를 선택하지 않았습니다.');
+        } else if (response.errorMessage) {
+          console.log('이미지 선택 에러:', response.errorMessage);
+        } else {
+          if (response.assets && response.assets.length > 0) {
+            const selectedImage = response.assets[0];
+            console.log(
+              '선택된 이미지: fileName:',
+              selectedImage.fileName,
+              'type:',
+              selectedImage.type,
+            );
+            // 이미지 관련 데이터만 출력하도록 수정
+            setProductImgApp(selectedImage);
+          }
+        }
+      },
+    );
   };
 
   return (
@@ -120,8 +135,7 @@ function ProductWriteScreen() {
         setProductName={setProductName}
         setProductPrice={handleProductPriceChange}
         setSafetyQuantity={handleSafetyQuantityChange}
-        setProductImgApp={setProductImgApp} // 상태 업데이트 함수
-        handleImageSelect={handleImageSelect} // 이미지 선택 함수 전달
+        setProductImgApp={setProductImgApp}
       />
       <ProductWriteEditor
         supplierNo={supplierNo}
@@ -134,7 +148,7 @@ function ProductWriteScreen() {
         setProductName={setProductName}
         setProductPrice={handleProductPriceChange}
         setSafetyQuantity={handleSafetyQuantityChange}
-        setProductImgApp={handleImageSelect}
+        setProductImgApp={setProductImgApp}
         items={items}
       />
     </SafeAreaView>

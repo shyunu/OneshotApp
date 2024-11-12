@@ -29,7 +29,7 @@ function ProductList({searchKeyword}) {
   const fetchProductList = async () => {
     try {
       const productListResponse = await axios.get(
-        `http://172.30.1.21:8181/productApp/productList`,
+        `http://192.168.0.10:8181/productApp/productList`,
         {
           params: {searchKeyword},
         },

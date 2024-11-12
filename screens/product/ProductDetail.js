@@ -25,16 +25,18 @@ function ProductDetail({isVisible, onClose, productNo}) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://172.30.1.21:8181/productApp/displayImg/${productNo}`,
+        `http://192.168.0.10:8181/productApp/displayImg/${productNo}`,
       );
-      if (response.data) {
-        const base64Image = `data:image/jpeg;base64,${response.data}`;
+      if (response.data && response.data.imageData) {
+        const base64Image = `data:image/jpeg;base64,${response.data.imageData}`;
         setImageData(base64Image);
       } else {
         console.log('이미지 데이터가 없습니다.');
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
