@@ -16,7 +16,6 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import {launchImageLibrary} from 'react-native-image-picker';
-import RNFS from 'react-native-fs';
 
 function ProductWriteEditor({
   supplierNo,
