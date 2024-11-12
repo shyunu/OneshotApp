@@ -29,7 +29,6 @@ function InventoryWriteScreen() {
         items={items}
         setItems={setItems}
         setLoading={setLoading}
-        // addPurchaseItem={addPurchaseItem}
       />
       <InventoryWriteEditor
         supplierNo={supplierNo}

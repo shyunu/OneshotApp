@@ -17,6 +17,7 @@ function InventorySearchFrame({onSearch}) {
     onSearch(search); // 입력된 검색어를 onSearch에 전달
   };
 
+  // 검색 초기화
   function onDeleteAll() {
     setSearch('');
     onSearch(''); // 검색어 초기화 시 빈 문자열로 검색

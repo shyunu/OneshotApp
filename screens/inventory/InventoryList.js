@@ -62,10 +62,10 @@ function InventoryList({searchKeyword}) {
   );
 
   // 새로고침
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    fetchPurchaseList(searchKeyword).then(() => setRefreshing(false));
-  }, [searchKeyword]);
+  // const onRefresh = React.useCallback(() => {
+  //   setRefreshing(true);
+  //   fetchPurchaseList(searchKeyword).then(() => setRefreshing(false));
+  // }, [searchKeyword]);
 
   if (loading) {
     return (

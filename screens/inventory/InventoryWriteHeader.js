@@ -17,7 +17,7 @@ function InventoryWriteHeader({
   setLoading,
 }) {
   const navigation = useNavigation();
-  const [valueSupplier, setValueSupplier] = useState(supplierNo);
+  // const [valueSupplier, setValueSupplier] = useState(supplierNo);
 
   const onGoBack = () => {
     if (navigation.canGoBack()) {
@@ -52,11 +52,11 @@ function InventoryWriteHeader({
   const ConfirmCheck = async () => {
     console.log('아이템: ', items);
     if (!items || items.length === 0) {
-      Alert.alert('오류', '등록할 상품을 추가해주세요.');
+      Alert.alert('오류\n', '등록할 상품을 추가해주세요');
       return;
     }
     if (!supplierNo) {
-      Alert.alert('오류', '공급업체를 선택해주세요.');
+      Alert.alert('오류', '공급업체를 선택해주세요');
       return;
     }
     setLoading(false);

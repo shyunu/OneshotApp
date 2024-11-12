@@ -9,35 +9,39 @@ import InventoryScreen from './inventory/InventoryScreen';
 import ProductScreen from './product/ProductScreen';
 import SalesScreen from './sales/SalesScreen';
 
-// 스택 네비게이터 생성
 const Tab = createBottomTabNavigator();
 const InventoryStack = createNativeStackNavigator();
 
 function InventoryStackScreen() {
   return (
-    <InventoryStack.Navigator screenOptions={{headerTitle: '재고관리'}}>
+    <InventoryStack.Navigator>
       <InventoryStack.Screen
-        name="재고관리"
-        component={InventoryScreen}
-        options={{headerTitle: '재고관리'}}
-      />
-      <InventoryStack.Screen
-        name="구매관리"
+        name="InventoryMain"
         component={InventoryScreen}
         options={{
-          headerTitle: '구매관리',
-          headerLeft: null, // 뒤로 가기 버튼 제거
-          headerBackVisible: false, // 뒤로 가기 버튼 제거
+          headerTitle: () => <Text>재고관리</Text>,
         }}
       />
       <InventoryStack.Screen
-        name="상품관리"
-        component={ProductScreen}
-        options={{
-          headerTitle: '상품관리',
+        name="Purchase"
+        component={InventoryScreen}
+        options={({navigation}) => ({
+          headerTitle: () => <Text style={styles.headerTitle}>구매관리</Text>,
           headerLeft: null,
           headerBackVisible: false,
-        }}
+          // 부모 헤더 숨기기
+          headerShown: true,
+        })}
+      />
+      <InventoryStack.Screen
+        name="Product"
+        component={ProductScreen}
+        options={({navigation}) => ({
+          headerTitle: () => <Text style={styles.headerTitle}>상품관리</Text>,
+          headerLeft: null,
+          headerBackVisible: false,
+          headerShown: true,
+        })}
       />
     </InventoryStack.Navigator>
   );
@@ -75,12 +79,12 @@ function TabPopupMenu({visible, onSelect, style}) {
       ]}>
       <TouchableOpacity
         style={styles.selectorButton}
-        onPress={() => onSelect('구매관리')}>
+        onPress={() => onSelect('Purchase')}>
         <Text style={styles.selectorText}>구매관리</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.selectorButton}
-        onPress={() => onSelect('상품관리')}>
+        onPress={() => onSelect('Product')}>
         <Text style={styles.selectorText}>상품관리</Text>
       </TouchableOpacity>
     </Animated.View>
@@ -92,13 +96,11 @@ function MainTab({navigation}) {
 
   const handleInventorySelect = screen => {
     setShowPopup(false);
-
-    // InventoryStack 내에서 네비게이션
-    if (screen === '구매관리') {
-      navigation.navigate('재고관리', {screen: '구매관리'});
-    } else if (screen === '상품관리') {
-      navigation.navigate('재고관리', {screen: '상품관리'});
-    }
+    // 부모 헤더를 숨기는 옵션 추가
+    navigation.navigate('InventoryStack', {
+      screen: screen,
+      params: {},
+    });
   };
 
   return (
@@ -109,22 +111,31 @@ function MainTab({navigation}) {
           headerStyle: styles.header,
         }}>
         <Tab.Screen
-          name="홈"
+          name="Home"
           component={HomeScreen}
           options={{
+            tabBarLabel: ({color}) => (
+              <Text style={[styles.tabLabel, {color}]}>홈</Text>
+            ),
             tabBarIcon: ({color, size}) => (
               <Icon name="home" size={size} color={color} />
             ),
+            headerTitle: () => <Text style={styles.headerTitle}>홈</Text>,
           }}
         />
         <Tab.Screen
-          name="재고관리"
+          name="InventoryStack"
           component={InventoryStackScreen}
           options={{
+            tabBarLabel: ({color}) => (
+              <Text style={[styles.tabLabel, {color}]}>재고관리</Text>
+            ),
             tabBarIcon: ({color, size}) => (
               <Icon name="inventory" size={size} color={color} />
             ),
-            headerTitle: '재고관리',
+            headerTitle: () => <Text style={styles.headerTitle}>재고관리</Text>,
+            // 하위 스크린에서 부모 헤더 숨기기
+            headerShown: false,
           }}
           listeners={{
             tabPress: e => {
@@ -134,21 +145,29 @@ function MainTab({navigation}) {
           }}
         />
         <Tab.Screen
-          name="계약관리"
+          name="Contract"
           component={ContractScreen}
           options={{
+            tabBarLabel: ({color}) => (
+              <Text style={[styles.tabLabel, {color}]}>계약관리</Text>
+            ),
             tabBarIcon: ({color, size}) => (
               <Icon name="description" size={size} color={color} />
             ),
+            headerTitle: () => <Text style={styles.headerTitle}>계약관리</Text>,
           }}
         />
         <Tab.Screen
-          name="판매관리"
+          name="Sales"
           component={SalesScreen}
           options={{
+            tabBarLabel: ({color}) => (
+              <Text style={[styles.tabLabel, {color}]}>판매관리</Text>
+            ),
             tabBarIcon: ({color, size}) => (
               <Icon name="sell" size={size} color={color} />
             ),
+            headerTitle: () => <Text style={styles.headerTitle}>판매관리</Text>,
           }}
         />
       </Tab.Navigator>
@@ -178,6 +197,14 @@ const styles = StyleSheet.create({
     padding: 5,
     width: '35%',
     alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   selectorButton: {
     paddingVertical: 10,
@@ -193,6 +220,13 @@ const styles = StyleSheet.create({
   selectorText: {
     fontSize: 15,
     color: '#333',
+  },
+  tabLabel: {
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  headerTitle: {
+    fontSize: 20,
   },
 });
 
