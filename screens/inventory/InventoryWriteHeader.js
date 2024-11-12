@@ -17,7 +17,6 @@ function InventoryWriteHeader({
   setLoading,
 }) {
   const navigation = useNavigation();
-  // const [valueSupplier, setValueSupplier] = useState(supplierNo);
 
   const onGoBack = () => {
     if (navigation.canGoBack()) {
@@ -27,7 +26,7 @@ function InventoryWriteHeader({
 
   // 초기화 버튼
   const onReset = () => {
-    Alert.alert('경고 \n', '초기화하시겠습니까?', [
+    Alert.alert('경고 \n', '초기화하시겠습니까?\n', [
       {text: '취소', style: 'cancel'},
       {
         text: '확인',
@@ -42,7 +41,7 @@ function InventoryWriteHeader({
           // setItems([]);
 
           setLoading(false);
-          Alert.alert('초기화 완료', '모든 항목이 초기화되었습니다');
+          Alert.alert('초기화 완료\n', '모든 항목이 초기화되었습니다\n');
         },
       },
     ]);
@@ -52,11 +51,11 @@ function InventoryWriteHeader({
   const ConfirmCheck = async () => {
     console.log('아이템: ', items);
     if (!items || items.length === 0) {
-      Alert.alert('오류\n', '등록할 상품을 추가해주세요');
+      Alert.alert('오류\n', '등록할 상품을 추가해주세요\n');
       return;
     }
     if (!supplierNo) {
-      Alert.alert('오류', '공급업체를 선택해주세요');
+      Alert.alert('오류\n', '공급업체를 선택해주세요\n');
       return;
     }
     setLoading(false);
@@ -76,7 +75,7 @@ function InventoryWriteHeader({
         purchaseData,
       );
 
-      Alert.alert('확인 \n', '구매를 등록하시겠습니까?', [
+      Alert.alert('확인 \n', '구매를 등록하시겠습니까?\n', [
         {text: '취소', style: 'cancel'},
         {
           text: '확인',
@@ -89,13 +88,6 @@ function InventoryWriteHeader({
           },
         },
       ]);
-
-      // 초기화
-      // setSupplierNo(null);
-      // setManagerName('');
-      // setManagerPhone('');
-      // setItems([]);
-      // onGoBack();
     } catch (error) {
       console.error('등록 실패:', error);
       Alert.alert('등록 실패', '데이터 등록 중 오류가 발생했습니다');

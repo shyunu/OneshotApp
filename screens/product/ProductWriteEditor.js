@@ -4,13 +4,15 @@ import {
   View,
   Text,
   TextInput,
-  ScrollView,
   FlatList,
   Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -52,26 +54,11 @@ function ProductWriteEditor({
   const [productItems, setProductItems] = useState([]);
 
   const [imageUri, setImageUri] = useState(null);
-  // const [productImgApp, setProductImgApp] = useState({
-  //   uri: '',
-  //   type: 'image/jpeg',
-  //   fileName: 'image.jpg',
-  // });
 
   const [displayProductPrice, setDisplayProductPrice] = useState('');
   const [displaySafetyQuantity, setDisplaySafetyQuantity] = useState('');
 
   const [loading, setLoading] = useState(true); // 로딩 상태 관리
-
-  // 로딩
-  // if (loading) {
-  //   return (
-  //     <View style={styles.loader}>
-  //       <ActivityIndicator size="large" color="#0000ff" />
-  //       <Text>데이터를 로드 중입니다</Text>
-  //     </View>
-  //   );
-  // }
 
   // 공급업체 선택 시
   const handleSupplierChange = value => {
@@ -83,6 +70,7 @@ function ProductWriteEditor({
   const handleCategoryChange = value => {
     setValueCategory(value);
     setCategoryNo(value);
+    Keyboard.dismiss();
   };
 
   // 상품명 변경 시
@@ -110,36 +98,8 @@ function ProductWriteEditor({
     }
   };
 
-  // const [selectedImage, setSelectedImage] = useState(null);
-
-  // const handleImageSelect = () => {
-  //   launchImageLibrary(
-  //     {
-  //       mediaType: 'photo',
-  //       quality: 1,
-  //     },
-  //     response => {
-  //       if (response.didCancel) {
-  //         console.log('User cancelled image picker');
-  //       } else if (response.errorCode) {
-  //         console.log('ImagePicker Error: ', response.errorMessage);
-  //       } else {
-  //         const selectedImage = response.assets[0];
-  //         console.log('선택된 이미지:', selectedImage);
-
-  //         setProductImgApp({
-  //           uri: selectedImage.uri,
-  //           type: selectedImage.type || 'image/jpeg',
-  //           fileName: selectedImage.fileName || 'image.jpg',
-  //         });
-
-  //         setImageUri(selectedImage.uri);
-  //       }
-  //     },
-  //   );
-  // };
-
   const handleImageSelect = () => {
+    Keyboard.dismiss();
     launchImageLibrary(
       {
         mediaType: 'photo',
@@ -189,10 +149,9 @@ function ProductWriteEditor({
       } catch (error) {
         console.log('공급업체 로드 오류: ', error);
         Alert.alert('Error', '공급업체 로드 실패');
+      } finally {
+        setLoading(false);
       }
-      // finally {
-      //   setLoading(false);
-      // }
     };
     fetchSupplierList();
   }, []);
@@ -241,110 +200,134 @@ function ProductWriteEditor({
         console.log('카테고리 오류:', error);
         Alert.alert('Error', '카테고리 로드 실패');
       }
-      // finally {
-      //   setLoading(false);
-      // }
     };
     fetchCategories();
   }, []);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}
-      keyboardVerticalOffset={Platform.OS === 'android' ? 100 : 0}>
-      <View style={styles.block}>
-        <Text style={styles.text}>공급업체명</Text>
-        <DropDownPicker
-          open={openSupplier}
-          value={valueSupplier}
-          items={supplierItems}
-          setOpen={setOpenSupplier}
-          setValue={handleSupplierChange}
-          setItems={setSupplierItems}
-          style={styles.dropdown}
-          placeholder="공급업체를 선택하세요"
-          dropDownContainerStyle={styles.dropdownContainer}
-        />
-        <Text style={styles.text}>사업자번호</Text>
-        <TextInput
-          style={[styles.input, styles.disable]}
-          editable={false}
-          value={supplierBusinessNo}
-        />
-        <Text style={styles.text}>담당자</Text>
-        <TextInput
-          style={[styles.input, styles.disable]}
-          editable={false}
-          value={managerName}
-        />
-        <Text style={styles.text}>담당자연락처</Text>
-        <TextInput
-          style={[styles.input, styles.disable]}
-          editable={false}
-          value={managerPhone}
-        />
-        <Text style={styles.text}>카테고리</Text>
-        <DropDownPicker
-          open={openCategory}
-          value={valueCategory}
-          items={categoryItems}
-          setOpen={setOpenCategory}
-          setValue={handleCategoryChange}
-          setItems={setCategoryItems}
-          style={styles.dropdown}
-          placeholder="카테고리를 선택하세요"
-          dropDownContainerStyle={styles.dropdownContainer}
-        />
-        <Text style={styles.text}>상품명</Text>
-        <TextInput
-          placeholder="상품을 입력해주세요"
-          style={styles.input}
-          value={valueProduct}
-          onChangeText={handleProductNameChange}
-        />
-        <Text style={styles.text}>판매가격</Text>
-        <TextInput
-          placeholder="판매가격을 입력해주세요"
-          style={styles.input}
-          value={displayProductPrice}
-          onChangeText={value => {
-            console.log('판매가격:', value);
-            handleInputChange('productPrice', value);
-          }}
-          keyboardType="number-pad"
-        />
-        <Text style={styles.text}>안전재고수량</Text>
-        <TextInput
-          placeholder="안전재고수량을 입력해주세요"
-          style={styles.input}
-          value={displaySafetyQuantity}
-          onChangeText={value => {
-            console.log('안전재고수량:', value);
-            handleInputChange('safetyQuantity', value);
-          }}
-          keyboardType="number-pad"
-        />
-        <Text style={styles.text}>첨부파일</Text>
-        <View style={styles.productFileBox}>
-          <TextInput
-            style={styles.productFileTextInput}
-            value={imageUri ? imageUri.split('/').pop() : ''}
-            placeholder="등록된 이미지가 없습니다."
-            editable={false}
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    //   style={styles.container}
+    //   keyboardVerticalOffset={Platform.OS === 'android' ? 64 : 0}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.block}>
+          <Text style={styles.text}>공급업체명</Text>
+          <DropDownPicker
+            open={openSupplier}
+            value={valueSupplier}
+            items={supplierItems}
+            setOpen={setOpenSupplier}
+            setValue={handleSupplierChange}
+            setItems={setSupplierItems}
+            style={styles.dropdown}
+            placeholder="공급업체를 선택하세요"
+            dropDownContainerStyle={
+              styles.dropdownContainer
+              // {position: 'relative', top: 0},
+            }
+            listMode="SCROLLVIEW"
+            scrollViewProps={{
+              nestedScrollEnabled: true,
+            }}
+            zIndex={3000}
+            zIndexInverse={1000}
           />
-          <TouchableOpacity
-            style={styles.productFileButton}
-            onPress={handleImageSelect}>
-            <Icon name="upload" size={24} style={styles.icon} />
-          </TouchableOpacity>
+          <Text style={styles.text}>사업자번호</Text>
+          <TextInput
+            style={[styles.input, styles.disable]}
+            editable={false}
+            value={supplierBusinessNo}
+          />
+          <Text style={styles.text}>담당자</Text>
+          <TextInput
+            style={[styles.input, styles.disable]}
+            editable={false}
+            value={managerName}
+          />
+          <Text style={styles.text}>담당자연락처</Text>
+          <TextInput
+            style={[styles.input, styles.disable]}
+            editable={false}
+            value={managerPhone}
+          />
+          <Text style={styles.text}>카테고리</Text>
+          <DropDownPicker
+            open={openCategory}
+            value={valueCategory}
+            items={categoryItems}
+            setOpen={setOpenCategory}
+            setValue={handleCategoryChange}
+            setItems={setCategoryItems}
+            style={styles.dropdown}
+            placeholder="카테고리를 선택하세요"
+            dropDownContainerStyle={styles.dropdownContainer}
+            listMode="SCROLLVIEW"
+            scrollViewProps={{
+              nestedScrollEnabled: true,
+            }}
+            zIndex={2000}
+            zIndexInverse={2000}
+          />
+          <Text style={styles.text}>상품명</Text>
+          <TextInput
+            placeholder="상품을 입력해주세요"
+            style={styles.input}
+            value={valueProduct}
+            onChangeText={handleProductNameChange}
+          />
+          <Text style={styles.text}>판매가격</Text>
+          <TextInput
+            placeholder="판매가격을 입력해주세요"
+            style={styles.input}
+            value={displayProductPrice}
+            onChangeText={value => {
+              console.log('판매가격:', value);
+              handleInputChange('productPrice', value);
+            }}
+            keyboardType="number-pad"
+          />
+          <Text style={styles.text}>안전재고수량</Text>
+          <TextInput
+            placeholder="안전재고수량을 입력해주세요"
+            style={styles.input}
+            value={displaySafetyQuantity}
+            onChangeText={value => {
+              console.log('안전재고수량:', value);
+              handleInputChange('safetyQuantity', value);
+            }}
+            keyboardType="number-pad"
+          />
+          <Text style={styles.text}>첨부파일</Text>
+          <View style={styles.productFileBox}>
+            <TextInput
+              style={styles.productFileTextInput}
+              value={imageUri ? imageUri.split('/').pop() : ''}
+              placeholder="등록된 이미지가 없습니다."
+              editable={false}
+            />
+            <TouchableOpacity
+              style={styles.productFileButton}
+              onPress={handleImageSelect}>
+              <Icon name="upload" size={24} style={styles.icon} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.bottomPadding} />
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </ScrollView>
+    </TouchableWithoutFeedback>
+    // </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 120, // 키보드를 위한 추가 패딩
+  },
   block: {
     flex: 1,
     padding: 16,
@@ -420,38 +403,8 @@ const styles = StyleSheet.create({
   icon: {
     color: 'white',
   },
-
-  // 테이블 화면
-  tableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#e3e3e3',
-    padding: 10,
-    height: 40,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ced4da',
-  },
-  tableHeaderText: {
-    flex: 1,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  tableBody: {
-    maxHeight: 150,
-  },
-  tableRow: {
-    flexDirection: 'row',
-    textAlign: 'center',
-    height: 40,
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ced4da',
-  },
-  selectedRow: {
-    backgroundColor: '#f0f0f0',
-  },
-  tableCell: {
-    flex: 1,
-    textAlign: 'center',
+  bottomPadding: {
+    height: 50, // 키보드가 올라왔을 때 추가 패딩
   },
 });
 

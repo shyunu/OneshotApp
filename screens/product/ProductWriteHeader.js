@@ -31,7 +31,7 @@ function ProductWriteHeader({
   };
 
   const onReset = () => {
-    Alert.alert('경고 \n', '초기화하시겠습니까?', [
+    Alert.alert('경고 \n', '초기화하시겠습니까?\n', [
       {text: '취소', style: 'cancel'},
       {
         text: '확인',
@@ -47,23 +47,23 @@ function ProductWriteHeader({
           // setSafetyQuantity('');
           // setProductImg(null);
           // setLoading(false);
-          Alert.alert('초기화 완료', '모든 항목이 초기화되었습니다');
+          Alert.alert('초기화 완료\n', '모든 항목이 초기화되었습니다\n');
         },
       },
     ]);
   };
 
   const ConfirmCheck = async () => {
-    console.log('supplierNo:', supplierNo);
-    console.log('categoryNo:', categoryNo);
-    console.log('productName:', productName);
-    console.log('productPrice:', productPrice);
-    console.log('safetyQuantity:', safetyQuantity);
+    // console.log('supplierNo:', supplierNo);
+    // console.log('categoryNo:', categoryNo);
+    // console.log('productName:', productName);
+    // console.log('productPrice:', productPrice);
+    // console.log('safetyQuantity:', safetyQuantity);
     // console.log('productImgApp:', productImgApp);
     console.log('아이템: ', items);
 
     if (!items || items.length === 0) {
-      Alert.alert('오류', '등록할 상품을 추가해주세요');
+      Alert.alert('오류\n', '등록할 상품을 추가해주세요\n');
       return;
     }
 
@@ -75,9 +75,10 @@ function ProductWriteHeader({
       !safetyQuantity ||
       !productImgApp
     ) {
-      Alert.alert('경고', '모든 필드를 입력해주세요');
+      Alert.alert('경고\n', '모든 필드를 입력해주세요\n');
       return;
     }
+    setLoading(false);
 
     // 중복 확인
     // const duplicateItems = items.filter(
@@ -100,9 +101,7 @@ function ProductWriteHeader({
     // }
 
     try {
-      setLoading(true);
-
-      // 상품 데이터 준비
+      // 상품 데이터
       const productData = {
         supplierNo: parseInt(supplierNo),
         categoryNo: parseInt(categoryNo),
@@ -125,20 +124,27 @@ function ProductWriteHeader({
         formData,
         {
           headers: {
-            // 'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data',
           },
-          // transformRequest: (data, headers) => {
-          //   return formData;
-          // },
         },
       );
 
-      console.log('등록 성공:', response.data);
-      Alert.alert('등록 성공 \n', '상품이 성공적으로 등록되었습니다');
-      onGoBack();
+      Alert.alert('확인 \n', '구매를 등록하시겠습니까?\n', [
+        {text: '취소', style: 'cancel'},
+        {
+          text: '확인',
+          onPress: () => {
+            setLoading(true);
+            setLoading(false);
+            console.log('등록 성공:', response.data);
+            Alert.alert('등록 성공 \n', '상품이 성공적으로 등록되었습니다');
+            onGoBack();
+          },
+        },
+      ]);
     } catch (error) {
       console.error('처리 중 오류: ', error);
-      Alert.alert('오류', '처리 중 문제가 발생했습니다');
+      Alert.alert('오류\n', '처리 중 문제가 발생했습니다\n');
     } finally {
       setLoading(false);
     }

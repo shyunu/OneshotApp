@@ -201,14 +201,14 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
                 styles.tableRow,
                 selectedRow === index && styles.selectedRow,
               ]}
-              onPress={() => setSelectedRow(index)} // 행 클릭 시 인덱스 저장
+              onPress={() =>
+                setSelectedRow(selectedRow === index ? null : index)
+              } // 클릭 시 선택, 해제
             >
               <Text style={styles.tableCell}>{item.category}</Text>
               <Text style={styles.tableCell}>{item.product}</Text>
               <Text style={styles.tableCell}>{item.displayQuantity}</Text>
               <Text style={styles.tableCell}>{item.displayPrice}</Text>
-
-              {/* </View> */}
             </TouchableOpacity>
           ))}
         </ScrollView>

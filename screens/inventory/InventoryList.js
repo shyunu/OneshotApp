@@ -16,7 +16,6 @@ import axios from 'axios';
 function InventoryList({searchKeyword}) {
   const [purchaseList, setPurchaseList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
 
   // 초기 로딩 여부 확인
   const [hasFetched, setHasFetched] = useState(false);
@@ -28,13 +27,15 @@ function InventoryList({searchKeyword}) {
   };
 
   // 구매 목록 조회
-  const fetchPurchaseList = async () => {
+  const fetchPurchaseList = async searchKeyword => {
     try {
       const purchaseListResponse = await axios.get(
         `http://192.168.0.10:8181/inventoryApp/purchaseList`,
         // 'http://localhost:8181/inventoryApp/purchaseList',
         {
-          params: {searchKeyword},
+          params: {
+            searchKeyword: searchKeyword || '', // 빈 문자열이면 전체 목록 조회
+          },
           // amount: 10,
         },
         console.log('searchKeyword: ', searchKeyword),
@@ -52,20 +53,16 @@ function InventoryList({searchKeyword}) {
 
   useFocusEffect(
     useCallback(() => {
-      // 목록이 아직 로드되지 않았거나, 검색어가 변경된 경우에만 호출
-      if (!hasFetched || searchKeyword) {
-        fetchPurchaseList();
-        setHasFetched(true); // 목록이 한 번 로드된 후 상태 업데이트
-      }
+      // 검색어가 비어있으면 전체 목록 조회, 아니면 필터링된 목록 조회
+      fetchPurchaseList(searchKeyword);
       // 초기 로딩 및 검색어 변경 시 목록 조회
     }, [searchKeyword]),
   );
 
-  // 새로고침
-  // const onRefresh = React.useCallback(() => {
-  //   setRefreshing(true);
-  //   fetchPurchaseList(searchKeyword).then(() => setRefreshing(false));
-  // }, [searchKeyword]);
+  function onSearch(searchKeyword) {
+    setSearchKeyword(searchKeyword); // 검색어 상태 업데이트
+    fetchPurchaseList(searchKeyword); // 새로운 검색어로 목록 조회
+  }
 
   if (loading) {
     return (

@@ -96,7 +96,7 @@ function MainTab({navigation}) {
 
   const handleInventorySelect = screen => {
     setShowPopup(false);
-    // 부모 헤더를 숨기는 옵션 추가
+    // 부모 헤더를 숨기기
     navigation.navigate('InventoryStack', {
       screen: screen,
       params: {},
@@ -142,6 +142,7 @@ function MainTab({navigation}) {
               e.preventDefault();
               setShowPopup(!showPopup);
             },
+            blur: () => setShowPopup(false), // 다른 탭으로 이동할 때 팝업 닫기
           }}
         />
         <Tab.Screen
