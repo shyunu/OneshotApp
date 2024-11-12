@@ -24,7 +24,9 @@ function SalesWriteHeader({onResetFields, onRegist}) {
         {
           text: '확인',
           onPress: () => {
-            navigation.goBack(); // 이전 화면으로 돌아가기
+            if (onResetFields) {
+              onResetFields();
+            }
           },
         },
       ],
@@ -42,8 +44,6 @@ function SalesWriteHeader({onResetFields, onRegist}) {
       {
         text: '확인',
         onPress: () => {
-
-
           if (onRegist) {
             onRegist();
           }
