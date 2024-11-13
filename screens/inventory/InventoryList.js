@@ -32,6 +32,7 @@ function InventoryList({searchKeyword}) {
       const purchaseListResponse = await axios.get(
         // `http://192.168.0.10:8181/inventoryApp/purchaseList`,
         'http://localhost:8181/inventoryApp/purchaseList',
+        // 'http://172.30.1.32:8181/inventoryApp/purchaseList',
         {
           params: {
             searchKeyword: searchKeyword || '', // 빈 문자열이면 전체 목록 조회

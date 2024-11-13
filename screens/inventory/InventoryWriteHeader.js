@@ -71,6 +71,7 @@ function InventoryWriteHeader({
 
       const response = await axios.post(
         'http://localhost:8181/inventoryApp/registerPurchase',
+        // 'http://172.30.1.32:8181/inventoryApp/registerPurchase',
         // 'http://192.168.0.10:8181/inventoryApp/registerPurchase',
         purchaseData,
       );
