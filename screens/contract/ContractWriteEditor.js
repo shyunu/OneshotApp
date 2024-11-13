@@ -10,6 +10,7 @@ import {
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -104,8 +105,8 @@ function ContractWriteEditor({
 
   const convertToLocalDate = utcDate => {
     const date = new Date(utcDate);
-    const localDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-    return localDate.toISOString().split('T')[0];
+    const localDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // 한국 시간으로 변환
+    return localDate.toISOString().split('T')[0]; // "YYYY-MM-DD" 형식으로 반환
   };
 
   const showStartDatePicker = () => setStartDatePickerVisibility(true);
@@ -215,7 +216,7 @@ function ContractWriteEditor({
             <DateTimePickerModal
               isVisible={isStartDatePickerVisible}
               mode="date"
-              display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
+              display={Platform.OS === 'ios' ? 'default' : 'calendar'}
               maximumDate={
                 selectedEndDate ? new Date(selectedEndDate) : undefined
               }
@@ -239,7 +240,7 @@ function ContractWriteEditor({
             <DateTimePickerModal
               isVisible={isEndDatePickerVisible}
               mode="date"
-              display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
+              display={Platform.OS === 'ios' ? 'default' : 'calendar'}
               minimumDate={
                 selectedStartDate ? new Date(selectedStartDate) : undefined
               }
@@ -283,12 +284,8 @@ function ContractWriteEditor({
             {contractItems && contractItems.length > 0 ? (
               contractItems.map(item => (
                 <View key={item.contractPriceNo} style={styles.tableRow}>
-                  <Text style={styles.tableCell}>
-                    {formatDate(item.contractSdate)}
-                  </Text>
-                  <Text style={styles.tableCell}>
-                    {formatDate(item.contractEdate)}
-                  </Text>
+                  <Text style={styles.tableCell}>{item.contractSdate}</Text>
+                  <Text style={styles.tableCell}>{item.contractEdate}</Text>
                   <Text style={styles.tableCell}>
                     {formatCurrency(item.contractPrice)}
                   </Text>
