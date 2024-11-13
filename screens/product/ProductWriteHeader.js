@@ -120,7 +120,8 @@ function ProductWriteHeader({
       });
 
       const response = await axios.post(
-        'http://192.168.0.10:8181/productApp/postProduct',
+        // 'http://192.168.0.10:8181/productApp/postProduct',
+        'http://localhost/productApp/postProduct',
         formData,
         {
           headers: {

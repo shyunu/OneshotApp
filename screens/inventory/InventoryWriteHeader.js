@@ -70,8 +70,8 @@ function InventoryWriteHeader({
       console.log('구매 데이터:', purchaseData);
 
       const response = await axios.post(
-        // 'http://localhost:8181/inventoryApp/registerPurchase',
-        'http://192.168.0.10:8181/inventoryApp/registerPurchase',
+        'http://localhost:8181/inventoryApp/registerPurchase',
+        // 'http://192.168.0.10:8181/inventoryApp/registerPurchase',
         purchaseData,
       );
 

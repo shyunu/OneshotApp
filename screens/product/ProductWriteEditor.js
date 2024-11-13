@@ -138,7 +138,8 @@ function ProductWriteEditor({
     const fetchSupplierList = async () => {
       try {
         const supplierListResponse = await axios.get(
-          `http://192.168.0.10:8181/productApp/getSupplierList`,
+          // `http://192.168.0.10:8181/productApp/getSupplierList`,
+          `http://localhost:8181/productApp/getSupplierList`,
         );
         setSupplierItems(
           supplierListResponse.data.map(supplier => ({
@@ -163,7 +164,8 @@ function ProductWriteEditor({
         try {
           console.log('Fetching supplier info for supplierNo:', valueSupplier); // 로그 추가
           const supplierInfoResponse = await axios.get(
-            `http://192.168.0.10:8181/productApp/getSupplierContent/${valueSupplier}`,
+            // `http://192.168.0.10:8181/productApp/getSupplierContent/${valueSupplier}`,
+            `http://localhost:8181/productApp/getSupplierContent/${valueSupplier}`,
           );
           console.log('Supplier info response:', supplierInfoResponse.data); // 로그 추가
           setSupplierBusinessNo(supplierInfoResponse.data.supplierBusinessNo);
@@ -187,7 +189,8 @@ function ProductWriteEditor({
     const fetchCategories = async () => {
       try {
         const categoryResponse = await axios.get(
-          `http://192.168.0.10:8181/productApp/getCategoryList`,
+          // `http://192.168.0.10:8181/productApp/getCategoryList`,
+          `http://localhost:8181/productApp/getCategoryList`,
         );
         console.log('categoryResponse:', categoryResponse.data); // 로그 추가
         setCategoryItems(
