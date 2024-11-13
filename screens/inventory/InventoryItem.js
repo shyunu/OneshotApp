@@ -82,6 +82,7 @@ function InventoryItem({modalVisible, closeModal, addItem, supplierNo}) {
         // `http://192.168.0.10:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
         `http://localhost:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
         // `http://172.30.1.32:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
+
       );
       const productItems = productResponse.data.map(product => ({
         label: product.productName,
