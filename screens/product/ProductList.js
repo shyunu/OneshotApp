@@ -30,6 +30,7 @@ function ProductList({searchKeyword}) {
     try {
       const productListResponse = await axios.get(
         `http://192.168.0.10:8181/productApp/productList`,
+        // `http://172.30.1.32:8181/productApp/productList`,
         {
           params: {searchKeyword},
         },

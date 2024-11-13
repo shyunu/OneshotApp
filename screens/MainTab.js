@@ -29,7 +29,7 @@ function InventoryStackScreen() {
           headerTitle: () => <Text style={styles.headerTitle}>구매관리</Text>,
           headerLeft: null,
           headerBackVisible: false,
-          // 부모 헤더 숨기기
+          // 부모 헤더 숨기기 (재고관리)
           headerShown: true,
         })}
       />
@@ -109,6 +109,12 @@ function MainTab({navigation}) {
         screenOptions={{
           tabBarActiveTintColor: '#00569A',
           headerStyle: styles.header,
+        }}
+        screenListeners={{
+          // 모든 탭의 tabPress 이벤트를 감지하여 팝업을 닫음
+          tabPress: () => {
+            setShowPopup(false);
+          },
         }}>
         <Tab.Screen
           name="Home"
@@ -142,7 +148,6 @@ function MainTab({navigation}) {
               e.preventDefault();
               setShowPopup(!showPopup);
             },
-            blur: () => setShowPopup(false), // 다른 탭으로 이동할 때 팝업 닫기
           }}
         />
         <Tab.Screen
