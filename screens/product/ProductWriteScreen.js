@@ -14,27 +14,6 @@ function ProductWriteScreen() {
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([]);
 
-  // 디버깅 useEffect
-  useEffect(() => {
-    console.log('State 변경됨:', {
-      supplierNo,
-      categoryNo,
-      productName,
-      productPrice,
-      safetyQuantity,
-      productImgApp,
-      items,
-    });
-  }, [
-    supplierNo,
-    categoryNo,
-    productName,
-    productPrice,
-    safetyQuantity,
-    productImgApp,
-    items,
-  ]);
-
   // 아이템 상태 업데이트 useEffect
   useEffect(() => {
     console.log('항목 업데이트 시도:', {
