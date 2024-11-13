@@ -8,6 +8,8 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -35,34 +37,26 @@ function ContractWriteEditor({
   loading,
   setLoading,
 }) {
-  //고객사
   const [clientOpen, setClientOpen] = useState(false);
   const [clientItems, setClientItems] = useState([]);
-
-  //상품
   const [productOpen, setProductOpen] = useState(false);
   const [productItems, setProductItems] = useState([]);
-
-  //계약 시작 및 종료일
   const [isStartDatePickerVisible, setStartDatePickerVisibility] =
     useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
 
-  // 고객사 및 상품 목록 가져오기
   const fetchData = async () => {
     try {
       const [clientResponse, productResponse] = await Promise.all([
         axios.get('http://172.30.1.28:8181/contractApp/getClientList'),
         axios.get('http://172.30.1.28:8181/contractApp/getProductList'),
       ]);
-
       setClientItems(
         clientResponse.data.map(client => ({
           label: client.clientName,
           value: client.clientNo,
         })),
       );
-
       setProductItems(
         productResponse.data.map(product => ({
           label: product.productName,
@@ -73,11 +67,10 @@ function ContractWriteEditor({
       console.log(error);
       Alert.alert('Error', '데이터를 가져오는 데 실패했습니다.');
     } finally {
-      setLoading(false); // 데이터 로딩 완료 후 로딩 상태 변경
+      setLoading(false);
     }
   };
 
-  // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
     fetchData();
   }, []);
@@ -104,16 +97,15 @@ function ContractWriteEditor({
         console.log(error);
         Alert.alert('Error', '데이터를 가져오는 데 실패했습니다.');
       } finally {
-        setLoading(false); // 데이터 로딩 완료 후 로딩 상태 변경
+        setLoading(false);
       }
     }
   };
 
-  // 서버의 UTC 날짜를 로컬 시간(KST)으로 변환
   const convertToLocalDate = utcDate => {
-    const date = new Date(utcDate); // 서버로부터 받은 UTC 날짜
-    const localDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // KST(UTC+9) 적용
-    return localDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
+    const date = new Date(utcDate);
+    const localDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+    return localDate.toISOString().split('T')[0];
   };
 
   const showStartDatePicker = () => setStartDatePickerVisibility(true);
@@ -132,13 +124,6 @@ function ContractWriteEditor({
     hideEndDatePicker();
   };
 
-  const formatDate = date => {
-    if (!date) return '';
-    const validDate = new Date(date);
-    if (isNaN(validDate)) return '-';
-    return validDate.toISOString().split('T')[0];
-  };
-
   const formatCurrency = amount => {
     if (amount == null || isNaN(amount)) return '';
     return `${amount.toLocaleString('ko-KR')} 원`;
@@ -147,6 +132,16 @@ function ContractWriteEditor({
   const handleContractPriceChange = value => {
     const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
     setContractPrice(isNaN(numericValue) ? 0 : numericValue);
+  };
+
+  const handleContractPriceFocus = () => {
+    // 포커스 시 숫자만 표시
+    setContractPrice(prevPrice => prevPrice.toString().replace(/[^0-9]/g, ''));
+  };
+
+  const handleContractPriceBlur = () => {
+    // 포커스를 벗어나면 포맷된 값으로 설정
+    setContractPrice(prevPrice => (prevPrice ? formatCurrency(prevPrice) : ''));
   };
 
   const selectImage = () => {
@@ -169,162 +164,158 @@ function ContractWriteEditor({
   }
 
   return (
-    <View style={styles.block}>
-      <Text style={styles.text}>고객사</Text>
-      <DropDownPicker
-        open={clientOpen}
-        value={clientNo}
-        items={clientItems}
-        setOpen={setClientOpen}
-        setValue={setClientNo}
-        setItems={setClientItems}
-        placeholder="고객사를 선택하세요"
-        style={styles.dropdown}
-        dropDownContainerStyle={styles.dropdownContainer}
-        zIndex={3000}
-        zIndexInverse={1000}
-        onChangeValue={onChangeClientAndProduct}
-      />
-      <Text style={styles.text}>상품</Text>
-      <DropDownPicker
-        open={productOpen}
-        value={productNo}
-        items={productItems}
-        setOpen={setProductOpen}
-        setValue={setProductNo}
-        setItems={setProductItems}
-        placeholder="상품을 선택하세요"
-        style={styles.dropdown}
-        dropDownContainerStyle={styles.dropdownContainer}
-        zIndex={2000}
-        zIndexInverse={1000}
-        onChangeValue={onChangeClientAndProduct}
-      />
-      <Text style={styles.text}>
-        {'계약시작일                             계약종료일'}
-      </Text>
-      <View style={styles.dateBox}>
-        <View style={styles.dateBox}>
-          <TextInput
-            style={styles.contractDateTextInput}
-            value={selectedStartDate}
-            placeholder="YYYY-MM-DD"
-            editable={false}
-          />
-          <TouchableOpacity
-            style={styles.contractDateButton}
-            onPress={showStartDatePicker}>
-            <Icon name="event-available" size={24} style={styles.icon} />
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={isStartDatePickerVisible}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
-            maximumDate={
-              selectedEndDate ? new Date(selectedEndDate) : undefined
-            }
-            onConfirm={handleStartConfirm}
-            onCancel={hideStartDatePicker}
-          />
-        </View>
-        <Text>{'   '}</Text>
-        <View style={styles.dateBox}>
-          <TextInput
-            style={styles.contractDateTextInput}
-            value={selectedEndDate}
-            placeholder="YYYY-MM-DD"
-            editable={false}
-          />
-          <TouchableOpacity
-            style={styles.contractDateButton}
-            onPress={showEndDatePicker}>
-            <Icon name="event-available" size={24} style={styles.icon} />
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={isEndDatePickerVisible}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
-            minimumDate={
-              selectedStartDate ? new Date(selectedStartDate) : undefined
-            }
-            onConfirm={handleEndConfirm}
-            onCancel={hideEndDatePicker}
-          />
-        </View>
-      </View>
-      <Text style={styles.text}>계약가격</Text>
-      <TextInput
-        style={styles.contractPriceTextInput}
-        placeholder="계약가격을 입력하세요"
-        keyboardType="numeric"
-        value={formatCurrency(contractPrice)}
-        onChangeText={handleContractPriceChange}
-      />
-      <Text style={styles.text}>첨부파일</Text>
-      <View style={styles.contractFileBox}>
-        <TextInput
-          style={styles.contractFileTextInput}
-          value={fileName}
-          placeholder="등록된 계약서가 없습니다."
-          editable={false}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.block}>
+        <Text style={styles.text}>고객사</Text>
+        <DropDownPicker
+          open={clientOpen}
+          value={clientNo}
+          items={clientItems}
+          setOpen={setClientOpen}
+          setValue={setClientNo}
+          setItems={setClientItems}
+          placeholder="고객사를 선택하세요"
+          style={styles.dropdown}
+          dropDownContainerStyle={styles.dropdownContainer}
+          zIndex={3000}
+          zIndexInverse={1000}
+          onChangeValue={onChangeClientAndProduct}
         />
-        <TouchableOpacity
-          style={styles.contractFileButton}
-          onPress={selectImage}>
-          <Icon name="upload" size={24} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.text}>계약내역</Text>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.tableHeaderText}>계약시작일</Text>
-          <Text style={styles.tableHeaderText}>계약종료일</Text>
-          <Text style={styles.tableHeaderText}>계약가격</Text>
+        <Text style={styles.text}>상품</Text>
+        <DropDownPicker
+          open={productOpen}
+          value={productNo}
+          items={productItems}
+          setOpen={setProductOpen}
+          setValue={setProductNo}
+          setItems={setProductItems}
+          placeholder="상품을 선택하세요"
+          style={styles.dropdown}
+          dropDownContainerStyle={styles.dropdownContainer}
+          zIndex={2000}
+          zIndexInverse={1000}
+          onChangeValue={onChangeClientAndProduct}
+        />
+        <Text style={styles.text}>
+          {'계약시작일                             계약종료일'}
+        </Text>
+        <View style={styles.dateBox}>
+          <View style={styles.dateBox}>
+            <TextInput
+              style={styles.contractDateTextInput}
+              value={selectedStartDate}
+              placeholder="YYYY-MM-DD"
+              editable={false}
+            />
+            <TouchableOpacity
+              style={styles.contractDateButton}
+              onPress={showStartDatePicker}>
+              <Icon name="event-available" size={24} style={styles.icon} />
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isStartDatePickerVisible}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
+              maximumDate={
+                selectedEndDate ? new Date(selectedEndDate) : undefined
+              }
+              onConfirm={handleStartConfirm}
+              onCancel={hideStartDatePicker}
+            />
+          </View>
+          <Text>{'   '}</Text>
+          <View style={styles.dateBox}>
+            <TextInput
+              style={styles.contractDateTextInput}
+              value={selectedEndDate}
+              placeholder="YYYY-MM-DD"
+              editable={false}
+            />
+            <TouchableOpacity
+              style={styles.contractDateButton}
+              onPress={showEndDatePicker}>
+              <Icon name="event-available" size={24} style={styles.icon} />
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isEndDatePickerVisible}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
+              minimumDate={
+                selectedStartDate ? new Date(selectedStartDate) : undefined
+              }
+              onConfirm={handleEndConfirm}
+              onCancel={hideEndDatePicker}
+            />
+          </View>
         </View>
-        <ScrollView style={styles.tableBody}>
-          {contractItems && contractItems.length > 0 ? (
-            contractItems.map(item => (
-              <View key={item.contractPriceNo} style={styles.tableRow}>
-                <Text style={styles.tableCell}>
-                  {formatDate(item.contractSdate)}
-                </Text>
-                <Text style={styles.tableCell}>
-                  {formatDate(item.contractEdate)}
-                </Text>
-                <Text style={styles.tableCell}>
-                  {formatCurrency(item.contractPrice)}
-                </Text>
+        <Text style={styles.text}>계약가격</Text>
+        <TextInput
+          style={styles.contractPriceTextInput}
+          placeholder="계약가격을 입력하세요"
+          keyboardType="numeric"
+          value={contractPrice ? contractPrice.toString() : ''}
+          onFocus={handleContractPriceFocus}
+          onBlur={handleContractPriceBlur}
+          onChangeText={handleContractPriceChange}
+        />
+        <Text style={styles.text}>첨부파일</Text>
+        <View style={styles.contractFileBox}>
+          <TextInput
+            style={styles.contractFileTextInput}
+            value={fileName}
+            placeholder="등록된 계약서가 없습니다."
+            editable={false}
+          />
+          <TouchableOpacity
+            style={styles.contractFileButton}
+            onPress={selectImage}>
+            <Icon name="upload" size={24} style={styles.icon} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.text}>계약내역</Text>
+        <View style={styles.tableContainer}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.tableHeaderText}>계약시작일</Text>
+            <Text style={styles.tableHeaderText}>계약종료일</Text>
+            <Text style={styles.tableHeaderText}>계약가격</Text>
+          </View>
+          <ScrollView style={styles.tableBody}>
+            {contractItems && contractItems.length > 0 ? (
+              contractItems.map(item => (
+                <View key={item.contractPriceNo} style={styles.tableRow}>
+                  <Text style={styles.tableCell}>
+                    {formatDate(item.contractSdate)}
+                  </Text>
+                  <Text style={styles.tableCell}>
+                    {formatDate(item.contractEdate)}
+                  </Text>
+                  <Text style={styles.tableCell}>
+                    {formatCurrency(item.contractPrice)}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCell}>계약내역이 없습니다</Text>
               </View>
-            ))
-          ) : (
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCell}>계약내역이 없습니다</Text>
-            </View>
-          )}
-        </ScrollView>
+            )}
+          </ScrollView>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  block: {
-    flex: 1,
-    padding: 16,
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
+  block: {flex: 1, padding: 16},
+  text: {fontSize: 16, marginBottom: 8},
   dropdown: {
     minHeight: 40,
     borderColor: '#ced4da',
     borderRadius: 4,
     marginBottom: 15,
   },
-  dropdownContainer: {
-    borderColor: '#ced4da',
-  },
+  dropdownContainer: {borderColor: '#ced4da'},
   dateBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -379,9 +370,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
-  icon: {
-    color: 'white',
-  },
+  icon: {color: 'white'},
   loader: {
     flex: 1,
     justifyContent: 'center',
@@ -400,9 +389,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  tableBody: {
-    maxHeight: 150,
-  },
+  tableBody: {maxHeight: 150},
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
