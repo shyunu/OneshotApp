@@ -148,15 +148,17 @@ const styles = StyleSheet.create({
   },
   contentText: {
     flex: 1,
-    textAlign: 'left',
-    padding: 10,
-    height: 40,
+    textAlign: 'center',
+    padding: 1,
+    marginTop: 10,
+    marginLeft: 3,
+    height: 30,
   },
   priceText: {
     left: 7,
   },
   quantityText: {
-    left: 22,
+    right: 3,
   },
   amountText: {
     right: 5,
