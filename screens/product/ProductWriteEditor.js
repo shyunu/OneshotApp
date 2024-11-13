@@ -102,9 +102,13 @@ function ProductWriteEditor({
     Keyboard.dismiss();
     launchImageLibrary(
       {
+        // mediaType: 'photo',
+        // quality: 1,
+        // includeBase64: true,
         mediaType: 'photo',
-        quality: 1,
-        includeBase64: true,
+        quality: 0.8,
+        maxWidth: 1024,
+        maxHeight: 1024,
       },
       response => {
         if (response.didCancel) {
@@ -140,6 +144,7 @@ function ProductWriteEditor({
         const supplierListResponse = await axios.get(
           // `http://192.168.0.10:8181/productApp/getSupplierList`,
           `http://localhost:8181/productApp/getSupplierList`,
+          // `http://172.30.1.32:8181/productApp/getSupplierList`,
         );
         setSupplierItems(
           supplierListResponse.data.map(supplier => ({
@@ -166,6 +171,7 @@ function ProductWriteEditor({
           const supplierInfoResponse = await axios.get(
             // `http://192.168.0.10:8181/productApp/getSupplierContent/${valueSupplier}`,
             `http://localhost:8181/productApp/getSupplierContent/${valueSupplier}`,
+            // `http://172.30.1.32:8181/productApp/getSupplierContent/${valueSupplier}`,
           );
           console.log('Supplier info response:', supplierInfoResponse.data); // 로그 추가
           setSupplierBusinessNo(supplierInfoResponse.data.supplierBusinessNo);
@@ -191,6 +197,7 @@ function ProductWriteEditor({
         const categoryResponse = await axios.get(
           // `http://192.168.0.10:8181/productApp/getCategoryList`,
           `http://localhost:8181/productApp/getCategoryList`,
+          // `http://172.30.1.32:8181/productApp/getCategoryList`,
         );
         console.log('categoryResponse:', categoryResponse.data); // 로그 추가
         setCategoryItems(

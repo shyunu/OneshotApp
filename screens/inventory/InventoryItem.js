@@ -52,6 +52,7 @@ function InventoryItem({modalVisible, closeModal, addItem, supplierNo}) {
       const categoryResponse = await axios.get(
         // `http://192.168.0.10:8181/inventoryApp/getCategories?supplierNo=${supplierNo}`,
         `http://localhost:8181/inventoryApp/getCategories?supplierNo=${supplierNo}`,
+        // `http://172.30.1.32:8181/inventoryApp/getCategories?supplierNo=${supplierNo}`,
       );
       setCategoryItems(
         categoryResponse.data.map(category => ({
@@ -78,8 +79,9 @@ function InventoryItem({modalVisible, closeModal, addItem, supplierNo}) {
     if (!valueCategory) return;
     try {
       const productResponse = await axios.get(
-        `http://192.168.0.10:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
-        // `http://localhost:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
+        // `http://192.168.0.10:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
+        `http://localhost:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
+        // `http://172.30.1.32:8181/inventoryApp/getProductsByCategory?categoryNo=${valueCategory}`,
       );
       const productItems = productResponse.data.map(product => ({
         label: product.productName,

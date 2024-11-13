@@ -27,6 +27,7 @@ function ProductDetail({isVisible, onClose, productNo}) {
       const response = await axios.get(
         // `http://192.168.0.10:8181/productApp/displayImg/${productNo}`,
         `http://localhost:8181/productApp/displayImg/${productNo}`,
+        // `http://172.30.1.32:8181/productApp/displayImg/${productNo}`,
       );
       if (response.data && response.data.imageData) {
         const base64Image = `data:image/jpeg;base64,${response.data.imageData}`;

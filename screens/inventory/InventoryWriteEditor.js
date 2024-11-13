@@ -42,8 +42,9 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
   const fetchSupplier = async () => {
     try {
       const supplierResponse = await axios.get(
-        'http://192.168.0.10:8181/inventoryApp/getSuppliers',
-        // 'http://localhost:8181/inventoryApp/getSuppliers',
+        // 'http://192.168.0.10:8181/inventoryApp/getSuppliers',
+        'http://localhost:8181/inventoryApp/getSuppliers',
+        // 'http://172.30.1.32:8181/inventoryApp/getSuppliers',
       );
 
       setSupplierItems(
@@ -71,8 +72,9 @@ function InventoryWriteEditor({supplierNo, setSupplierNo, items, setItems}) {
       if (valueSupplier) {
         try {
           const supplierListResponse = await axios.get(
-            `http://192.168.0.10:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
-            // `http://localhost:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
+            // `http://192.168.0.10:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
+            `http://localhost:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
+            // `http://172.30.1.32:8181/inventoryApp/getSupplierInfo/${valueSupplier}`,
           );
           setManagerName(supplierListResponse.data.managerName || '');
           setManagerPhone(supplierListResponse.data.managerPhone || '');
