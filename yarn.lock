@@ -1765,21 +1765,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/elements@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@react-navigation/elements@npm:2.0.0"
+"@react-navigation/elements@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@react-navigation/elements@npm:2.0.1"
   dependencies:
     color: ^4.2.3
   peerDependencies:
     "@react-native-masked-view/masked-view": ">= 0.2.0"
-    "@react-navigation/native": ^7.0.0
+    "@react-navigation/native": ^7.0.1
     react: ">= 18.2.0"
     react-native: "*"
     react-native-safe-area-context: ">= 4.0.0"
   peerDependenciesMeta:
     "@react-native-masked-view/masked-view":
       optional: true
-  checksum: 40f99d71a6335734ec222e4a903bd5fe8e0067bf65ca9e2342bde20ba6682ae94ef64ff1b47ee470e37a42da93bfed2cda751a1a22d3252508350a8fdca6180e
+  checksum: 9ed62746a6119605cbc5091c953d8c21572dd1e56293baa1cec8dc783458f59f0a0683ea6c4fea0973f754a06d97fc952f93974f76fa07bd9345394a62ce3f3b
   languageName: node
   linkType: hard
 
@@ -1824,19 +1824,19 @@ __metadata:
   linkType: hard
 
 "@react-navigation/stack@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@react-navigation/stack@npm:7.0.0"
+  version: 7.0.1
+  resolution: "@react-navigation/stack@npm:7.0.1"
   dependencies:
-    "@react-navigation/elements": ^2.0.0
+    "@react-navigation/elements": ^2.0.1
     color: ^4.2.3
   peerDependencies:
-    "@react-navigation/native": ^7.0.0
+    "@react-navigation/native": ^7.0.1
     react: ">= 18.2.0"
     react-native: "*"
     react-native-gesture-handler: ">= 2.0.0"
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
-  checksum: 3794ac5d5498e0e2bef9e1eed8c00be2693f5a59c740d162985468b08fde162f0fd3484295795d60920f6710154336f1380c06ffc872a0075abbccdfc552b53d
+  checksum: f742df1ea386266526f9786dd9a23229e6e649dc80e81abf3b7ab74fafdaad32cfbd657f0919b883ca2388a84782eb67918a0ee84b0bf3737350b4c86bac617c
   languageName: node
   linkType: hard
 
@@ -2155,10 +2155,10 @@ __metadata:
     react-native: 0.70.15
     react-native-asset: ^2.1.1
     react-native-chart-kit: ^6.12.0
+    react-native-date-picker: ^4.2.6
     react-native-dropdown-picker: ^5.4.6
     react-native-gesture-handler: ^2.20.2
     react-native-image-picker: ^7.1.2
-    react-native-modal-datetime-picker: ^18.0.0
     react-native-safe-area-context: ^4.11.1
     react-native-screens: 3.25.0
     react-native-svg: 12.1.0
@@ -8529,6 +8529,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-date-picker@npm:^4.2.6":
+  version: 4.4.2
+  resolution: "react-native-date-picker@npm:4.4.2"
+  peerDependencies:
+    react: ">= 17.0.1"
+    react-native: ">= 0.64.3"
+  checksum: 29fcff75b4ecbeb36d87a1972d0dc2fec7a8a59185a874c8bc313a9f953f5f7b16e023b7a6fad70b619a82e8b4d50feeca936e6ba639f68cfd4ebddb7190a982
+  languageName: node
+  linkType: hard
+
 "react-native-dropdown-picker@npm:^5.4.6":
   version: 5.4.6
   resolution: "react-native-dropdown-picker@npm:5.4.6"
@@ -8568,18 +8578,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: af52328b7cb06c28549442f0d923cfa92dde8d5a968a642336df4c882f81adbf0e5e606a14de27f96883a76fa1e03230061c4080011c9107942edebc8e09c478
-  languageName: node
-  linkType: hard
-
-"react-native-modal-datetime-picker@npm:^18.0.0":
-  version: 18.0.0
-  resolution: "react-native-modal-datetime-picker@npm:18.0.0"
-  dependencies:
-    prop-types: ^15.7.2
-  peerDependencies:
-    "@react-native-community/datetimepicker": ">=6.7.0"
-    react-native: ">=0.65.0"
-  checksum: 30d28a8e599c7a36df4c3e93928aa246087edb95a82a98cb1162b045d18db47447c4e28a89190c83a8258f080066531b2b67805a9aeb007b135d62abfccf8c4c
   languageName: node
   linkType: hard
 
