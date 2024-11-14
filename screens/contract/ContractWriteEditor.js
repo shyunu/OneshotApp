@@ -10,10 +10,9 @@ import {
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
-  Platform,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import DatePicker from 'react-native-date-picker';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
@@ -45,6 +44,7 @@ function ContractWriteEditor({
   const [isStartDatePickerVisible, setStartDatePickerVisibility] =
     useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
+  const [displayPrice, setDisplayPrice] = useState(''); // 포맷팅된 문자열을 위한 상태
 
   const fetchData = async () => {
     try {
@@ -125,24 +125,18 @@ function ContractWriteEditor({
     hideEndDatePicker();
   };
 
-  const formatCurrency = amount => {
-    if (amount == null || isNaN(amount)) return '';
-    return `${amount.toLocaleString('ko-KR')} 원`;
-  };
-
   const handleContractPriceChange = value => {
     const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
     setContractPrice(isNaN(numericValue) ? 0 : numericValue);
+    setDisplayPrice(value.replace(/[^0-9]/g, '')); // 입력 중에는 숫자만 표시
   };
 
   const handleContractPriceFocus = () => {
-    // 포커스 시 숫자만 표시
-    setContractPrice(prevPrice => prevPrice.toString().replace(/[^0-9]/g, ''));
+    setDisplayPrice(contractPrice.toString()); // 포커스 시 숫자만 표시
   };
 
   const handleContractPriceBlur = () => {
-    // 포커스를 벗어나면 포맷된 값으로 설정
-    setContractPrice(prevPrice => (prevPrice ? formatCurrency(prevPrice) : ''));
+    setDisplayPrice(`${contractPrice.toLocaleString('ko-KR')} 원`); // 포커스를 벗어나면 포맷된 값으로 설정
   };
 
   const selectImage = () => {
@@ -201,46 +195,46 @@ function ContractWriteEditor({
           {'계약시작일                             계약종료일'}
         </Text>
         <View style={styles.dateBox}>
-          <View style={styles.dateBox}>
-            <TextInput
-              style={styles.contractDateTextInput}
-              value={selectedStartDate}
-              placeholder="YYYY-MM-DD"
-              editable={false}
-            />
-            <TouchableOpacity
-              style={styles.contractDateButton}
-              onPress={showStartDatePicker}>
-              <Icon name="event-available" size={24} style={styles.icon} />
-            </TouchableOpacity>
-            <DateTimePickerModal
-              isVisible={isStartDatePickerVisible}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'default' : 'calendar'}
-              maximumDate={
-                selectedEndDate ? new Date(selectedEndDate) : undefined
-              }
-              onConfirm={handleStartConfirm}
-              onCancel={hideStartDatePicker}
-            />
-          </View>
+          <TextInput
+            style={styles.contractDateTextInput}
+            value={selectedStartDate}
+            placeholder="YYYY-MM-DD"
+            editable={false}
+          />
+          <TouchableOpacity
+            style={styles.contractDateButton}
+            onPress={showStartDatePicker}>
+            <Icon name="event-available" size={24} style={styles.icon} />
+          </TouchableOpacity>
+          <DatePicker
+            modal
+            open={isStartDatePickerVisible}
+            date={selectedStartDate ? new Date(selectedStartDate) : new Date()}
+            mode="date"
+            maximumDate={
+              selectedEndDate ? new Date(selectedEndDate) : undefined
+            }
+            onConfirm={handleStartConfirm}
+            onCancel={hideStartDatePicker}
+          />
           <Text>{'   '}</Text>
           <View style={styles.dateBox}>
             <TextInput
-              style={styles.contractDateTextInput}
+              style={styles.contractDateTextInputEnd}
               value={selectedEndDate}
               placeholder="YYYY-MM-DD"
               editable={false}
             />
             <TouchableOpacity
-              style={styles.contractDateButton}
+              style={styles.contractDateButtonEnd}
               onPress={showEndDatePicker}>
               <Icon name="event-available" size={24} style={styles.icon} />
             </TouchableOpacity>
-            <DateTimePickerModal
-              isVisible={isEndDatePickerVisible}
+            <DatePicker
+              modal
+              open={isEndDatePickerVisible}
+              date={selectedEndDate ? new Date(selectedEndDate) : new Date()}
               mode="date"
-              display={Platform.OS === 'ios' ? 'default' : 'calendar'}
               minimumDate={
                 selectedStartDate ? new Date(selectedStartDate) : undefined
               }
@@ -254,7 +248,7 @@ function ContractWriteEditor({
           style={styles.contractPriceTextInput}
           placeholder="계약가격을 입력하세요"
           keyboardType="numeric"
-          value={contractPrice ? contractPrice.toString() : ''}
+          value={displayPrice}
           onFocus={handleContractPriceFocus}
           onBlur={handleContractPriceBlur}
           onChangeText={handleContractPriceChange}
@@ -316,6 +310,7 @@ const styles = StyleSheet.create({
   dateBox: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: -8,
     marginBottom: 8,
   },
   contractPriceTextInput: {
@@ -336,6 +331,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginRight: 8,
   },
+  contractDateTextInputEnd: {
+    height: 40,
+    width: 120,
+    color: '#000000',
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginTop: 10,
+    marginRight: 8,
+  },
   contractDateButton: {
     minHeight: 40,
     backgroundColor: '#00569A',
@@ -343,6 +349,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
+  },
+  contractDateButtonEnd: {
+    minHeight: 40,
+    backgroundColor: '#00569A',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    marginTop: 10,
   },
   contractFileBox: {
     flexDirection: 'row',
