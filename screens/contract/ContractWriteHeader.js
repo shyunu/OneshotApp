@@ -81,13 +81,13 @@ function ContractWriteHeader({
       );
 
       if (response.status === 201) {
-        Alert.alert('Success', '계약이 성공적으로 등록되었습니다.');
+        Alert.alert('등록 성공\n', '계약이 성공적으로 등록되었습니다\n');
       } else {
-        Alert.alert('Error', '계약 등록에 실패했습니다.');
+        Alert.alert('등록 실패\n', '계약 등록에 실패했습니다\n');
       }
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', '서버에 연결하는 데 실패했습니다.');
+      Alert.alert('Error', '서버에 연결하는 데 실패했습니다');
     } finally {
       setLoading(false); // 로딩 상태 비활성화
     }
@@ -96,9 +96,9 @@ function ContractWriteHeader({
 
   const onsubmit = () => {
     if (clientNo == null || clientNo == '') {
-      Alert.alert('확인\n', '모든 내용을 입력해 주세요.\n');
+      Alert.alert('확인\n', '모든 내용을 입력해 주세요\n');
     } else {
-      Alert.alert('확인\n', '판매를 등록하시겠습니까?\n', [
+      Alert.alert('확인\n', '계약를 등록하시겠습니까?\n', [
         {text: '취소', style: 'cancel'},
         {text: '확인', onPress: onSubmitConfirmed},
       ]);
