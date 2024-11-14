@@ -51,6 +51,8 @@ function ContractWriteEditor({
       const [clientResponse, productResponse] = await Promise.all([
         axios.get('http://172.30.1.28:8181/contractApp/getClientList'),
         axios.get('http://172.30.1.28:8181/contractApp/getProductList'),
+        //axios.get('http://localhost:8181/contractApp/getClientList'),
+        //axios.get('http://localhost:8181/contractApp/getProductList'),
       ]);
       setClientItems(
         clientResponse.data.map(client => ({
@@ -81,6 +83,7 @@ function ContractWriteEditor({
       try {
         const response = await axios.get(
           'http://172.30.1.28:8181/contractApp/getContractPriceByClientNoAndProductNo',
+          //'http://localhost:8181/contractApp/getContractPriceByClientNoAndProductNo',
           {
             params: {
               clientNo: clientNo,
@@ -148,6 +151,11 @@ function ContractWriteEditor({
         setFileType(asset.type);
       }
     });
+  };
+
+  const formatCurrency = amount => {
+    if (amount == null || isNaN(amount)) return '';
+    return `${amount.toLocaleString('ko-KR')} 원`;
   };
 
   if (loading) {

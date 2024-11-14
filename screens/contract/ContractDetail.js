@@ -43,7 +43,7 @@ function ContractDetail({isVisible, onClose, contractPriceNo}) {
       onRequestClose={onClose}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>판매 상세</Text>
+          <Text style={styles.modalTitle}>계약 상세</Text>
           {imageData ? (
             <Image
               source={{uri: imageData}}
