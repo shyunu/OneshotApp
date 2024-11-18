@@ -71,6 +71,7 @@ function ContractWriteEditor({
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -78,8 +79,8 @@ function ContractWriteEditor({
     if (clientNo != null && productNo != null) {
       try {
         const response = await axios.get(
-          // 'http://172.30.1.28:8181/contractApp/getContractPriceByClientNoAndProductNo',
-          'http://192.168.0.10:8181/contractApp/getContractPriceByClientNoAndProductNo',
+          'http://172.30.1.28:8181/contractApp/getContractPriceByClientNoAndProductNo',
+          //'http://localhost:8181/contractApp/getContractPriceByClientNoAndProductNo',
           {
             params: {
               clientNo: clientNo,
@@ -101,6 +102,7 @@ function ContractWriteEditor({
       }
     }
   };
+
   const convertToLocalDate = utcDate => {
     const date = new Date(utcDate);
     const localDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // 한국 시간으로 변환
@@ -118,14 +120,17 @@ function ContractWriteEditor({
     setSelectedEndDate(date.toISOString().split('T')[0]);
     hideEndDatePicker();
   };
+
   const handleContractPriceChange = value => {
     const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
     setContractPrice(isNaN(numericValue) ? 0 : numericValue);
     setDisplayPrice(value.replace(/[^0-9]/g, '')); // 입력 중에는 숫자만 표시
   };
+
   const handleContractPriceFocus = () => {
     setDisplayPrice(contractPrice.toString()); // 포커스 시 숫자만 표시
   };
+
   const handleContractPriceBlur = () => {
     setDisplayPrice(`${contractPrice.toLocaleString('ko-KR')} 원`); // 포커스를 벗어나면 포맷된 값으로 설정
   };
@@ -299,11 +304,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 15,
   },
-  dropdownContainer: {borderColor: '#CED4DA'},
+
+  dropdownContainer: {borderColor: '#ced4da'},
   dateBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: -8,
     marginBottom: 8,
     marginTop: -8,
   },
@@ -336,6 +343,17 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginTop: 10,
   },
+  contractDateTextInputEnd: {
+    height: 40,
+    width: 120,
+    color: '#000000',
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginTop: 10,
+    marginRight: 8,
+  },
   contractDateButton: {
     minHeight: 40,
     backgroundColor: '#00569A',
@@ -343,6 +361,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
+  },
+  contractDateButtonEnd: {
+    minHeight: 40,
+    backgroundColor: '#00569A',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    marginTop: 10,
   },
   contractFileBox: {
     flexDirection: 'row',
@@ -367,15 +394,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
-  contractDateButtonEnd: {
-    minHeight: 40,
-    backgroundColor: '#00569A',
-    borderRadius: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    marginTop: 10,
-  },
+
   icon: {color: 'white'},
   loader: {
     flex: 1,
