@@ -2155,6 +2155,7 @@ __metadata:
     react-native: 0.70.15
     react-native-asset: ^2.1.1
     react-native-chart-kit: ^6.12.0
+
     react-native-date-picker: ^4.2.6
     react-native-dropdown-picker: ^5.4.6
     react-native-gesture-handler: ^2.20.2
@@ -8528,6 +8529,7 @@ __metadata:
   checksum: dfbf05ea6c5bcdff09ed2288919d8270bdb8ab78a7a973f2dbd970e63357bdf9fee05d95a2c9bee3795a609332e5ca37f667384ebe1cca61e4cb8f81e5aeabba
   languageName: node
   linkType: hard
+
 
 "react-native-date-picker@npm:^4.2.6":
   version: 4.4.2

@@ -16,7 +16,6 @@ import DatePicker from 'react-native-date-picker';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
-
 function ContractWriteEditor({
   clientNo,
   setClientNo,
@@ -45,14 +44,13 @@ function ContractWriteEditor({
     useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
   const [displayPrice, setDisplayPrice] = useState(''); // 포맷팅된 문자열을 위한 상태
-
   const fetchData = async () => {
     try {
       const [clientResponse, productResponse] = await Promise.all([
-        axios.get('http://172.30.1.28:8181/contractApp/getClientList'),
-        axios.get('http://172.30.1.28:8181/contractApp/getProductList'),
-        //axios.get('http://localhost:8181/contractApp/getClientList'),
-        //axios.get('http://localhost:8181/contractApp/getProductList'),
+        // axios.get('http://172.30.1.28:8181/contractApp/getClientList'),
+        axios.get('http://192.168.0.10:8181/contractApp/getClientList'),
+        // axios.get('http://172.30.1.28:8181/contractApp/getProductList'),
+        axios.get('http://192.168.0.10:8181/contractApp/getProductList'),
       ]);
       setClientItems(
         clientResponse.data.map(client => ({
@@ -77,7 +75,6 @@ function ContractWriteEditor({
   useEffect(() => {
     fetchData();
   }, []);
-
   const onChangeClientAndProduct = async () => {
     if (clientNo != null && productNo != null) {
       try {
@@ -111,18 +108,14 @@ function ContractWriteEditor({
     const localDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // 한국 시간으로 변환
     return localDate.toISOString().split('T')[0]; // "YYYY-MM-DD" 형식으로 반환
   };
-
   const showStartDatePicker = () => setStartDatePickerVisibility(true);
   const hideStartDatePicker = () => setStartDatePickerVisibility(false);
-
   const handleStartConfirm = date => {
     setSelectedStartDate(date.toISOString().split('T')[0]);
     hideStartDatePicker();
   };
-
   const showEndDatePicker = () => setEndDatePickerVisibility(true);
   const hideEndDatePicker = () => setEndDatePickerVisibility(false);
-
   const handleEndConfirm = date => {
     setSelectedEndDate(date.toISOString().split('T')[0]);
     hideEndDatePicker();
@@ -141,7 +134,6 @@ function ContractWriteEditor({
   const handleContractPriceBlur = () => {
     setDisplayPrice(`${contractPrice.toLocaleString('ko-KR')} 원`); // 포커스를 벗어나면 포맷된 값으로 설정
   };
-
   const selectImage = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (!response.didCancel && !response.errorCode) {
@@ -161,11 +153,10 @@ function ContractWriteEditor({
   if (loading) {
     return (
       <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#0000FF" />
       </View>
     );
   }
-
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.block}>
@@ -304,26 +295,28 @@ function ContractWriteEditor({
     </TouchableWithoutFeedback>
   );
 }
-
 const styles = StyleSheet.create({
   block: {flex: 1, padding: 16},
   text: {fontSize: 16, marginBottom: 8},
   dropdown: {
     minHeight: 40,
-    borderColor: '#ced4da',
+    borderColor: '#CED4DA',
     borderRadius: 4,
     marginBottom: 15,
   },
+
   dropdownContainer: {borderColor: '#ced4da'},
   dateBox: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: -8,
     marginBottom: 8,
+    marginTop: -8,
   },
   contractPriceTextInput: {
     height: 40,
-    borderColor: '#ced4da',
+    borderColor: '#CED4DA',
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 10,
@@ -333,11 +326,22 @@ const styles = StyleSheet.create({
     height: 40,
     width: 120,
     color: '#000000',
-    borderColor: '#ced4da',
+    borderColor: '#CED4DA',
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 10,
     marginRight: 8,
+  },
+  contractDateTextInputEnd: {
+    height: 40,
+    width: 120,
+    color: '#000000',
+    borderColor: '#CED4DA',
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginRight: 8,
+    marginTop: 10,
   },
   contractDateTextInputEnd: {
     height: 40,
@@ -376,7 +380,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 305,
     color: '#000000',
-    borderColor: '#ced4da',
+    borderColor: '#CED4DA',
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 10,
@@ -390,6 +394,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
+
   icon: {color: 'white'},
   loader: {
     flex: 1,
@@ -400,8 +405,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 40,
     padding: 10,
-    backgroundColor: '#e3e3e3',
-    borderBottomColor: '#ced4da',
+    backgroundColor: '#E3E3E3',
+    borderBottomColor: '#CED4DA',
     borderBottomWidth: 1,
   },
   tableHeaderText: {
@@ -413,7 +418,7 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#ced4da',
+    borderBottomColor: '#CED4DA',
   },
   tableCell: {
     flex: 1,
@@ -422,5 +427,4 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-
 export default ContractWriteEditor;

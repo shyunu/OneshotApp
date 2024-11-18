@@ -16,7 +16,8 @@ function ContractDetail({isVisible, onClose, contractPriceNo}) {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://172.30.1.28:8181/contractApp/getContractFile/${contractPriceNo}`,
+        // `http://172.30.1.28:8181/contractApp/getContractFile/${contractPriceNo}`,
+        `http://192.168.0.10:8181/contractApp/getContractFile/${contractPriceNo}`,
       );
       if (response.data) {
         const base64Image = `data:image/jpeg;base64,${response.data}`;

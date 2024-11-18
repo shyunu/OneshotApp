@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-function SalesDetail({ isVisible, onClose, selectedOrder }) {
+function SalesDetail({isVisible, onClose, selectedOrder}) {
   const [orderItems, setOrderItems] = useState([]); // 상품 상세 정보 저장
   const [disable, setDisabled] = useState(false); // textinput disabled 처리
 
@@ -23,7 +23,7 @@ function SalesDetail({ isVisible, onClose, selectedOrder }) {
   const fetchOrderItems = async orderHeaderNo => {
     try {
       const response = await axios.get(
-        `http://localhost:8181/salesApp/items/${orderHeaderNo}`
+        `http://localhost:8181/salesApp/items/${orderHeaderNo}`,
       );
       setOrderItems(response.data);
     } catch (error) {
@@ -38,12 +38,18 @@ function SalesDetail({ isVisible, onClose, selectedOrder }) {
   };
 
   // 상품 리스트 아이템 렌더링
-  const renderOrderItem = ({ item }) => (
+  const renderOrderItem = ({item}) => (
     <View style={styles.tableRow}>
       <Text style={styles.contentText}>{item.productName}</Text>
-      <Text style={[styles.contentText, styles.priceText]}>{formatCurrency(item.contractPrice)}</Text>
-      <Text style={[styles.contentText, styles.quantityText]}>{item.productQuantity}</Text>
-      <Text style={[styles.contentText, styles.amountText]}>{formatCurrency(item.amount)}</Text>
+      <Text style={[styles.contentText, styles.priceText]}>
+        {formatCurrency(item.contractPrice)}
+      </Text>
+      <Text style={[styles.contentText, styles.quantityText]}>
+        {item.productQuantity}
+      </Text>
+      <Text style={[styles.contentText, styles.amountText]}>
+        {formatCurrency(item.amount)}
+      </Text>
     </View>
   );
 
@@ -81,11 +87,13 @@ function SalesDetail({ isVisible, onClose, selectedOrder }) {
           </View>
 
           <View style={styles.amountWrap}>
-            <Text style={{ marginLeft: 15, letterSpacing: 5 }}>합계</Text>
+            <Text style={{marginLeft: 15, letterSpacing: 5}}>합계</Text>
             <TextInput
               style={styles.amount}
               editable={false}
-              value={selectedOrder ? formatCurrency(selectedOrder.totalAmount) : ''}
+              value={
+                selectedOrder ? formatCurrency(selectedOrder.totalAmount) : ''
+              }
             />
           </View>
 

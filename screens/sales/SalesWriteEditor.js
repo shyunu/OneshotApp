@@ -49,7 +49,7 @@ function SalesWriteEditor({onSaveData}) {
     try {
       const clientResponse = await axios.get(
         // 'http://172.30.1.63:8181/salesApp/getClientList',
-        'http://localhost:8181/salesApp/getClientList',
+        'http://192.168.0.10:8181/salesApp/getClientList',
       );
       console.log('API Response:', clientResponse.data); // 응답 데이터 확인
 
@@ -81,7 +81,7 @@ function SalesWriteEditor({onSaveData}) {
         try {
           const response = await axios.get(
             // `http://172.30.1.63:8181/salesApp/getClientContent/${client}`,
-            `http://localhost:8181/salesApp/getClientContent/${client}`,
+            `http://192.168.0.10:8181/salesApp/getClientContent/${client}`,
           );
           setClientBusinessNo(response.data.clientBusinessNo || '');
           setManagerName(response.data.managerName || '');
@@ -101,7 +101,7 @@ function SalesWriteEditor({onSaveData}) {
   //모달창
   const [modalIsVisible, setModalIsVisible] = useState(false);
   function startAddItem() {
-    if(!client) {
+    if (!client) {
       Alert.alert('고객사를 선택하세요');
       return;
     }

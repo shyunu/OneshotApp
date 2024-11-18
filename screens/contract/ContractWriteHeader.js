@@ -3,7 +3,6 @@ import React from 'react';
 import {StyleSheet, View, Text, Alert} from 'react-native';
 import ContractTransparentCircleButton from './ContractTransparentCircleButton';
 import axios from 'axios';
-
 function ContractWriteHeader({
   clientNo,
   setClientNo,
@@ -27,13 +26,11 @@ function ContractWriteHeader({
   setLoading,
 }) {
   const navigation = useNavigation();
-
   const onGoBack = () => {
     if (navigation.canGoBack()) {
       navigation.pop();
     }
   };
-
   const onReset = () => {
     Alert.alert(
       '경고\n',
@@ -58,7 +55,6 @@ function ContractWriteHeader({
       {cancelable: false},
     );
   };
-
   const formData = new FormData();
   formData.append('file', {
     uri: imageUri,
@@ -70,16 +66,15 @@ function ContractWriteHeader({
   formData.append('selectedStartDate', selectedStartDate);
   formData.append('selectedEndDate', selectedEndDate);
   formData.append('contractPrice', contractPrice);
-
   const onSubmitConfirmed = async () => {
     setLoading(true); // 로딩 상태 활성화
     try {
       const response = await axios.post(
-        'http://172.30.1.28:8181/contractApp/contract',
+        // 'http://172.30.1.28:8181/contractApp/contract',
+        'http://192.168.0.10:8181/contractApp/contract',
         formData,
         {headers: {'Content-Type': 'multipart/form-data'}},
       );
-
       if (response.status === 201) {
         Alert.alert('등록 성공\n', '계약이 성공적으로 등록되었습니다\n');
       } else {
@@ -93,7 +88,6 @@ function ContractWriteHeader({
     }
     onGoBack();
   };
-
   const onsubmit = () => {
     if (clientNo == null || clientNo == '') {
       Alert.alert('확인\n', '모든 내용을 입력해 주세요\n');
@@ -104,7 +98,6 @@ function ContractWriteHeader({
       ]);
     }
   };
-
   return (
     <View style={styles.block}>
       <View style={styles.iconButtonWrapper}>
@@ -120,7 +113,7 @@ function ContractWriteHeader({
       <View style={styles.buttons}>
         <ContractTransparentCircleButton
           name="delete-forever"
-          color="#ef5350"
+          color="#EF5350"
           hasMarginRight
           onPress={onReset}
         />
@@ -133,7 +126,6 @@ function ContractWriteHeader({
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   block: {
     height: 55,
@@ -154,5 +146,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
 export default ContractWriteHeader;
