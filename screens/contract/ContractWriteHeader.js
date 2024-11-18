@@ -98,7 +98,7 @@ function ContractWriteHeader({
     if (clientNo == null || clientNo == '') {
       Alert.alert('확인\n', '모든 내용을 입력해 주세요\n');
     } else {
-      Alert.alert('확인\n', '계약를 등록하시겠습니까?\n', [
+      Alert.alert('확인\n', '계약을 등록하시겠습니까?\n', [
         {text: '취소', style: 'cancel'},
         {text: '확인', onPress: onSubmitConfirmed},
       ]);
