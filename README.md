@@ -7,4 +7,4 @@
 - 데이터 시각화
 
 ## 스크린샷
-![로그인 페이지](https://github.com/shyunu/OneshotApp/blob/main/images/로그인기본.png)
+![로그인 페이지](https://github.com/shyunu/OneshotApp/master/images/로그인기본.png)
