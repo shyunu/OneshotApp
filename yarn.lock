@@ -2155,6 +2155,7 @@ __metadata:
     react-native: 0.70.15
     react-native-asset: ^2.1.1
     react-native-chart-kit: ^6.12.0
+    react-native-date-picker: ^5.0.7
     react-native-dropdown-picker: ^5.4.6
     react-native-gesture-handler: ^2.20.2
     react-native-image-picker: ^7.1.2
@@ -8526,6 +8527,16 @@ __metadata:
     jscodeshift: ^0.14.0
     nullthrows: ^1.1.1
   checksum: dfbf05ea6c5bcdff09ed2288919d8270bdb8ab78a7a973f2dbd970e63357bdf9fee05d95a2c9bee3795a609332e5ca37f667384ebe1cca61e4cb8f81e5aeabba
+  languageName: node
+  linkType: hard
+
+"react-native-date-picker@npm:^5.0.7":
+  version: 5.0.7
+  resolution: "react-native-date-picker@npm:5.0.7"
+  peerDependencies:
+    react: ">= 17.0.1"
+    react-native: ">= 0.64.3"
+  checksum: 94191bf3ce6e88a3acc4ca5e5514eaa6fc15c61666393d85ca258dba3a3efd9145c8fd31ed0f18676d7f083e17f08c760de8193ad24367a65761330084bcdc6b
   languageName: node
   linkType: hard
 

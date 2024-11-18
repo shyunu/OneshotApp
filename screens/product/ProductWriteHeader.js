@@ -136,8 +136,9 @@ function ProductWriteHeader({
       };
 
       const response = await axios.post(
-        'http://172.30.1.32:8181/productApp/postProduct',
-        // 'http://localhost:8181/productApp/postProduct',
+        // 'http://172.30.1.32:8181/productApp/postProduct',
+        'http://localhost:8181/productApp/postProduct',
+        // 'http://192.168.0.10:8181/productApp/postProduct',
         formData,
         config,
       );

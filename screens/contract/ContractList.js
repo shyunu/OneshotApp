@@ -23,10 +23,12 @@ function ContractList({search}) {
     setIsLoading(true);
     try {
       const url = search
-        ? `http://172.30.1.28:8181/contractApp/getContractPriceList/${encodeURIComponent(
+        ? // ? `http://172.30.1.28:8181/contractApp/getContractPriceList/${encodeURIComponent(
+          `http://192.168.0.10:8181/contractApp/getContractPriceList/${encodeURIComponent(
             search,
           )}`
-        : 'http://172.30.1.28:8181/contractApp/getContractPriceList'; // search가 없을 경우 전체 조회 경로
+        : // : 'http://172.30.1.28:8181/contractApp/getContractPriceList'; // search가 없을 경우 전체 조회 경로
+          'http://192.168.0.10:8181/contractApp/getContractPriceList'; // search가 없을 경우 전체 조회 경로
       const response = await axios.get(url);
       const updatedItems = response.data.map((item, index) => ({
         ...item,

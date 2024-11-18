@@ -156,8 +156,8 @@ function SalesItem({
   useEffect(() => {
     const price = parseFloat(contractPrice) || 0; // 계약가격
     const qty = parseFloat(productQuantity) || 0; // 수량
-    setAmount(price * qty); 
-  }, [contractPrice, productQuantity]); 
+    setAmount(price * qty);
+  }, [contractPrice, productQuantity]);
 
   return (
     <Modal
