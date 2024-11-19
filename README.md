@@ -38,9 +38,13 @@
 ## 1. 로그인 및 홈
 
 ### 1-1. 로그인 화면
-<div align="center">
-  <img src="./images/login-default.png" alt="로그인 화면" height="400">
-</div>
+<table align="center">
+  <tr>
+    <td><img src="./images/login-default.png" alt="로그인 화면" height="400"></td>
+    <td><img src="./images/login-success.png" alt="로그인 화면" height="400"></td>
+    <td><img src="./images/mainHome.png" alt="메인 홈 화면" height="400"></td>
+  </tr>
+</table>
 
 📍 **본사 직원이 로그인하는 화면입니다.**
 
