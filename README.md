@@ -77,7 +77,7 @@
 
 <hr>
 
-## 3. 구매관리
+## 3. 구매관리
 <div align="center">
   <img src="./images/purchase-list.png" alt="구매조회 화면" height="400">
   <img src="./images/purchase-regist.png" alt="구매등록 화면" height="400">
