@@ -9,13 +9,13 @@
 | 항목 | 내용 |
 |---|---|
 | **프로그래밍 언어** | Java 11 |
-| **프론트엔드** | React 18.3.1 ,Thymeleaf |
+| **프론트엔드** | React 18.3.1, React-native 0.70.15 |
 | **프레임워크** | Spring Boot 2.7.18 |
 | **보안** | Spring Security |
 | **빌드 도구** | gradle-8.1 |
 | **데이터베이스(DB)** | PostgreSQL 16.3 (AWS RDS) |
 | **데이터베이스 연동** | MyBatis |
-| **개발 도구(IDE)** | IntelliJ IDEA, VSCode |
+| **개발 도구(IDE)** | IntelliJ IDEA, Visual Studio Code |
 
 
 <br>
@@ -35,30 +35,32 @@
 
 # 프로젝트 구현 화면
 
-## 1. 로그인 및 홈
+## 1. 앱 로딩 / 로그인 / 메인 홈
 
-### 1-1. 로그인 화면
+### 1-1. 앱 로딩 시 대기 화면
 <table>
   <tr>
-    <td><img src="./images/login-default.png" alt="로그인 화면" height="400"></td>
-    <td><img src="./images/login-success.png" alt="로그인 화면" height="400"></td>
+    <td><img src="./images/splash-screen.png" alt="앱 로딩 시 대기 화면" height="400"></td>
   </tr>
 </table>
 
-📍 **본사 직원이 로그인하는 화면입니다.**
 
-<br>
+📍 **앱 로딩 시 대기 화면입니다.**
+초기 앱 진입 시 나타나는 대기 화면입니다. 로딩 3초 후에 로그인 화면으로 전환합니다.
 
 ### 1-2. 로그인 성공 화면
 <table>
   <tr>
-    <td><img src="./images/login-success.png" alt="로그인 화면" height="400" style="border-radius: 15px;"></td>
-    <td><img src="./images/mainHome.png" alt="메인 홈 화면" height="400" style="border-radius: 15px;"></td>
+    <td><img src="./images/login-default.png" alt="로그인 화면" height="400"></td>
+    <td><img src="./images/login-success.png" alt="로그인 화면" height="400"></td>
+    <td><img src="./images/home-default.png" alt="메인 홈 화면" height="400"></td>
+    <td><img src="./images/home-modifyGoal.png" alt="메인 홈 화면2" height="400"></td>
   </tr>
 </table>
 
 
-📍 **본사 직원이 로그인하는 화면입니다.**
+📍 **로그인/메인홈 화면입니다.**
+로그인 과정을 통해 계정을 확인하여 메인 홈 화면으로 이동합니다. 금일 계약과 판매의 등록 현황이 실시간으로 나타나며 분기별 매출액을 조회하고 목표 판매량을 변경하여 데이터를 확인할 수 있습니다. 이와 같이 목표판매량을 1500만원에서 3500만원으롤 변경하면 변경값에 대한 정보를 확인할 수 있습니다.
 
 <br>
 
