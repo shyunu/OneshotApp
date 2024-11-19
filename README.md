@@ -52,8 +52,8 @@
 ### 1-2. 로그인 성공 화면
 <table>
   <tr>
-    <td><img src="./images/login-success.png" alt="로그인 화면" height="400"></td>
-    <td><img src="./images/mainHome.png" alt="메인 홈 화면" height="400"></td>
+    <td><img src="./images/login-success.png" alt="로그인 화면" height="400" style="border-radius: 15px;"></td>
+    <td><img src="./images/mainHome.png" alt="메인 홈 화면" height="400" style="border-radius: 15px;"></td>
   </tr>
 </table>
 
