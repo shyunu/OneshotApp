@@ -34,6 +34,7 @@
 <br>
 
 # 프로젝트 구현 화면
+<div style="background-color: black; color: white; padding: 20px; border-radius: 10px;">
 
 ## 1. 로그인 및 홈
 
@@ -76,3 +77,4 @@
 부서명을 입력하고 사용 가능 메뉴를 선택하면 해당 메뉴에 대해서만 사용 권한이 부여됩니다.
 
 <br>
+</div>
