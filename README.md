@@ -105,11 +105,13 @@
 
 ## 5. 판매관리
 <div align="center">
-  <img src="./images/sales-list.png" alt="계약조회 화면" height="400">
-  <img src="./images/sales-regist.png" alt="계약등록 화면" height="400">
-  <img src="./images/sales-success.png" alt="계약성공 화면" height="400">
-  <img src="./images/sales-detail.png" alt="계약서조회 화면" height="400">
-  <img src="./images/sales-search.png" alt="계약서조회 화면" height="400">
+  <img src="./images/sales-list.png" alt="판매조회 화면" height="400">
+  <img src="./images/sales-regist.png" alt="판매등록 화면" height="400">
+  <img src="./images/sales-success.png" alt="판매성공 화면" height="400">
+</div>
+<div align="center">
+  <img src="./images/sales-detail.png" alt="판매조회 화면" height="400">
+  <img src="./images/sales-search.png" alt="판매검색 화면" height="400">
 </div>
 
 📍 **판매관리 화면**  
