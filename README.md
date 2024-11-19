@@ -39,7 +39,16 @@
 
 ### 1-1. 로그인 화면
 <div align="center">
-  <img src="./images/login.png" alt="로그인 화면" height="400">
+  <img src="./images/login-default.png" alt="로그인 화면" height="400">
+</div>
+
+📍 **본사 직원이 로그인하는 화면입니다.**
+
+<br>
+
+### 1-2. 로그인 성공 화면
+<div align="center">
+  <img src="./images/login-success.png" alt="로그인 화면" height="400">
 </div>
 
 📍 **본사 직원이 로그인하는 화면입니다.**
