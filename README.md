@@ -48,7 +48,7 @@
 📍 **앱 로딩 시 대기 화면입니다.**
 초기 앱 진입 시 나타나는 대기 화면입니다. 로딩 3초 후에 로그인 화면으로 전환합니다.
 
-### 1-2. 로그인 성공 화면
+### 1-2. 로그인 및 홈화면
 <table>
   <tr>
     <td><img src="./images/login-default.png" alt="로그인 화면" height="400"></td>
@@ -62,26 +62,56 @@
 📍 **로그인/메인홈 화면입니다.**
 로그인 과정을 통해 계정을 확인하여 메인 홈 화면으로 이동합니다. 금일 계약과 판매의 등록 현황이 실시간으로 나타나며 분기별 매출액을 조회하고 목표 판매량을 변경하여 데이터를 확인할 수 있습니다. 이와 같이 목표판매량을 1500만원에서 3500만원으롤 변경하면 변경값에 대한 정보를 확인할 수 있습니다.
 
-<br>
+<hr>
 
-### 1-2. 메인 홈 화면
+## 2. 상품관리
 <div align="center">
-  <img src="./images/mainHome.png" alt="메인 홈 화면" height="400">
+  <img src="./images/product-list.png" alt="상품조회 화면" height="400">
+  <img src="./images/product-regist.png" alt="상품등록 화면" height="400">
+  <img src="./images/product-search.png" alt="상품검색 화면" height="400">
+  <img src="./images/product-image.png" alt="상품이미지조회 화면" height="400">
 </div>
 
-📍 **Oneshot ERP 메인 화면**  
-연차(휴가제도)를 사용한 직원의 일정, 분기별 매출액, 목표판매량 도달률, 사원수, 사내 규정 등의 정보를 확인할 수 있습니다.
+📍 **상품관리 화면**  
+이와 같이 상품을 조회 가능하며 새로운 상품을 등록할 수 있습니다. 원하는 상품을 검색하여 필터링할 수 있고 등록 시 첨부된 상품의 이미지도 상세하게 확인 가능합니다.
 
 <hr>
 
-## 2. 인사관리 - 부서관리
-
-### 2-1. 부서 등록 화면
+## 3. 구매관리
 <div align="center">
-  <img src="./images/department-regist.png" alt="부서등록 화면" height="400">
+  <img src="./images/purchase-list.png" alt="구매조회 화면" height="400">
+  <img src="./images/purchase-regist.png" alt="구매등록 화면" height="400">
+  <img src="./images/purchase-success.png" alt="구매성공 화면" height="400">
+  <img src="./images/purchase-search.png" alt="구매조회 화면" height="400">
 </div>
 
-📍 **부서 등록 화면**  
-부서명을 입력하고 사용 가능 메뉴를 선택하면 해당 메뉴에 대해서만 사용 권한이 부여됩니다.
+📍 **구매관리 화면**  
+구매한 상품을 조회 가능하며 상품을 구매 등록할 수 있습니다. 성공적으로 구매가 이루어지면 원하는 상품을 검색하여 필터링할 수 있습니다.
 
-<br>
+<hr>
+
+## 4. 계약관리
+<div align="center">
+  <img src="./images/contract-list.png" alt="계약조회 화면" height="400">
+  <img src="./images/contract-regist.png" alt="계약등록 화면" height="400">
+  <img src="./images/contract-success.png" alt="계약성공 화면" height="400">
+  <img src="./images/contract-check.png" alt="계약서조회 화면" height="400">
+</div>
+
+📍 **계약관리 화면**  
+고객사와의 계약을 조회 및 등록할 수 있습니다. 계약사, 계약시작일, 계약종료일 등 양식에 맞게 작성하면 계약이 정상 등록됩니다. 계약 등록 시 첨부한 계약서 또한 확인할 수 있습니다.
+
+<hr>
+
+## 5. 판매관리
+<div align="center">
+  <img src="./images/sales-list.png" alt="계약조회 화면" height="400">
+  <img src="./images/sales-regist.png" alt="계약등록 화면" height="400">
+  <img src="./images/sales-success.png" alt="계약성공 화면" height="400">
+  <img src="./images/sales-detail.png" alt="계약서조회 화면" height="400">
+  <img src="./images/sales-search.png" alt="계약서조회 화면" height="400">
+</div>
+
+📍 **판매관리 화면**  
+고객사와의 계약을 통해 결정된 계약가격으로 여러 상품의 판매 등록이 가능하며 판매 상세조회 또한 제공하고 있습니다. 원하는 항목에 대하여 검색 기능도 제공합니다.
+
