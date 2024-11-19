@@ -38,25 +38,22 @@
 ## 1. 앱 로딩 / 로그인 / 메인 홈
 
 ### 1-1. 앱 로딩 시 대기 화면
-<table>
-  <tr>
-    <td><img src="./images/splash-screen.png" alt="앱 로딩 시 대기 화면" height="400"></td>
-  </tr>
-</table>
+<div align="left">
+  <img src="./images/splash-screen.png" alt="앱 로딩 시 대기 화면" height="400">
+</div>
 
 
 📍 **앱 로딩 시 대기 화면입니다.**
 초기 앱 진입 시 나타나는 대기 화면입니다. 로딩 3초 후에 로그인 화면으로 전환합니다.
 
 ### 1-2. 로그인 및 홈화면
-<table>
-  <tr>
-    <td><img src="./images/login-default.png" alt="로그인 화면" height="400"></td>
-    <td><img src="./images/login-success.png" alt="로그인 화면" height="400"></td>
-    <td><img src="./images/home-default.png" alt="메인 홈 화면" height="400"></td>
-    <td><img src="./images/home-modifyGoal.png" alt="메인 홈 화면2" height="400"></td>
-  </tr>
-</table>
+<div align="left">
+  <img src="./images/login-default.png" alt="로그인 화면" height="400">
+  <img src="./images/login-success.png" alt="로그인 화면" height="400">
+  <img src="./images/home-default.png" alt="메인 홈 화면" height="400">
+  <img src="./images/home-modifyGoal.png" alt="메인 홈 화면2" height="400">
+</div>
+
 
 
 📍 **로그인/메인홈 화면입니다.**
@@ -65,7 +62,7 @@
 <hr>
 
 ## 2. 상품관리
-<div align="center">
+<div align="left">
   <img src="./images/product-list.png" alt="상품조회 화면" height="400">
   <img src="./images/product-regist.png" alt="상품등록 화면" height="400">
   <img src="./images/product-search.png" alt="상품검색 화면" height="400">
@@ -78,7 +75,7 @@
 <hr>
 
 ## 3. 구매관리
-<div align="center">
+<div align="left">
   <img src="./images/purchase-list.png" alt="구매조회 화면" height="400">
   <img src="./images/purchase-regist.png" alt="구매등록 화면" height="400">
   <img src="./images/purchase-success.png" alt="구매성공 화면" height="400">
@@ -91,7 +88,7 @@
 <hr>
 
 ## 4. 계약관리
-<div align="center">
+<div align="left">
   <img src="./images/contract-list.png" alt="계약조회 화면" height="400">
   <img src="./images/contract-regist.png" alt="계약등록 화면" height="400">
   <img src="./images/contract-success.png" alt="계약성공 화면" height="400">
@@ -104,12 +101,12 @@
 <hr>
 
 ## 5. 판매관리
-<div align="center">
+<div align="left">
   <img src="./images/sales-list.png" alt="판매조회 화면" height="400">
   <img src="./images/sales-regist.png" alt="판매등록 화면" height="400">
   <img src="./images/sales-success.png" alt="판매성공 화면" height="400">
 </div>
-<div align="center">
+<div align="left">
   <img src="./images/sales-detail.png" alt="판매조회 화면" height="400">
   <img src="./images/sales-search.png" alt="판매검색 화면" height="400">
 </div>
