@@ -34,7 +34,6 @@
 <br>
 
 # 프로젝트 구현 화면
-<div style="background-color: black; color: white; padding: 20px; border-radius: 10px;">
 
 ## 1. 로그인 및 홈
 
@@ -48,9 +47,13 @@
 <br>
 
 ### 1-2. 로그인 성공 화면
-<div align="center">
-  <img src="./images/login-success.png" alt="로그인 화면" height="400">
-</div>
+<table>
+  <tr>
+    <td><img src="./images/login-success.png" alt="로그인 화면" height="400"></td>
+    <td><img src="./images/mainHome.png" alt="메인 홈 화면" height="400"></td>
+  </tr>
+</table>
+
 
 📍 **본사 직원이 로그인하는 화면입니다.**
 
@@ -77,4 +80,3 @@
 부서명을 입력하고 사용 가능 메뉴를 선택하면 해당 메뉴에 대해서만 사용 권한이 부여됩니다.
 
 <br>
-</div>
