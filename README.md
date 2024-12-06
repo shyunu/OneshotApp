@@ -149,3 +149,4 @@
 </div>
 
 ## 프로젝트 발표 ppt
+### [OneshotApp-ppt.pdf](https://github.com/user-attachments/files/18032625/OneshotApp-ppt.pdf)
